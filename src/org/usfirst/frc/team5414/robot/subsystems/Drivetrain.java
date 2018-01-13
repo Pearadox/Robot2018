@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Drivetrain extends Subsystem {
 
-    private SpeedController rightf_motor, rightb_motor, leftf_motor, leftb_motor;
+    private SpeedController right_motor1, right_motor2, right_motor3, left_motor1, left_motor2, left_motor3;
     private SpeedControllerGroup right;
     private SpeedControllerGroup left;
     private DifferentialDrive drive;
@@ -41,12 +41,16 @@ public class Drivetrain extends Subsystem {
     	encoderBL.reset();
     	encoderFL.reset();
     	
-    	leftb_motor = new Victor(RobotMap.PWMLeftBackMotor);
-		leftf_motor = new Victor(RobotMap.PWMLeftFrontMotor);
-		rightb_motor = new Victor(RobotMap.PWMRightBackMotor);
-		rightf_motor = new Victor(RobotMap.PWMRightFrontMotor);
-		left = new SpeedControllerGroup(leftf_motor, leftb_motor);
-		right = new SpeedControllerGroup(rightf_motor, rightb_motor);
+    	
+    	//don't forget to change PWM ports <3
+    	left_motor1 = new Victor(RobotMap.PWMLeftMotor1);
+    	left_motor2 = new Victor(RobotMap.PWMLeftMotor2);
+    	left_motor3 = new Victor(RobotMap.PWMLeftMotor3);
+		right_motor1 = new Victor(RobotMap.PWMRightMotor1);
+		right_motor2 = new Victor(RobotMap.PWMRightMotor2);
+		right_motor3 = new Victor(RobotMap.PWMRightMotor3);
+		left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
+		right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
 		drive = new DifferentialDrive(left, right); 
     }
     

@@ -19,10 +19,12 @@ public class RobotMap {
 	public static int GyroPort = 0;
 	
 	//PWM for speed controllers
-	public static int PWMRightFrontMotor = 2;
-	public static int PWMRightBackMotor = 3;
-	public static int PWMLeftFrontMotor = 0;
-	public static int PWMLeftBackMotor = 1;
+	public static int PWMRightMotor1 = 0;
+	public static int PWMRightMotor2 = 0;
+	public static int PWMRightMotor3 = 0;
+	public static int PWMLeftMotor1 = 0;
+	public static int PWMLeftMotor2 = 0;
+	public static int PWMLeftMotor3 = 0;
 	
 	//Encoder DIO ports
 	public static int DIOencoderFRa = 8;
