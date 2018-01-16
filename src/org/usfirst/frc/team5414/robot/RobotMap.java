@@ -19,27 +19,36 @@ public class RobotMap {
 	public static int GyroPort = 0;
 	
 	//PWM for speed controllers
-	public static int PWMRightMotor1 = 0;
-	public static int PWMRightMotor2 = 0;
-	public static int PWMRightMotor3 = 0;
-	public static int PWMLeftMotor1 = 0;
-	public static int PWMLeftMotor2 = 0;
-	public static int PWMLeftMotor3 = 0;
+	public static int PWMRightMotor1 = 12;
+	public static int PWMRightMotor2 = 16;
+	public static int PWMRightMotor3 = 13;
+	public static int PWMLeftMotor1 = 11;
+	public static int PWMLeftMotor2 = 14;
+	public static int PWMLeftMotor3 = 10;
 	
 	//Encoder DIO ports
-	public static int DIOencoderFRa = 8;
-	public static int DIOencoderFRb = 9;
-	public static int DIOencoderFLa = 4;
-	public static int DIOencoderFLb = 5;
-	public static int DIOencoderBRa = 6;
-	public static int DIOencoderBRb = 7;
-	public static int DIOencoderBLa = 2;
-	public static int DIOencoderBLb = 3;
+	public static int DIOencoderFRa = 0;
+	public static int DIOencoderFRb = 1;
+	public static int DIOencoderFLa = 2;
+	public static int DIOencoderFLb = 3;
+	public static int DIOencoderBRa = 4;
+	public static int DIOencoderBRb = 5;
+	public static int DIOencoderBLa = 6;
+	public static int DIOencoderBLb = 7;
+	
+	//Solenoid Ports
+	public static int LShiftA = 0;
+	public static int LShiftB = 1;
+	public static int RShiftA = 2;
+	public static int RShiftB = 3;
 	
 	//Wheel stuffs
-	public static double wheelDiameter = 4. / 12; //IN FEET
+	public static double wheelDiameterFeet = 4. / 12; //IN FEET
+	public static double wheelDiameterMeters = wheelDiameterFeet * .3048; //IN FEET
 	public static double EncoderTicks = 70;
-	public static double Circumference = wheelDiameter * Math.PI;
-	public static double LengthPerTick = Circumference / EncoderTicks; // this is only roughly true for traction wheels
-	public static double WheelBaseWidth = 0.6;
+	public static double CircumferenceFeet = wheelDiameterFeet * Math.PI;
+	public static double CircumferenceMeters = wheelDiameterMeters * Math.PI;
+	public static double LengthPerTickFeet = CircumferenceFeet / EncoderTicks; 
+	public static double LengthPerTickMeters = CircumferenceMeters / EncoderTicks; 
+	public static double WheelBaseWidth = 0.6; //Meters
 }

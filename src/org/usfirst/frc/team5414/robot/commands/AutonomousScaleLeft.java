@@ -12,8 +12,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutonomousScaleLeft extends CommandGroup {
 
     public AutonomousScaleLeft() {
-
-    	for(int i = 0; i < 10000; i++) Robot.drivetrain.drive(.5, .5);
+    	
 //    	boolean isBlue= DriverStation.getInstance().getAlliance() == Alliance.Blue;
 //    	char scaleSide = DriverStation.getInstance().getGameSpecificMessage().charAt(1);
 //    	if(isBlue) //alliance is blue

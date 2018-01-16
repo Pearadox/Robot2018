@@ -1,11 +1,14 @@
 package org.usfirst.frc.team5414.robot.subsystems;
 
+import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 import org.usfirst.frc.team5414.robot.commands.DrivewithJoystick;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -21,14 +24,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Drivetrain extends Subsystem {
 
-    private SpeedController right_motor1, right_motor2, right_motor3, left_motor1, left_motor2, left_motor3;
-    private SpeedControllerGroup right;
-    private SpeedControllerGroup left;
+    private WPI_VictorSPX right_motor1, right_motor2, right_motor3, left_motor1, left_motor2, left_motor3;
+	public SpeedController right1, right2, left1, left2;
+    public SpeedControllerGroup right;
+    public SpeedControllerGroup left;
     private DifferentialDrive drive;
     private Encoder encoderFR; 
     private Encoder encoderBR; 
     private Encoder encoderBL; 
     private Encoder encoderFL; 
+    private DoubleSolenoid LShift, RShift;
 
     public Drivetrain(){
     	
@@ -40,19 +45,41 @@ public class Drivetrain extends Subsystem {
     	encoderBR.reset();
     	encoderBL.reset();
     	encoderFL.reset();
+    	encoderFR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+    	encoderFL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+    	encoderBR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+    	encoderBL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
     	
+//    	LShift = new DoubleSolenoid(RobotMap.LShiftA, RobotMap.LShiftB);
+//    	RShift = new DoubleSolenoid(RobotMap.RShiftA, RobotMap.RShiftB);
     	
-    	//don't forget to change PWM ports <3
-    	left_motor1 = new Victor(RobotMap.PWMLeftMotor1);
-    	left_motor2 = new Victor(RobotMap.PWMLeftMotor2);
-    	left_motor3 = new Victor(RobotMap.PWMLeftMotor3);
-		right_motor1 = new Victor(RobotMap.PWMRightMotor1);
-		right_motor2 = new Victor(RobotMap.PWMRightMotor2);
-		right_motor3 = new Victor(RobotMap.PWMRightMotor3);
-		left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
-		right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
-		drive = new DifferentialDrive(left, right); 
+//    	don't forget to change PWM ports <3
+//    	left_motor1 = new WPI_VictorSPX(RobotMap.PWMLeftMotor1);
+//    	left_motor2 = new WPI_VictorSPX(RobotMap.PWMLeftMotor2);
+//    	left_motor3 = new WPI_VictorSPX(RobotMap.PWMLeftMotor3);
+//		right_motor1 = new WPI_VictorSPX(RobotMap.PWMRightMotor1);
+//		right_motor2 = new WPI_VictorSPX(RobotMap.PWMRightMotor2);
+//		right_motor3 = new WPI_VictorSPX(RobotMap.PWMRightMotor3);
+//		left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
+//		right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
+//		drive = new DifferentialDrive(left_motor2, right_motor2);
+//		left_motor2.setInverted(true);
+//		right_motor2.setInverted(true);
+		
+    	right1 = new Victor(2);
+    	right2 = new Victor(3);
+    	left1 = new Victor(0);
+    	left2 = new Victor(1);
+    	right1.setInverted(true);
+    	right2.setInverted(true);
+    	right1.setInverted(true);
+    	right2.setInverted(true);
+    	left = new SpeedControllerGroup(left1, left2);
+    	right = new SpeedControllerGroup(right1, right2);
+    	drive = new DifferentialDrive(left, right);
     }
+    
+    long lastTime = -1;
     
 	public void arcadeDrive(Joystick stick){
     	double ax1; 	//X-axis of motion for robot
@@ -81,7 +108,13 @@ public class Drivetrain extends Subsystem {
     	ax1 *= ax1; ax2 *= ax2; //scaling the output of the joystick to fine tune the end result
     	if(ax1n) ax1 *= -1;
     	if(ax2n) ax2 *= -1;
-    	drive.arcadeDrive(ax2,-ax1);
+    	ax1 *= -1;
+    	if(Robot.oi.getJoystick().getRawButton(11)) 
+    	{
+    		System.out.print(String.format("%.7s", ax2) + " " + String.format("%.7s", ax1) + " ");
+    	}
+    	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println();
+    	drive.arcadeDrive(ax1, ax2);
     }
     
     public void arcadeDrive(double throttle, double twist){
@@ -90,7 +123,17 @@ public class Drivetrain extends Subsystem {
     
     public void drive(double l, double r)
     {
-    	drive.tankDrive(l, r);
+    	drive.tankDrive(-l, -r);
+    }
+    
+    public double getEncoderL()
+    {
+    	return encoderFL.get();
+    }
+    
+    public double getEncoderR()
+    {
+    	return encoderFR.get();
     }
     
     public double getEncoderFR()
@@ -120,15 +163,28 @@ public class Drivetrain extends Subsystem {
     	encoderBL.reset();
     	encoderBR.reset();
     }
-    
-    public void tankDrive(double left, double right)
-    {
-    	drive.tankDrive(-left, -right);
-    }
-    
+
 	public void stop(){
     	drive.tankDrive(0,0);
     }	
+	
+	public void shiftUp()
+	{
+		LShift.set(DoubleSolenoid.Value.kForward);
+		RShift.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	public void shiftDown()
+	{
+		LShift.set(DoubleSolenoid.Value.kReverse);
+		RShift.set(DoubleSolenoid.Value.kReverse);
+	}
+	
+	public void shiftNone()
+	{
+		LShift.set(DoubleSolenoid.Value.kOff);
+		RShift.set(DoubleSolenoid.Value.kOff);
+	}
     
     public void initDefaultCommand() {
     	setDefaultCommand(new DrivewithJoystick());

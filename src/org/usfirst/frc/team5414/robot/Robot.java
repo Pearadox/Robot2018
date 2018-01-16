@@ -4,32 +4,37 @@
   ----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team5414.robot;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
+import java.io.PrintWriter;
+
+import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5414.robot.subsystems.IMU;
 
 public class Robot extends TimedRobot {
 	
-	@SuppressWarnings("deprecation")
-	NetworkTable table = NetworkTable.getTable("limelight");
+//	NetworkTable table = NetworkTable.getTable("limelight");
 	public static Drivetrain drivetrain;
 	public static OI oi;
+	public static PrintWriter printer;
 	public static IMU gyro; 
+	public static Compressor compressor;
 	
 	Command autonomousCommand;
 	
 	@Override
 	public void robotInit() {
-		oi = new OI();
 		drivetrain = new Drivetrain();
+		oi = new OI();
+//		compressor = new Compressor(0);
 //		gyro = new IMU();
 		
+//		compressor.start();
 //		gyro.initialize();
 	}
 
@@ -40,7 +45,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		table.putNumber("ledMode", 1);
+//		table.putNumber("ledMode", 1);
 	}
 
 	@Override
@@ -50,7 +55,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = new AutonomousScaleLeft();
+		autonomousCommand = new AutonomousLeftToRightScale();
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
@@ -66,7 +71,6 @@ public class Robot extends TimedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		table.putNumber("ledMode", 2);
 	}
 
 	@Override

@@ -7,7 +7,17 @@
 
 package org.usfirst.frc.team5414.robot;
 
+import java.io.IOException;
+
+import org.usfirst.frc.team5414.robot.commands.ClosePrinter;
+import org.usfirst.frc.team5414.robot.commands.CreatePrinter;
+import org.usfirst.frc.team5414.robot.commands.Print;
+import org.usfirst.frc.team5414.robot.commands.ShiftDown;
+import org.usfirst.frc.team5414.robot.commands.ShiftNone;
+import org.usfirst.frc.team5414.robot.commands.ShiftUp;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -18,8 +28,16 @@ public class OI {
 	
 	public static Joystick stick = new Joystick(0);
 
+	public OI() 
+	{
+		JoystickButton record = new JoystickButton(stick, 11);
+		JoystickButton up = new JoystickButton(stick, 3);
+		JoystickButton down = new JoystickButton(stick, 4);
+		up.whenPressed(new ShiftUp());
+		down.whenPressed(new ShiftDown());
+	}
+	
 	public Joystick getJoystick() {
-		// TODO Auto-generated method stub
 		return stick;
 		
 	}
