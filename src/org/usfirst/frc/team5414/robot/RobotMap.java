@@ -51,4 +51,9 @@ public class RobotMap {
 	public static double LengthPerTickFeet = CircumferenceFeet / EncoderTicks; 
 	public static double LengthPerTickMeters = CircumferenceMeters / EncoderTicks; 
 	public static double WheelBaseWidth = 0.6; //Meters
+	
+	//Motion Profiling PID Loop
+	public static double kP = 0;
+	public static double kI = 0;
+	public static double kD = 0;
 }

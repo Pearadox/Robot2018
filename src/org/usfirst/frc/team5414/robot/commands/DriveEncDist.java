@@ -38,11 +38,19 @@ public class DriveEncDist extends Command{
 	Trajectory trajRight = null;
 	Traj[] leftArr = null;
 	Traj[] rightArr = null;
+	int[] leftEnc = null;
+	int[] rightEnc = null;
+	long errorSumLeft = 0;
+	long errorSumRight = 0;
 	ArrayList<MotorPair> follow = null;
 	int recordedLoops = 0;
-	boolean recorded = false;
+	int lastLeftError = 0;
+	int lastRightError = 0;
+	boolean recorded = false; 
+	boolean tracked = false;
 	double changeInTime = 0;
 	double timeStep = .05;
+	int loops = 0;
 	
 	final double Kv = 1 / CRUISE_VELOCITY;
 	final double Ka = .06;
@@ -59,6 +67,21 @@ public class DriveEncDist extends Command{
     
     public DriveEncDist(double d, double s) {}
     public DriveEncDist(double d, double s, double t) {}
+    
+    public DriveEncDist(int left, int right)
+    {
+    	leftEnc = new int[]{left};
+    	rightEnc = new int[] {right};
+    	tracked = true;
+    	
+    }
+    
+    public DriveEncDist(int[] left, int[] right)
+    {
+    	leftEnc = left;
+    	rightEnc = right;
+    	tracked = true;
+    }
     
     public DriveEncDist(ArrayList<MotorPair> record)
     {
@@ -82,7 +105,9 @@ public class DriveEncDist extends Command{
 	}
 
 	protected void initialize() {
-    	
+		RobotMap.kP = Robot.prefs.getDouble("EnckP", RobotMap.kP);
+		RobotMap.kI = Robot.prefs.getDouble("EnckI", RobotMap.kI);
+		RobotMap.kD = Robot.prefs.getDouble("EnckD", RobotMap.kD);
     	initialTime = Timer.getFPGATimestamp();
     	lastTime = Timer.getFPGATimestamp();
 //    	initialEncoderTicks = Robot.drivetrain.getEncoderBL();
@@ -96,6 +121,42 @@ public class DriveEncDist extends Command{
     	double changeInAngle = 0;
     	double elapsedTime = Timer.getFPGATimestamp() - initialTime;
     	changeInTime = elapsedTime;
+    	if(tracked)
+    	{
+    		int currentLeft = Robot.drivetrain.getEncoderL();
+    		int currentRight = Robot.drivetrain.getEncoderR();
+    		int leftError = leftEnc[recordedLoops] - currentLeft;
+    		int rightError = rightEnc[recordedLoops] - currentRight;
+    		errorSumLeft += leftError;
+    		errorSumRight += rightError;
+    		int lastDesiredLeft = recordedLoops > 0 ? leftEnc[recordedLoops-1] : 0;
+    		int lastDesiredRight = recordedLoops > 0 ? rightEnc[recordedLoops-1] : 0;
+    		
+    		//PID Calculations
+    		double leftP = leftError * RobotMap.kP;
+    		double rightP = rightError * RobotMap.kP;
+    		double leftI = errorSumLeft * RobotMap.kI;
+    		double rightI = errorSumRight * RobotMap.kI;
+    		double leftD = ((leftEnc[recordedLoops] - lastDesiredLeft) - (leftError - lastLeftError)) * RobotMap.kD; //dSetpoint - dError , prevents derivative kick
+    		double rightD = ((rightEnc[recordedLoops] - lastDesiredRight) - (rightError - lastRightError)) * RobotMap.kD; //dSetpoint - dError
+    		double leftOutput = leftP + leftI - leftD;
+    		double rightOutput = rightP + rightI - rightD;
+    		
+    		Robot.drivetrain.drive(leftOutput, rightOutput);
+    		
+    		SmartDashboard.putNumber("current L", currentLeft);
+    		SmartDashboard.putNumber("current R", currentRight);
+    		SmartDashboard.putNumber("desired L", leftEnc[recordedLoops]);
+    		SmartDashboard.putNumber("desired R", rightEnc[recordedLoops]);
+    		SmartDashboard.putNumber("output L", leftOutput);
+    		SmartDashboard.putNumber("output R", rightOutput);
+    		SmartDashboard.putNumber("error L", leftError);
+    		SmartDashboard.putNumber("error R", rightError);
+    		
+    		recordedLoops++;
+    		lastLeftError = leftError;
+    		lastRightError = rightError;
+    	}
     	if(recorded)
     	{
     		try
@@ -106,25 +167,25 @@ public class DriveEncDist extends Command{
     			recordedLoops++;
     		} catch(Exception e){}
     	}
-    	if(presetTrajectory)
-    	{
-    		Traj left = leftArr[(int)Math.round(elapsedTime / timeStep)];
-    		Traj right = rightArr[(int)Math.round(elapsedTime / timeStep)];
-//    		Trajectory.Segment left = trajLeft.get((int)Math.round(elapsedTime / timeStep));
-//    		Trajectory.Segment right = trajRight.get((int)Math.round(elapsedTime / timeStep));
-//    		double error = trajectory.distance - (Robot.drivetrain.getEncoderBL() - initialEncoderTicks) * RobotMap.LengthPerTick;
-    		double error = 0;
-//    		double errorDeriv = (error - lastError) / lastTime;
-    		double errorDeriv = 0;
-    		try {
-    		double motorSpeedLeft = Kv * left.velocity + Ka * left.acceleration + Kp * error + Kd * errorDeriv;
-    		double motorSpeedRight = Kv * right.velocity + Ka * right.acceleration + Kp * error + Kd * errorDeriv;
-    		Robot.drivetrain.drive(motorSpeedLeft*3, motorSpeedRight*3);
-    		} catch (Exception e) {}
-    		lastError = error;
-    		lastTime = Timer.getFPGATimestamp();
-//    		DriverStation.reportWarning(left.toString(), true);
-    	}
+//    	if(presetTrajectory)
+//    	{
+//    		Traj left = leftArr[(int)Math.round(elapsedTime / timeStep)];
+//    		Traj right = rightArr[(int)Math.round(elapsedTime / timeStep)];
+////    		Trajectory.Segment left = trajLeft.get((int)Math.round(elapsedTime / timeStep));
+////    		Trajectory.Segment right = trajRight.get((int)Math.round(elapsedTime / timeStep));
+////    		double error = trajectory.distance - (Robot.drivetrain.getEncoderBL() - initialEncoderTicks) * RobotMap.LengthPerTick;
+//    		double error = 0;
+////    		double errorDeriv = (error - lastError) / lastTime;
+//    		double errorDeriv = 0;
+//    		try {
+//    		double motorSpeedLeft = Kv * left.velocity + Ka * left.acceleration + Kp * error + Kd * errorDeriv;
+//    		double motorSpeedRight = Kv * right.velocity + Ka * right.acceleration + Kp * error + Kd * errorDeriv;
+//    		Robot.drivetrain.drive(motorSpeedLeft*3, motorSpeedRight*3);
+//    		} catch (Exception e) {}
+//    		lastError = error;
+//    		lastTime = Timer.getFPGATimestamp();
+////    		DriverStation.reportWarning(left.toString(), true);
+//    	}
     	else
     	{
     		Traj trajectory;
@@ -156,15 +217,13 @@ public class DriveEncDist extends Command{
 	    	{
 	    		Robot.drivetrain.stop();
 	    	}
-	
-//	    	SmartDashboard.putNumber("Difference In Angle", Robot.gyro.getYaw() - originalAngle);
-//	    	SmartDashboard.putNumber("Desired EncDist", initDistance + distance);
-//	    	SmartDashboard.putNumber("Current EncDist", Robot.drivetrain.getEncoderBL());
     	}
     }
 
     protected boolean isFinished() {
-    	return false;
+    	if(tracked && recordedLoops >= leftEnc.length)
+    		return true;
+    	else return false;
 //    	if(isTimedOut()) return true;
 //    	if(presetTrajectory)
 //    	{
@@ -188,10 +247,15 @@ public class DriveEncDist extends Command{
     	Robot.drivetrain.stop();
     	presetTrajectory = false;
     	recorded = false;
+    	tracked = false;
     	trajLeft = null;
     	trajRight = null;
+    	lastError = 0;
     	changeInTime = 0;
-    	recordedLoops = 0;
+    	errorSumLeft = 0;
+    	errorSumRight = 0;
+    	lastLeftError = 0;
+    	lastRightError = 0;
     }
 
     protected void interrupted() {

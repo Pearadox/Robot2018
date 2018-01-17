@@ -126,32 +126,32 @@ public class Drivetrain extends Subsystem {
     	drive.tankDrive(-l, -r);
     }
     
-    public double getEncoderL()
+    public int getEncoderL()
     {
     	return encoderFL.get();
     }
     
-    public double getEncoderR()
+    public int getEncoderR()
     {
     	return encoderFR.get();
     }
     
-    public double getEncoderFR()
+    public int getEncoderFR()
     {
     	return encoderFR.get();
     }
     
-    public double getEncoderFL()
+    public int getEncoderFL()
     {
     	return encoderFL.get();
     }
     
-    public double getEncoderBL()
+    public int getEncoderBL()
     {
     	return encoderBL.get();
     }
     
-    public double getEncoderBR()
+    public int getEncoderBR()
     {
     	return encoderBR.get();
     }
