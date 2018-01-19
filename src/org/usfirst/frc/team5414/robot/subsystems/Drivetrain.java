@@ -36,50 +36,48 @@ public class Drivetrain extends Subsystem {
     private DoubleSolenoid LShift, RShift;
 
     public Drivetrain(){
-    	
-    	encoderFR = new Encoder(RobotMap.DIOencoderFRa, RobotMap.DIOencoderFRb, false, Encoder.EncodingType.k4X);
-    	encoderBR = new Encoder(RobotMap.DIOencoderBRa, RobotMap.DIOencoderBRb, false, Encoder.EncodingType.k4X);
-    	encoderBL = new Encoder(RobotMap.DIOencoderBLa, RobotMap.DIOencoderBLb, false, Encoder.EncodingType.k4X);
-    	encoderFL = new Encoder(RobotMap.DIOencoderFLa, RobotMap.DIOencoderFLb, false, Encoder.EncodingType.k4X);
-    	encoderFR.reset();
-    	encoderBR.reset();
-    	encoderBL.reset();
-    	encoderFL.reset();
-    	encoderFR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
-    	encoderFL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
-    	encoderBR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
-    	encoderBL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
-    	
-//    	LShift = new DoubleSolenoid(RobotMap.LShiftA, RobotMap.LShiftB);
-//    	RShift = new DoubleSolenoid(RobotMap.RShiftA, RobotMap.RShiftB);
-    	
-//    	don't forget to change PWM ports <3
-//    	left_motor1 = new WPI_VictorSPX(RobotMap.PWMLeftMotor1);
-//    	left_motor2 = new WPI_VictorSPX(RobotMap.PWMLeftMotor2);
-//    	left_motor3 = new WPI_VictorSPX(RobotMap.PWMLeftMotor3);
-//		right_motor1 = new WPI_VictorSPX(RobotMap.PWMRightMotor1);
-//		right_motor2 = new WPI_VictorSPX(RobotMap.PWMRightMotor2);
-//		right_motor3 = new WPI_VictorSPX(RobotMap.PWMRightMotor3);
-//		left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
-//		right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
-//		drive = new DifferentialDrive(left_motor2, right_motor2);
-//		left_motor2.setInverted(true);
-//		right_motor2.setInverted(true);
-		
-    	right1 = new Victor(2);
-    	right2 = new Victor(3);
-    	left1 = new Victor(0);
-    	left2 = new Victor(1);
-    	right1.setInverted(true);
-    	right2.setInverted(true);
-    	right1.setInverted(true);
-    	right2.setInverted(true);
-    	left = new SpeedControllerGroup(left1, left2);
-    	right = new SpeedControllerGroup(right1, right2);
-    	drive = new DifferentialDrive(left, right);
+    	if(RobotMap.flatbot) {
+	    	encoderFR = new Encoder(RobotMap.DIOencoderFRa, RobotMap.DIOencoderFRb, false, Encoder.EncodingType.k4X);
+	    	encoderBR = new Encoder(RobotMap.DIOencoderBRa, RobotMap.DIOencoderBRb, false, Encoder.EncodingType.k4X);
+	    	encoderBL = new Encoder(RobotMap.DIOencoderBLa, RobotMap.DIOencoderBLb, false, Encoder.EncodingType.k4X);
+	    	encoderFL = new Encoder(RobotMap.DIOencoderFLa, RobotMap.DIOencoderFLb, false, Encoder.EncodingType.k4X);
+	    	encoderFR.reset();
+	    	encoderBR.reset();
+	    	encoderBL.reset();
+	    	encoderFL.reset();
+	    	encoderFR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+	    	encoderFL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+	    	encoderBR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+	    	encoderBL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+	    	right1 = new Victor(2);
+	    	right2 = new Victor(3);
+	    	left1 = new Victor(0);
+	    	left2 = new Victor(1);
+	    	right1.setInverted(true);
+	    	right2.setInverted(true);
+	    	right1.setInverted(true);
+	    	right2.setInverted(true);
+	    	left = new SpeedControllerGroup(left1, left2);
+	    	right = new SpeedControllerGroup(right1, right2);
+	    	drive = new DifferentialDrive(left, right);
+    	}
+    	else  {
+	    	LShift = new DoubleSolenoid(RobotMap.LShiftA, RobotMap.LShiftB);
+	    	RShift = new DoubleSolenoid(RobotMap.RShiftA, RobotMap.RShiftB);
+	    	
+	    	left_motor1 = new WPI_VictorSPX(RobotMap.CANLeftMotor1);
+	    	left_motor2 = new WPI_VictorSPX(RobotMap.CANLeftMotor2);
+	    	left_motor3 = new WPI_VictorSPX(RobotMap.CANLeftMotor3);
+			right_motor1 = new WPI_VictorSPX(RobotMap.CANRightMotor1);
+			right_motor2 = new WPI_VictorSPX(RobotMap.CANRightMotor2);
+			right_motor3 = new WPI_VictorSPX(RobotMap.CANRightMotor3);
+			left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
+			right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
+			drive = new DifferentialDrive(left_motor2, right_motor2);
+			left_motor2.setInverted(true);
+			right_motor2.setInverted(true);
+    	}
     }
-    
-    long lastTime = -1;
     
 	public void arcadeDrive(Joystick stick){
     	double ax1; 	//X-axis of motion for robot
@@ -111,10 +109,12 @@ public class Drivetrain extends Subsystem {
     	ax1 *= -1;
     	if(Robot.oi.getJoystick().getRawButton(11)) 
     	{
-    		System.out.print(String.format("%.7s", ax2) + " " + String.format("%.7s", ax1) + " ");
+//    		System.out.print(String.format("%.7s", ax2) + " " + String.format("%.7s", ax1) + " ");
+    		System.out.print(getEncoderL() + " " + getEncoderR() + " ");
     	}
     	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println();
-    	drive.arcadeDrive(ax1, ax2);
+    	if(RobotMap.flatbot) drive.arcadeDrive(ax1, ax2);
+    	else drive.arcadeDrive(-ax1, ax2);
     }
     
     public void arcadeDrive(double throttle, double twist){

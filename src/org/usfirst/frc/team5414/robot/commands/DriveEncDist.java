@@ -38,8 +38,8 @@ public class DriveEncDist extends Command{
 	Trajectory trajRight = null;
 	Traj[] leftArr = null;
 	Traj[] rightArr = null;
-	int[] leftEnc = null;
-	int[] rightEnc = null;
+	ArrayList<Integer> leftEnc = null;
+	ArrayList<Integer> rightEnc = null;
 	long errorSumLeft = 0;
 	long errorSumRight = 0;
 	ArrayList<MotorPair> follow = null;
@@ -70,13 +70,14 @@ public class DriveEncDist extends Command{
     
     public DriveEncDist(int left, int right)
     {
-    	leftEnc = new int[]{left};
-    	rightEnc = new int[] {right};
+    	leftEnc = new ArrayList<Integer>();
+    	rightEnc = new ArrayList<Integer>();
+    	leftEnc.add(left);
+    	rightEnc.add(right);
     	tracked = true;
-    	
     }
     
-    public DriveEncDist(int[] left, int[] right)
+    public DriveEncDist(ArrayList<Integer> left, ArrayList<Integer> right)
     {
     	leftEnc = left;
     	rightEnc = right;
@@ -125,20 +126,20 @@ public class DriveEncDist extends Command{
     	{
     		int currentLeft = Robot.drivetrain.getEncoderL();
     		int currentRight = Robot.drivetrain.getEncoderR();
-    		int leftError = leftEnc[recordedLoops] - currentLeft;
-    		int rightError = rightEnc[recordedLoops] - currentRight;
+    		int leftError = leftEnc.get(recordedLoops) - currentLeft;
+    		int rightError = rightEnc.get(recordedLoops) - currentRight;
     		errorSumLeft += leftError;
     		errorSumRight += rightError;
-    		int lastDesiredLeft = recordedLoops > 0 ? leftEnc[recordedLoops-1] : 0;
-    		int lastDesiredRight = recordedLoops > 0 ? rightEnc[recordedLoops-1] : 0;
+    		int lastDesiredLeft = recordedLoops > 0 ? leftEnc.get(recordedLoops-1) : 0;
+    		int lastDesiredRight = recordedLoops > 0 ? rightEnc.get(recordedLoops-1) : 0;
     		
     		//PID Calculations
     		double leftP = leftError * RobotMap.kP;
     		double rightP = rightError * RobotMap.kP;
     		double leftI = errorSumLeft * RobotMap.kI;
     		double rightI = errorSumRight * RobotMap.kI;
-    		double leftD = ((leftEnc[recordedLoops] - lastDesiredLeft) - (leftError - lastLeftError)) * RobotMap.kD; //dSetpoint - dError , prevents derivative kick
-    		double rightD = ((rightEnc[recordedLoops] - lastDesiredRight) - (rightError - lastRightError)) * RobotMap.kD; //dSetpoint - dError
+    		double leftD = ((leftEnc.get(recordedLoops) - lastDesiredLeft) - (leftError - lastLeftError)) * RobotMap.kD; //dSetpoint - dError , prevents derivative kick
+    		double rightD = ((rightEnc.get(recordedLoops) - lastDesiredRight) - (rightError - lastRightError)) * RobotMap.kD; //dSetpoint - dError
     		double leftOutput = leftP + leftI - leftD;
     		double rightOutput = rightP + rightI - rightD;
     		
@@ -146,8 +147,8 @@ public class DriveEncDist extends Command{
     		
     		SmartDashboard.putNumber("current L", currentLeft);
     		SmartDashboard.putNumber("current R", currentRight);
-    		SmartDashboard.putNumber("desired L", leftEnc[recordedLoops]);
-    		SmartDashboard.putNumber("desired R", rightEnc[recordedLoops]);
+    		SmartDashboard.putNumber("desired L", leftEnc.get(recordedLoops));
+    		SmartDashboard.putNumber("desired R", rightEnc.get(recordedLoops));
     		SmartDashboard.putNumber("output L", leftOutput);
     		SmartDashboard.putNumber("output R", rightOutput);
     		SmartDashboard.putNumber("error L", leftError);
@@ -221,9 +222,8 @@ public class DriveEncDist extends Command{
     }
 
     protected boolean isFinished() {
-    	if(tracked && recordedLoops >= leftEnc.length)
+    	if(tracked && recordedLoops >= leftEnc.size())
     		return true;
-    	else return false;
 //    	if(isTimedOut()) return true;
 //    	if(presetTrajectory)
 //    	{
@@ -240,7 +240,7 @@ public class DriveEncDist extends Command{
 //    	}
 //    	else if(targetFeet == 0) return true;
 //    	
-//    	return false;
+    	return false;
     }
 
     protected void end() {

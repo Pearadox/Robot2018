@@ -15,16 +15,19 @@ package org.usfirst.frc.team5414.robot;
  */
 public class RobotMap {
 	
+	//Fast switch between flatbot and 2018bot
+	public static boolean flatbot = true;
+	
 	//Ports for random parts
 	public static int GyroPort = 0;
 	
 	//PWM for speed controllers
-	public static int PWMRightMotor1 = 12;
-	public static int PWMRightMotor2 = 16;
-	public static int PWMRightMotor3 = 13;
-	public static int PWMLeftMotor1 = 11;
-	public static int PWMLeftMotor2 = 14;
-	public static int PWMLeftMotor3 = 10;
+	public static int CANRightMotor1 = 12;
+	public static int CANRightMotor2 = 16;
+	public static int CANRightMotor3 = 13;
+	public static int CANLeftMotor1 = 11;
+	public static int CANLeftMotor2 = 14;
+	public static int CANLeftMotor3 = 10;
 	
 	//Encoder DIO ports
 	public static int DIOencoderFRa = 0;
@@ -45,15 +48,15 @@ public class RobotMap {
 	//Wheel stuffs
 	public static double wheelDiameterFeet = 4. / 12; //IN FEET
 	public static double wheelDiameterMeters = wheelDiameterFeet * .3048; //IN FEET
-	public static double EncoderTicks = 70;
+	public static double EncoderPulsePerRev = 1440;
 	public static double CircumferenceFeet = wheelDiameterFeet * Math.PI;
 	public static double CircumferenceMeters = wheelDiameterMeters * Math.PI;
-	public static double LengthPerTickFeet = CircumferenceFeet / EncoderTicks; 
-	public static double LengthPerTickMeters = CircumferenceMeters / EncoderTicks; 
+	public static double LengthPerTickFeet = CircumferenceFeet / EncoderPulsePerRev; 
+	public static double LengthPerTickMeters = CircumferenceMeters / EncoderPulsePerRev; 
 	public static double WheelBaseWidth = 0.6; //Meters
 	
 	//Motion Profiling PID Loop
-	public static double kP = 0;
+	public static double kP = 3.5;
 	public static double kI = 0;
-	public static double kD = 0;
+	public static double kD = 200;
 }
