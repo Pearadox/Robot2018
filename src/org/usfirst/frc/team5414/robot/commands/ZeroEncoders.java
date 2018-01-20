@@ -7,16 +7,14 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ShiftUp2 extends Command {
+public class ZeroEncoders extends Command {
 
-    public ShiftUp2() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+    public ZeroEncoders() {
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrain.shiftUp();
+    	Robot.drivetrain.zeroEncoders();
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -29,26 +29,19 @@ public class Drivetrain extends Subsystem {
     public SpeedControllerGroup right;
     public SpeedControllerGroup left;
     private DifferentialDrive drive;
-    private Encoder encoderFR; 
-    private Encoder encoderBR; 
-    private Encoder encoderBL; 
-    private Encoder encoderFL; 
+    private static Encoder encoderFR, encoderFL, encoderBL, encoderBR; 
     private DoubleSolenoid LShift, RShift;
 
     public Drivetrain(){
     	if(RobotMap.flatbot) {
 	    	encoderFR = new Encoder(RobotMap.DIOencoderFRa, RobotMap.DIOencoderFRb, false, Encoder.EncodingType.k4X);
-	    	encoderBR = new Encoder(RobotMap.DIOencoderBRa, RobotMap.DIOencoderBRb, false, Encoder.EncodingType.k4X);
-	    	encoderBL = new Encoder(RobotMap.DIOencoderBLa, RobotMap.DIOencoderBLb, false, Encoder.EncodingType.k4X);
 	    	encoderFL = new Encoder(RobotMap.DIOencoderFLa, RobotMap.DIOencoderFLb, false, Encoder.EncodingType.k4X);
 	    	encoderFR.reset();
-	    	encoderBR.reset();
-	    	encoderBL.reset();
 	    	encoderFL.reset();
-	    	encoderFR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
-	    	encoderFL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
-	    	encoderBR.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
-	    	encoderBL.setDistancePerPulse(1440 * RobotMap.CircumferenceMeters);
+	    	encoderFR.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
+	    	encoderFL.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
+	    	encoderFR.setReverseDirection(true);
+	    	encoderFL.setReverseDirection(true);
 	    	right1 = new Victor(2);
 	    	right2 = new Victor(3);
 	    	left1 = new Victor(0);
@@ -62,6 +55,19 @@ public class Drivetrain extends Subsystem {
 	    	drive = new DifferentialDrive(left, right);
     	}
     	else  {
+	    	encoderFR = new Encoder(RobotMap.DIOencoderFRa, RobotMap.DIOencoderFRb, false, Encoder.EncodingType.k4X);
+	    	encoderBR = new Encoder(RobotMap.DIOencoderBRa, RobotMap.DIOencoderBRb, false, Encoder.EncodingType.k4X);
+	    	encoderBL = new Encoder(RobotMap.DIOencoderBLa, RobotMap.DIOencoderBLb, false, Encoder.EncodingType.k4X);
+	    	encoderFL = new Encoder(RobotMap.DIOencoderFLa, RobotMap.DIOencoderFLb, false, Encoder.EncodingType.k4X);
+	    	encoderFR.reset();
+	    	encoderBR.reset();
+	    	encoderBL.reset();
+	    	encoderFL.reset();
+	    	encoderFR.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
+	    	encoderFL.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
+	    	encoderBR.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
+	    	encoderBL.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
+	    	
 	    	LShift = new DoubleSolenoid(RobotMap.LShiftA, RobotMap.LShiftB);
 	    	RShift = new DoubleSolenoid(RobotMap.RShiftA, RobotMap.RShiftB);
 	    	
@@ -123,17 +129,18 @@ public class Drivetrain extends Subsystem {
     
     public void drive(double l, double r)
     {
-    	drive.tankDrive(-l, -r);
-    }
-    
-    public int getEncoderL()
-    {
-    	return encoderFL.get();
+    	if(RobotMap.flatbot) drive.tankDrive(-l, r);
+    	else drive.tankDrive(-l, -r);
     }
     
     public int getEncoderR()
     {
-    	return encoderFR.get();
+    	return getEncoderFL();
+    }
+    
+    public int getEncoderL()
+    {
+    	return getEncoderFR();
     }
     
     public int getEncoderFR()
@@ -160,8 +167,12 @@ public class Drivetrain extends Subsystem {
     {
     	encoderFR.reset();
     	encoderFL.reset();
-    	encoderBL.reset();
-    	encoderBR.reset();
+    	if(!RobotMap.flatbot)
+    	{
+    		encoderBL.reset();
+    		encoderBR.reset();
+    	}
+    	System.out.println(getEncoderFR());
     }
 
 	public void stop(){

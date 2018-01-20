@@ -9,9 +9,6 @@ package org.usfirst.frc.team5414.robot;
 
 import java.io.IOException;
 
-import org.usfirst.frc.team5414.robot.commands.ClosePrinter;
-import org.usfirst.frc.team5414.robot.commands.CreatePrinter;
-import org.usfirst.frc.team5414.robot.commands.Print;
 import org.usfirst.frc.team5414.robot.commands.ShiftDown;
 import org.usfirst.frc.team5414.robot.commands.ShiftNone;
 import org.usfirst.frc.team5414.robot.commands.ShiftUp;

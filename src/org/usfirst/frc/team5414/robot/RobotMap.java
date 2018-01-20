@@ -46,7 +46,7 @@ public class RobotMap {
 	public static int RShiftB = 3;
 	
 	//Wheel stuffs
-	public static double wheelDiameterFeet = 4. / 12; //IN FEET
+	public static double wheelDiameterFeet = 6. / 12; //IN FEET
 	public static double wheelDiameterMeters = wheelDiameterFeet * .3048; //IN FEET
 	public static double EncoderPulsePerRev = 1440;
 	public static double CircumferenceFeet = wheelDiameterFeet * Math.PI;
@@ -55,8 +55,8 @@ public class RobotMap {
 	public static double LengthPerTickMeters = CircumferenceMeters / EncoderPulsePerRev; 
 	public static double WheelBaseWidth = 0.6; //Meters
 	
-	//Motion Profiling PID Loop
-	public static double kP = 3.5;
-	public static double kI = 0;
-	public static double kD = 200;
+	//Motion Profiling/Encoder Following PID Loop
+	public static double kP = .001;
+	public static double kI = 0.0001;
+	public static double kD = 0.0001;
 }

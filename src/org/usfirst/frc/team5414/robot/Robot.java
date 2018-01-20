@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.commands.DriveEncDist;
+import org.usfirst.frc.team5414.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5414.robot.subsystems.IMU;
 
@@ -26,7 +27,7 @@ public class Robot extends TimedRobot {
 	public static OI oi;
 	public static IMU gyro; 
 	public static Compressor compressor;
-	public static Preferences prefs;
+	public static Preferences prefs;;
 	
 	Command autonomousCommand;
 	
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		drivetrain = new Drivetrain();
 		oi = new OI();
+		prefs = Preferences.getInstance();
 //		compressor = new Compressor(0);
 //		gyro = new IMU();
 		
@@ -42,9 +44,10 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Enc kP", RobotMap.kP);
 		prefs.putDouble("Enc kI", RobotMap.kI);
 		prefs.putDouble("Enc kD", RobotMap.kD);
-		prefs.putInt("Desired Left Enc", 0);
-		prefs.putInt("Desired Right Enc", 0);
+		prefs.putInt("Desired Left Enc", 1440);
+		prefs.putInt("Desired Right Enc", 1440);
 		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
+		SmartDashboard.putData("Zero Encoders", new ZeroEncoders());
 	}
 
 	/**
@@ -85,6 +88,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
+		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
 	}
 
 	@Override

@@ -15,10 +15,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import jaci.pathfinder.Trajectory;
-//import jaci.pathfinder.Trajectory;
-//import jaci.pathfinder.modifiers.TankModifier;
-import jaci.pathfinder.modifiers.TankModifier;
 
 public class DriveEncDist extends Command{
 	double initDistance;
@@ -34,8 +30,8 @@ public class DriveEncDist extends Command{
 	double lastError = 0;
 	double lastTime = 0;
 	boolean presetTrajectory = false;
-	Trajectory trajLeft = null;
-	Trajectory trajRight = null;
+//	Trajectory trajLeft = null;
+//	Trajectory trajRight = null;
 	Traj[] leftArr = null;
 	Traj[] rightArr = null;
 	ArrayList<Integer> leftEnc = null;
@@ -106,9 +102,9 @@ public class DriveEncDist extends Command{
 	}
 
 	protected void initialize() {
-		RobotMap.kP = Robot.prefs.getDouble("EnckP", RobotMap.kP);
-		RobotMap.kI = Robot.prefs.getDouble("EnckI", RobotMap.kI);
-		RobotMap.kD = Robot.prefs.getDouble("EnckD", RobotMap.kD);
+		RobotMap.kP = Robot.prefs.getDouble("Enc kP", RobotMap.kP);
+		RobotMap.kI = Robot.prefs.getDouble("Enc kI", RobotMap.kI);
+		RobotMap.kD = Robot.prefs.getDouble("Enc kD", RobotMap.kD);
     	initialTime = Timer.getFPGATimestamp();
     	lastTime = Timer.getFPGATimestamp();
 //    	initialEncoderTicks = Robot.drivetrain.getEncoderBL();
@@ -118,10 +114,12 @@ public class DriveEncDist extends Command{
     }
 
     protected void execute() {
+    	tracked= true;
 //    	double changeInAngle = Robot.gyro.getYaw()-originalAngle;
     	double changeInAngle = 0;
     	double elapsedTime = Timer.getFPGATimestamp() - initialTime;
     	changeInTime = elapsedTime;
+    	SmartDashboard.putBoolean("Tracked", tracked);
     	if(tracked)
     	{
     		int currentLeft = Robot.drivetrain.getEncoderL();
@@ -132,6 +130,9 @@ public class DriveEncDist extends Command{
     		errorSumRight += rightError;
     		int lastDesiredLeft = recordedLoops > 0 ? leftEnc.get(recordedLoops-1) : 0;
     		int lastDesiredRight = recordedLoops > 0 ? rightEnc.get(recordedLoops-1) : 0;
+    		
+//    		if(Math.abs(leftError) <= 3) errorSumLeft = 0;
+//    		if(Math.abs(rightError) <= 3) errorSumRight = 0;
     		
     		//PID Calculations
     		double leftP = leftError * RobotMap.kP;
@@ -158,7 +159,7 @@ public class DriveEncDist extends Command{
     		lastLeftError = leftError;
     		lastRightError = rightError;
     	}
-    	if(recorded)
+    	else if(recorded)
     	{
     		try
     		{
@@ -222,8 +223,9 @@ public class DriveEncDist extends Command{
     }
 
     protected boolean isFinished() {
-    	if(tracked && recordedLoops >= leftEnc.size())
-    		return true;
+    	recordedLoops--;
+//    	if(tracked && recordedLoops >= leftEnc.size())
+//    		return true;
 //    	if(isTimedOut()) return true;
 //    	if(presetTrajectory)
 //    	{
@@ -248,8 +250,9 @@ public class DriveEncDist extends Command{
     	presetTrajectory = false;
     	recorded = false;
     	tracked = false;
-    	trajLeft = null;
-    	trajRight = null;
+//    	trajLeft = null;
+//    	trajRight = null;
+    	recordedLoops = 0;
     	lastError = 0;
     	changeInTime = 0;
     	errorSumLeft = 0;
