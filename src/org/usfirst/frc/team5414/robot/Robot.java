@@ -17,30 +17,39 @@ import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.commands.DriveEncDist;
 import org.usfirst.frc.team5414.robot.commands.ZeroEncoders;
+import org.usfirst.frc.team5414.robot.subsystems.Arm;
+import org.usfirst.frc.team5414.robot.subsystems.Climber;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5414.robot.subsystems.IMU;
+import org.usfirst.frc.team5414.robot.subsystems.Pincher;
 
 public class Robot extends TimedRobot {
 	
 //	NetworkTable table = NetworkTable.getTable("limelight");
 	public static Drivetrain drivetrain;
+	public static Arm arm;
+	public static Pincher pincher;
+	public static Climber climber;
 	public static OI oi;
 	public static IMU gyro; 
 	public static Compressor compressor;
-	public static Preferences prefs;;
+	public static Preferences prefs;
 	
 	Command autonomousCommand;
 	
 	@Override
 	public void robotInit() {
 		drivetrain = new Drivetrain();
+		arm = new Arm();
+		pincher = new Pincher();
+		climber = new Climber();
 		oi = new OI();
 		prefs = Preferences.getInstance();
 //		compressor = new Compressor(0);
-//		gyro = new IMU();
+		gyro = new IMU();
 		
 //		compressor.start();
-//		gyro.initialize();
+		gyro.initialize();
 		prefs.putDouble("Enc kP", RobotMap.kP);
 		prefs.putDouble("Enc kI", RobotMap.kI);
 		prefs.putDouble("Enc kD", RobotMap.kD);
@@ -63,6 +72,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		updateDashboard();
 	}
 
 	@Override
@@ -76,6 +86,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		updateDashboard();
 	}
 
 	@Override
@@ -88,11 +99,17 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
-		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
+		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
+		updateDashboard();
 	}
 
 	@Override
 	public void testPeriodic() {
+	}
+	
+	public void updateDashboard() {
+		SmartDashboard.putNumber("Current Yaw", gyro.getYaw());
+		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
+		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
 	}
 }

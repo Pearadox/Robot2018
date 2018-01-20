@@ -56,7 +56,7 @@ public class RobotMap {
 	public static double WheelBaseWidth = 0.6; //Meters
 	
 	//Motion Profiling/Encoder Following PID Loop
-	public static double kP = .001;
-	public static double kI = 0.0001;
-	public static double kD = 0.0001;
+	public static double kP = .0026;
+	public static double kI = 0.000082;
+	public static double kD = 0.00175;
 }

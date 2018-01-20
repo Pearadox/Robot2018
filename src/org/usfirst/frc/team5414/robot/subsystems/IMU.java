@@ -18,29 +18,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class IMU extends Subsystem{
 
-//	AHRS ahrs = new AHRS(SPI.Port.kMXP); //navx
-	AnalogGyro gy = new AnalogGyro(RobotMap.GyroPort);
+	AHRS ahrs; //navx
+//	AnalogGyro gy = new AnalogGyro(RobotMap.GyroPort);
 	
 	public static double yawOffset;
+	
+	public IMU() {
+		ahrs = new AHRS(SPI.Port.kMXP);
+	}
 	
     public void initDefaultCommand() {
     }
     
     public void initialize()
     {
-    	gy.initGyro();
-    	gy.setSensitivity(.007);
-    	gy.reset();
+    	ahrs.reset();
+//    	gy.initGyro();
+//    	gy.setSensitivity(.007);
+//    	gy.reset();
     }
     
     public double getTrueYaw()
     {
-    	return gy.getAngle();
+    	return ahrs.getYaw();
+//    	return gy.getAngle();
     }
     
     public double getYaw()
     {
-    	return gy.getAngle() + yawOffset;
+    	return getTrueYaw() + yawOffset;
     }
     
     public void zeroYaw()
@@ -51,16 +57,6 @@ public class IMU extends Subsystem{
     public void reset()
     {
     	yawOffset = 0;
-    	gy.reset();
+    	ahrs.reset();
     }
-
-    public void setPIDSourceType(PIDSourceType pidSource) {
-		
-	}
-
-	public PIDSourceType getPIDSourceType() {
-		
-		return PIDSourceType.kRate;		//returns the source type of the PID loop
-	}
-	   
 }

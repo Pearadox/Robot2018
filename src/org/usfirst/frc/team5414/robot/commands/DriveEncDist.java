@@ -107,6 +107,7 @@ public class DriveEncDist extends Command{
 		RobotMap.kD = Robot.prefs.getDouble("Enc kD", RobotMap.kD);
     	initialTime = Timer.getFPGATimestamp();
     	lastTime = Timer.getFPGATimestamp();
+    	Robot.drivetrain.zeroEncoders();
 //    	initialEncoderTicks = Robot.drivetrain.getEncoderBL();
 //    	Robot.gyro.zeroYaw();
 //    	originalAngle = Robot.gyro.getYaw();
@@ -155,7 +156,6 @@ public class DriveEncDist extends Command{
     		SmartDashboard.putNumber("error L", leftError);
     		SmartDashboard.putNumber("error R", rightError);
     		
-    		recordedLoops++;
     		lastLeftError = leftError;
     		lastRightError = rightError;
     	}
@@ -223,9 +223,16 @@ public class DriveEncDist extends Command{
     }
 
     protected boolean isFinished() {
-    	recordedLoops--;
-//    	if(tracked && recordedLoops >= leftEnc.size())
-//    		return true;
+    	if(tracked)
+    	{
+    		if(lastLeftError < 50 && lastRightError < 50)
+    		{
+    			recordedLoops++;
+    			if(recordedLoops >= leftEnc.size()) return true;
+    			else return false;
+    		}
+    		return false;
+    	}
 //    	if(isTimedOut()) return true;
 //    	if(presetTrajectory)
 //    	{
