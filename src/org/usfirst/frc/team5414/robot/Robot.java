@@ -4,6 +4,7 @@
   ----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team5414.robot;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -47,6 +48,7 @@ public class Robot extends TimedRobot {
 		climber = new Climber();
 		oi = new OI();
 		prefs = Preferences.getInstance();
+		CameraServer.getInstance().startAutomaticCapture(0);
 		if(!RobotMap.flatbot) compressor = new Compressor(0);
 		if(RobotMap.flatbot) gyro = new IMU();
 		
