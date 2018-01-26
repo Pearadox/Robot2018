@@ -104,7 +104,7 @@ public class Drivetrain extends Subsystem {
 			right_motor3 = new WPI_VictorSPX(RobotMap.CANRightMotor3);
 			left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
 			right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
-			drive = new DifferentialDrive(left_motor2, right_motor2);
+			drive = new DifferentialDrive(left, right);
 			left_motor2.setInverted(true);
 			right_motor2.setInverted(true);
     	}
@@ -118,7 +118,7 @@ public class Drivetrain extends Subsystem {
 		
 		if(Math.abs(throttle) < .1)
 		{
-			wheel *= .8;
+			wheel *= .85;
 			Robot.drivetrain.drive(wheel, -wheel);
 			return;
 		}
@@ -218,6 +218,12 @@ public class Drivetrain extends Subsystem {
 		  leftPwm += overPower * (-1.0 - rightPwm);
 		  rightPwm = -1.0;
 		}
+		if(Robot.oi.getJoystick().getRawButtonPressed(11)) zeroEncoders();
+    	if(Robot.oi.getJoystick().getRawButton(11)) 
+    	{
+    		System.out.print(getEncoderL() + " " + getEncoderR() + " ");
+    	}
+    	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println("----------------------------");
 		drive(leftPwm, rightPwm);
 	}
 
@@ -226,7 +232,6 @@ public class Drivetrain extends Subsystem {
 		
     	double ax1; 	//X-axis of motion for robot
     	double ax2;		//Y-axis of motion for robot
-    	
     	if(Math.abs(stick.getRawAxis(2)) < .087)	//Setting deadzone for the x-axis
     	{
     		ax1 = 0;
@@ -258,8 +263,8 @@ public class Drivetrain extends Subsystem {
     		System.out.print(getEncoderL() + " " + getEncoderR() + " ");
     	}
     	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println("----------------------------");
-    	if(RobotMap.flatbot) drive.arcadeDrive(ax1, ax2);
-    	else drive.arcadeDrive(-ax1, ax2);
+    	if(RobotMap.flatbot) drive.arcadeDrive(-ax1, -ax2);
+    	else drive.arcadeDrive(-ax2, -ax1);
 		
     }
 	
@@ -277,12 +282,12 @@ public class Drivetrain extends Subsystem {
     	else drive.tankDrive(-l, -r);
     }
     
-    public int getEncoderR()
+    public int getEncoderL()
     {
     	return getEncoderFL();
     }
     
-    public int getEncoderL()
+    public int getEncoderR()
     {
     	return getEncoderFR();
     }

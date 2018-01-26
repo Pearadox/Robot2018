@@ -225,7 +225,7 @@ public class DriveEncDist extends Command{
     protected boolean isFinished() {
     	if(tracked)
     	{
-    		if(lastLeftError < 50 && lastRightError < 50)
+    		if(lastLeftError < 100 && lastRightError < 100)
     		{
     			recordedLoops++;
     			if(recordedLoops >= leftEnc.size()) return true;
@@ -253,6 +253,8 @@ public class DriveEncDist extends Command{
     }
 
     protected void end() {
+    	Robot.drivetrain.drive(-1, -1);
+    	Robot.drivetrain.drive(1, 1);
     	Robot.drivetrain.stop();
     	presetTrajectory = false;
     	recorded = false;
@@ -266,6 +268,7 @@ public class DriveEncDist extends Command{
     	errorSumRight = 0;
     	lastLeftError = 0;
     	lastRightError = 0;
+    	System.out.println("DONE");
     }
 
     protected void interrupted() {

@@ -16,7 +16,9 @@ import java.io.PrintWriter;
 import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.commands.DriveEncDist;
+import org.usfirst.frc.team5414.robot.commands.SetAngle;
 import org.usfirst.frc.team5414.robot.commands.ZeroEncoders;
+import org.usfirst.frc.team5414.robot.commands.ZeroGyro;
 import org.usfirst.frc.team5414.robot.subsystems.Arm;
 import org.usfirst.frc.team5414.robot.subsystems.Climber;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
@@ -45,25 +47,26 @@ public class Robot extends TimedRobot {
 		climber = new Climber();
 		oi = new OI();
 		prefs = Preferences.getInstance();
-//		compressor = new Compressor(0);
-		gyro = new IMU();
+		if(!RobotMap.flatbot) compressor = new Compressor(0);
+		if(RobotMap.flatbot) gyro = new IMU();
 		
-//		compressor.start();
-		gyro.initialize();
+		if(!RobotMap.flatbot) compressor.start();
+		if(RobotMap.flatbot) gyro.initialize();
 		prefs.putDouble("Enc kP", RobotMap.kP);
 		prefs.putDouble("Enc kI", RobotMap.kI);
 		prefs.putDouble("Enc kD", RobotMap.kD);
+		prefs.putDouble("Gyro kP", RobotMap.gykP);
+		prefs.putDouble("Gyro kI", RobotMap.gykI);
+		prefs.putDouble("Gyro kD", RobotMap.gykD);
 		prefs.putInt("Desired Left Enc", 1440);
 		prefs.putInt("Desired Right Enc", 1440);
+		prefs.putDouble("Desired Angle", 0);
 		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		SmartDashboard.putData("Zero Encoders", new ZeroEncoders());
+		SmartDashboard.putData("Test Set Angle", new SetAngle(prefs.getDouble("Desired Angle", 0)));
+		SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 	}
 
-	/**
-	 * This function is called once each time the robot enters Disabled mode.
-	 * You can use it to reset any subsystem information you want to clear when
-	 * the robot is disabled.
-	 */
 	@Override
 	public void disabledInit() {
 		
@@ -108,7 +111,7 @@ public class Robot extends TimedRobot {
 	}
 	
 	public void updateDashboard() {
-		SmartDashboard.putNumber("Current Yaw", gyro.getYaw());
+		if(RobotMap.flatbot) SmartDashboard.putNumber("Current Yaw", gyro.getYaw());
 		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
 		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
 	}

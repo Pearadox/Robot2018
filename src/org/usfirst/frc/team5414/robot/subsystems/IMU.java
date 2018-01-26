@@ -2,6 +2,7 @@ package org.usfirst.frc.team5414.robot.subsystems;
 
 
 
+import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -32,31 +33,37 @@ public class IMU extends Subsystem{
     
     public void initialize()
     {
+    	RobotMap.kP = Robot.prefs.getDouble("Enc kP", RobotMap.kP);
+		RobotMap.kI = Robot.prefs.getDouble("Enc kI", RobotMap.kI);
+		RobotMap.kD = Robot.prefs.getDouble("Enc kD", RobotMap.kD);
     	ahrs.reset();
+    	ahrs.zeroYaw();
 //    	gy.initGyro();
 //    	gy.setSensitivity(.007);
 //    	gy.reset();
     }
     
+    //CLOCKWISE IS POSITIVE
     public double getTrueYaw()
     {
-    	return ahrs.getYaw();
+    	return ahrs.getAngle();
+//    	return ahrs.getYaw();
 //    	return gy.getAngle();
     }
     
     public double getYaw()
     {
-    	return getTrueYaw() + yawOffset;
+    	return getTrueYaw() - yawOffset;
     }
     
     public void zeroYaw()
     {
-    	yawOffset += getYaw() - yawOffset;
+    	yawOffset = getTrueYaw();
     }
     
     public void reset()
     {
     	yawOffset = 0;
-    	ahrs.reset();
+    	ahrs.zeroYaw();
     }
 }
