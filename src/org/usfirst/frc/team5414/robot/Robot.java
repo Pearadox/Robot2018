@@ -18,6 +18,8 @@ import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.commands.DriveEncDist;
 import org.usfirst.frc.team5414.robot.commands.SetAngle;
+import org.usfirst.frc.team5414.robot.commands.SetAngleEnc;
+import org.usfirst.frc.team5414.robot.commands.SetAngleEncCmd;
 import org.usfirst.frc.team5414.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team5414.robot.commands.ZeroGyro;
 import org.usfirst.frc.team5414.robot.subsystems.Arm;
@@ -48,12 +50,17 @@ public class Robot extends TimedRobot {
 		climber = new Climber();
 		oi = new OI();
 		prefs = Preferences.getInstance();
-		CameraServer.getInstance().startAutomaticCapture(0);
-		if(!RobotMap.flatbot) compressor = new Compressor(0);
-		if(RobotMap.flatbot) gyro = new IMU();
-		
-		if(!RobotMap.flatbot) compressor.start();
-		if(RobotMap.flatbot) gyro.initialize();
+		if(!RobotMap.flatbot)
+		{
+			compressor = new Compressor(0);
+			compressor.start();
+			CameraServer.getInstance().startAutomaticCapture(0);
+		}
+		if(RobotMap.flatbot)
+		{
+			gyro = new IMU();
+			gyro.initialize();
+		}
 		prefs.putDouble("Enc kP", RobotMap.kP);
 		prefs.putDouble("Enc kI", RobotMap.kI);
 		prefs.putDouble("Enc kD", RobotMap.kD);
@@ -63,9 +70,7 @@ public class Robot extends TimedRobot {
 		prefs.putInt("Desired Left Enc", 1440);
 		prefs.putInt("Desired Right Enc", 1440);
 		prefs.putDouble("Desired Angle", 0);
-		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		SmartDashboard.putData("Zero Encoders", new ZeroEncoders());
-		SmartDashboard.putData("Test Set Angle", new SetAngle(prefs.getDouble("Desired Angle", 0)));
 		SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 	}
 
@@ -77,7 +82,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-		updateDashboard();
+//		updateDashboard();
 	}
 
 	@Override
@@ -104,6 +109,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		SmartDashboard.putData("Test Set Angle", new SetAngle(0));
 		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		updateDashboard();
 	}

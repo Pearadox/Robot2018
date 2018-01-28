@@ -61,9 +61,6 @@ public class DriveEncDist extends Command{
     	requires(Robot.drivetrain);
 	}
     
-    public DriveEncDist(double d, double s) {}
-    public DriveEncDist(double d, double s, double t) {}
-    
     public DriveEncDist(int left, int right)
     {
     	leftEnc = new ArrayList<Integer>();
@@ -164,7 +161,6 @@ public class DriveEncDist extends Command{
     		try
     		{
     			MotorPair mp = follow.get(recordedLoops);
-    			System.out.println(mp);
     			Robot.drivetrain.arcadeDrive(mp.two, mp.one);
     			recordedLoops++;
     		} catch(Exception e){}
@@ -225,7 +221,15 @@ public class DriveEncDist extends Command{
     protected boolean isFinished() {
     	if(tracked)
     	{
-    		if(lastLeftError < 100 && lastRightError < 100)
+    		if(leftEnc.size() == 1)
+    		{
+    			if(lastLeftError < 30 && lastRightError < 30)
+    			{
+    				return true;
+    			}
+    			else return false;
+    		}
+    		else if(lastLeftError < 100 && lastRightError < 100)
     		{
     			recordedLoops++;
     			if(recordedLoops >= leftEnc.size()) return true;
@@ -253,8 +257,6 @@ public class DriveEncDist extends Command{
     }
 
     protected void end() {
-    	Robot.drivetrain.drive(-1, -1);
-    	Robot.drivetrain.drive(1, 1);
     	Robot.drivetrain.stop();
     	presetTrajectory = false;
     	recorded = false;
@@ -268,7 +270,6 @@ public class DriveEncDist extends Command{
     	errorSumRight = 0;
     	lastLeftError = 0;
     	lastRightError = 0;
-    	System.out.println("DONE");
     }
 
     protected void interrupted() {

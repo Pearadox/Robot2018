@@ -13,7 +13,7 @@ public class SetAngle extends Command {
 
 	double desired;
 	double errorSum = 0;
-	double lastError = 0;
+	double lastError = 4;
 	
 	//0 - 359
     public SetAngle(double angle) {
@@ -27,6 +27,7 @@ public class SetAngle extends Command {
     	RobotMap.gykP = Robot.prefs.getDouble("Gyro kP", RobotMap.gykP);
 		RobotMap.gykI = Robot.prefs.getDouble("Gyro kI", RobotMap.gykI);
 		RobotMap.gykD = Robot.prefs.getDouble("Gyro kD", RobotMap.gykD);
+		System.out.println(RobotMap.gykD);
 		errorSum = 0;
 		lastError = 0;
     }
@@ -41,7 +42,7 @@ public class SetAngle extends Command {
     		current -= 360;
     	}
     	double error = desired - current;
-    	error %= 360;
+    	error %= 180;
     	double P = error * RobotMap.gykP;
     	double I = errorSum * RobotMap.gykI;
     	double D = (error - lastError) * RobotMap.gykD;
@@ -69,6 +70,7 @@ public class SetAngle extends Command {
     		}
     	}
     	errorSum += error;
+    	lastError = error;
     	SmartDashboard.putNumber("Gyro PID Output", output);
     	SmartDashboard.putNumber("Gyro Error", error);
     	SmartDashboard.putNumber("Gyro Current", current);
@@ -77,11 +79,39 @@ public class SetAngle extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        if(Math.abs(lastError) <3)
+        {
+        	if(lastError < 0)
+        	{
+        		Robot.drivetrain.drive(-1, 1);
+        		try {
+					Thread.sleep(250);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		Robot.drivetrain.stop();
+        	}
+        	else
+        	{
+        		Robot.drivetrain.drive(1, -1);
+        		try {
+					Thread.sleep(250);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		Robot.drivetrain.stop();
+        	}
+        	return true;
+        }
+    	return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	System.out.println(lastError);
+    	lastError = 1000;
     	Robot.drivetrain.stop();
     }
 

@@ -61,7 +61,9 @@ public class RobotMap {
 	public static double kD = 0.007;
 	
 	//Gyro Turning PID Loop
-	public static double gykP = 0.05;
-	public static double gykI = 0;
-	public static double gykD = 0.045;
+	public static double gykP = 0.01;
+	public static double gykI = 0.0001;
+	public static double gykD = 0;
+	public static double encodersLeftFullTurn = 815;
+	public static double encodersRightFullTurn = 438;
 }
