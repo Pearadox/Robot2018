@@ -28,6 +28,7 @@ public class DrivewithJoystick extends Command {
     	{
     		if(RobotMap.flatbot) Robot.drivetrain.cheesyDrive(js.getRawAxis(1), -js.getRawAxis(2)*.85, false, false);
     		if(!RobotMap.flatbot) Robot.drivetrain.cheesyDrive(-js.getRawAxis(1), -js.getRawAxis(2)*.85, false, false);
+    		
     	}
     	else Robot.drivetrain.arcadeDrive(Robot.oi.getJoystick());
 //    	Robot.drivetrain.arcadeDrive(-Robot.oi.getJoystick().getY(), Robot.oi.getJoystick().getZ());

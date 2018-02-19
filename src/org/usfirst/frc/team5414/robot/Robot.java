@@ -6,72 +6,70 @@
 package org.usfirst.frc.team5414.robot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import java.io.PrintWriter;
-
 import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
-import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.commands.DriveEncDist;
 import org.usfirst.frc.team5414.robot.commands.SetAngle;
-import org.usfirst.frc.team5414.robot.commands.SetAngleEnc;
-import org.usfirst.frc.team5414.robot.commands.SetAngleEncCmd;
+import org.usfirst.frc.team5414.robot.commands.TurnRight;
+import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
 import org.usfirst.frc.team5414.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team5414.robot.commands.ZeroGyro;
-import org.usfirst.frc.team5414.robot.subsystems.Arm;
-import org.usfirst.frc.team5414.robot.subsystems.Climber;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5414.robot.subsystems.IMU;
-import org.usfirst.frc.team5414.robot.subsystems.Pincher;
+import org.usfirst.frc.team5414.robot.subsystems.Limelight;
+import org.usfirst.frc.team5414.robot.subsystems.Pneumatics;
 
 public class Robot extends TimedRobot {
 	
 //	NetworkTable table = NetworkTable.getTable("limelight");
 	public static Drivetrain drivetrain;
-	public static Arm arm;
-	public static Pincher pincher;
-	public static Climber climber;
 	public static OI oi;
 	public static IMU gyro; 
 	public static Compressor compressor;
 	public static Preferences prefs;
+	public static Limelight limelight;
+	public static Pneumatics pneumatics;
+	public static I2C i2c = new I2C(Port.kOnboard, 4);
 	
 	Command autonomousCommand;
 	
 	@Override
 	public void robotInit() {
 		drivetrain = new Drivetrain();
-		arm = new Arm();
-		pincher = new Pincher();
-		climber = new Climber();
-		oi = new OI();
 		prefs = Preferences.getInstance();
-		if(!RobotMap.flatbot)
+		limelight = new Limelight();
+		pneumatics = new Pneumatics();
+		oi = new OI();
+		if(RobotMap.hasCompressor)
 		{
 			compressor = new Compressor(0);
 			compressor.start();
-			CameraServer.getInstance().startAutomaticCapture(0);
+//			UsbCamera cam = new UsbCamera("cam0", "/dev/video0");
+//			cam.setExposureAuto();
+//			cam.setBrightness(50);
+//			CameraServer.getInstance().startAutomaticCapture("cam0", "/dev/video0");
 		}
-		if(RobotMap.flatbot)
+		if(RobotMap.hasGyro)
 		{
 			gyro = new IMU();
 			gyro.initialize();
+			SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 		}
-		prefs.putDouble("Enc kP", RobotMap.kP);
-		prefs.putDouble("Enc kI", RobotMap.kI);
-		prefs.putDouble("Enc kD", RobotMap.kD);
-		prefs.putDouble("Gyro kP", RobotMap.gykP);
-		prefs.putDouble("Gyro kI", RobotMap.gykI);
-		prefs.putDouble("Gyro kD", RobotMap.gykD);
-		prefs.putInt("Desired Left Enc", 1440);
-		prefs.putInt("Desired Right Enc", 1440);
-		prefs.putDouble("Desired Angle", 0);
+		addPreferences();
 		SmartDashboard.putData("Zero Encoders", new ZeroEncoders());
-		SmartDashboard.putData("Zero Gyro", new ZeroGyro());
+		SmartDashboard.putData("Turn Right", new TurnRight(45));
+		if(RobotMap.hasLimelight)
+		{
+			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
+		}
+
 	}
 
 	@Override
@@ -82,7 +80,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-//		updateDashboard();
+		if(!RobotMap.compbot) updateDashboard();
+		i2c.write(4, 0);
 	}
 
 	@Override
@@ -97,6 +96,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateDashboard();
+		i2c.write(4, 2);
 	}
 
 	@Override
@@ -109,9 +109,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putData("Test Set Angle", new SetAngle(0));
 		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
-		updateDashboard();
+		if(!RobotMap.compbot) updateDashboard();
+		i2c.write(4, 1);
 	}
 
 	@Override
@@ -119,8 +119,41 @@ public class Robot extends TimedRobot {
 	}
 	
 	public void updateDashboard() {
-		if(RobotMap.flatbot) SmartDashboard.putNumber("Current Yaw", gyro.getYaw());
-		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
-		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
+		if(RobotMap.hasLimelight)
+		{
+			SmartDashboard.putNumber("ty", Robot.limelight.getY());
+			SmartDashboard.putNumber("ta", Robot.limelight.getArea());
+		}
+		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw", gyro.getYaw());
+		if(!RobotMap.flatbot)
+		{
+			SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
+			SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
+			SmartDashboard.putNumber("Left Encoder Feet", drivetrain.getEncoderLFeet());
+			SmartDashboard.putNumber("Right Encoder Feet", drivetrain.getEncoderRFeet());
+		}
+	}
+	
+	public void addPreferences() {
+		prefs.putDouble("FlatEnc kP", RobotMap.flatbotkP);
+		prefs.putDouble("FlatEnc kI", RobotMap.flatbotkI);
+		prefs.putDouble("FlatEnc kD", RobotMap.flatbotkD);
+		prefs.putDouble("PlyEnc L kP", RobotMap.plybotLkP);
+		prefs.putDouble("PlyEnc L kI", RobotMap.plybotLkI);
+		prefs.putDouble("PlyEnc L kD", RobotMap.plybotLkD);
+		prefs.putDouble("PlyEnc R kP", RobotMap.plybotRkP);
+		prefs.putDouble("PlyEnc R kI", RobotMap.plybotRkI);
+		prefs.putDouble("PlyEnc R kD", RobotMap.plybotRkD);
+		prefs.putDouble("Limelight kP", RobotMap.turnLimekP);
+		prefs.putDouble("Limelight kI", RobotMap.turnLimekI);
+		prefs.putDouble("Limelight kD", RobotMap.turnLimekD);
+		prefs.putDouble("Limelight Forward kP", RobotMap.forwardLimekP);
+		prefs.putDouble("Limelight Forward kD", RobotMap.forwardLimekD);
+		prefs.putInt("Desired Left Enc", 300);
+		prefs.putInt("Desired Right Enc", 300);
+		prefs.putDouble("Desired Angle", 0);
+		prefs.putDouble("Vision Error", limelight.getX());
+		
 	}
 }
+//

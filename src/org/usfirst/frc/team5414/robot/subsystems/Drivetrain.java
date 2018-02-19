@@ -25,12 +25,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Drivetrain extends Subsystem {
 
     private WPI_VictorSPX right_motor1, right_motor2, right_motor3, left_motor1, left_motor2, left_motor3;
+    private TalonSRX right_motor2talon, left_motor2talon;
 	public SpeedController right1, right2, left1, left2;
     public SpeedControllerGroup right;
     public SpeedControllerGroup left;
     private DifferentialDrive drive;
-    private static Encoder encoderFR, encoderFL, encoderBL, encoderBR; 
-    private DoubleSolenoid LShift, RShift;
+    private static Encoder encoderL, encoderR;
     
   private static final double kThrottleDeadband = 0.02;
   private static final double kWheelDeadband = 0.02;
@@ -52,21 +52,21 @@ public class Drivetrain extends Subsystem {
   private static final double kQuickStopDeadband = 0.2;
   private static final double kQuickStopWeight = 0.1;
   private static final double kQuickStopScalar = 5.0;
-
+  
   private double mOldWheel = 0.0;
   private double mQuickStopAccumlator = 0.0;
   private double mNegInertiaAccumlator = 0.0;
 
     public Drivetrain(){
     	if(RobotMap.flatbot) {
-	    	encoderFR = new Encoder(RobotMap.DIOencoderFRa, RobotMap.DIOencoderFRb, false, Encoder.EncodingType.k4X);
-	    	encoderFL = new Encoder(RobotMap.DIOencoderFLa, RobotMap.DIOencoderFLb, false, Encoder.EncodingType.k4X);
-	    	encoderFR.reset();
-	    	encoderFL.reset();
-	    	encoderFR.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
-	    	encoderFL.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
-	    	encoderFR.setReverseDirection(true);
-	    	encoderFL.setReverseDirection(true);
+//	    	encoderR = new Encoder(RobotMap.DIOencoderRa, RobotMap.DIOencoderRb, false, Encoder.EncodingType.k4X);
+//	    	encoderL = new Encoder(RobotMap.DIOencoderLa, RobotMap.DIOencoderLb, false, Encoder.EncodingType.k4X);
+//	    	encoderR.reset();
+//	    	encoderL.reset();
+//	    	encoderR.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
+//	    	encoderL.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
+//	    	encoderR.setReverseDirection(true);
+//	    	encoderL.setReverseDirection(true);
 	    	right1 = new Victor(2);
 	    	right2 = new Victor(3);
 	    	left1 = new Victor(0);
@@ -79,22 +79,15 @@ public class Drivetrain extends Subsystem {
 	    	right = new SpeedControllerGroup(right1, right2);
 	    	drive = new DifferentialDrive(right, left);
     	}
-    	else  {
-	    	encoderFR = new Encoder(RobotMap.DIOencoderFRa, RobotMap.DIOencoderFRb, false, Encoder.EncodingType.k4X);
-	    	encoderBR = new Encoder(RobotMap.DIOencoderBRa, RobotMap.DIOencoderBRb, false, Encoder.EncodingType.k4X);
-	    	encoderBL = new Encoder(RobotMap.DIOencoderBLa, RobotMap.DIOencoderBLb, false, Encoder.EncodingType.k4X);
-	    	encoderFL = new Encoder(RobotMap.DIOencoderFLa, RobotMap.DIOencoderFLb, false, Encoder.EncodingType.k4X);
-	    	encoderFR.reset();
-	    	encoderBR.reset();
-	    	encoderBL.reset();
-	    	encoderFL.reset();
-	    	encoderFR.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
-	    	encoderFL.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
-	    	encoderBR.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
-	    	encoderBL.setDistancePerPulse(RobotMap.CircumferenceMeters / 1440);
-	    	
-	    	LShift = new DoubleSolenoid(RobotMap.LShiftA, RobotMap.LShiftB);
-	    	RShift = new DoubleSolenoid(RobotMap.RShiftA, RobotMap.RShiftB);
+    	else if (!RobotMap.flatbot && !RobotMap.compbot){
+    		encoderR = new Encoder(RobotMap.DIOencoderRa, RobotMap.DIOencoderRb, false, Encoder.EncodingType.k4X);
+	    	encoderL = new Encoder(RobotMap.DIOencoderLa, RobotMap.DIOencoderLb, false, Encoder.EncodingType.k4X);
+	    	encoderR.reset();
+	    	encoderL.reset();
+	    	encoderR.setDistancePerPulse(RobotMap.LengthPerTickFeetPly);
+	    	encoderL.setDistancePerPulse(RobotMap.LengthPerTickFeetPly);
+	    	encoderR.setReverseDirection(true);
+	    	encoderL.setReverseDirection(true);
 	    	
 	    	left_motor1 = new WPI_VictorSPX(RobotMap.CANLeftMotor1);
 	    	left_motor2 = new WPI_VictorSPX(RobotMap.CANLeftMotor2);
@@ -105,8 +98,19 @@ public class Drivetrain extends Subsystem {
 			left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
 			right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
 			drive = new DifferentialDrive(left, right);
+
+			
 			left_motor2.setInverted(true);
 			right_motor2.setInverted(true);
+    	}
+    	else if(RobotMap.compbot)
+    	{
+	    	left_motor1 = new WPI_VictorSPX(RobotMap.CANLeftMotor1);
+	    	left_motor2talon = new TalonSRX(RobotMap.CANLeftMotor2);
+	    	left_motor3 = new WPI_VictorSPX(RobotMap.CANLeftMotor3);
+			right_motor1 = new WPI_VictorSPX(RobotMap.CANRightMotor1);
+			right_motor2talon = new TalonSRX(RobotMap.CANRightMotor2);
+			right_motor3 = new WPI_VictorSPX(RobotMap.CANRightMotor3);
     	}
     }
     
@@ -221,7 +225,7 @@ public class Drivetrain extends Subsystem {
 		if(Robot.oi.getJoystick().getRawButtonPressed(11)) zeroEncoders();
     	if(Robot.oi.getJoystick().getRawButton(11)) 
     	{
-    		System.out.print(getEncoderL() + " " + getEncoderR() + " ");
+    		System.out.print(getEncoderLFeet() + " " + getEncoderRFeet() + " ");
     	}
     	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println("----------------------------");
 		drive(leftPwm, rightPwm);
@@ -263,8 +267,8 @@ public class Drivetrain extends Subsystem {
     		System.out.print(getEncoderL() + " " + getEncoderR() + " ");
     	}
     	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println("----------------------------");
-    	if(RobotMap.flatbot) drive.arcadeDrive(-ax1, -ax2);
-    	else drive.arcadeDrive(-ax2, -ax1);
+    	if(RobotMap.flatbot) arcadeDrive(-ax1, ax2, true);
+    	else arcadeDrive(-ax2, -ax1*.7, true);
 		
     }
 	
@@ -272,79 +276,77 @@ public class Drivetrain extends Subsystem {
       return (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
   }
     
-    public void arcadeDrive(double throttle, double twist){
-    	drive.arcadeDrive(throttle,twist);
+    public void arcadeDrive(double throttle, double twist, boolean squared){
+    	if(RobotMap.compbot)
+    	{
+    		if (squared) {
+    			throttle = Math.copySign(throttle * throttle * throttle, throttle);
+  		      	twist = -Math.copySign(twist * twist * twist, twist);
+    		}
+    		double leftSpeed = throttle - twist;
+    		double rightSpeed = -throttle - twist;
+    		right_motor1.set(rightSpeed);
+    		right_motor2talon.set(ControlMode.PercentOutput, rightSpeed);
+    		right_motor3.set(rightSpeed);
+    		left_motor1.set(leftSpeed);
+    		left_motor2talon.set(ControlMode.PercentOutput, leftSpeed);
+    		left_motor3.set(leftSpeed);
+    	}
+    	else drive.arcadeDrive(throttle,twist, squared);
     }
     
     public void drive(double l, double r)
     {
-    	if(RobotMap.flatbot) drive.tankDrive(-l, r);
-    	else drive.tankDrive(-l, -r);
+    	if(RobotMap.compbot)
+    	{
+    		right_motor1.set(r);
+    		right_motor2talon.set(ControlMode.PercentOutput, r);
+    		right_motor3.set(r);
+    		left_motor1.set(l);
+    		left_motor2talon.set(ControlMode.PercentOutput, l);
+    		left_motor3.set(l);
+    	}
+    	else if(RobotMap.flatbot) drive.tankDrive(-l, r);
+    	else drive.tankDrive(l, r);
     }
     
-    public int getEncoderL()
+    public double getEncoderRFeet()
     {
-    	return getEncoderFL();
+    	if(RobotMap.flatbot) return getEncoderR() * RobotMap.LengthPerTickFeetFlat;
+    	else return getEncoderR() * RobotMap.LengthPerTickFeetPly;
+    }
+    
+    public double getEncoderLFeet()
+    {
+    	if(RobotMap.flatbot) return getEncoderL() * RobotMap.LengthPerTickFeetFlat;
+    	else return getEncoderL() * RobotMap.LengthPerTickFeetPly;
     }
     
     public int getEncoderR()
     {
-    	return getEncoderFR();
+    	try {
+    		return encoderR.get();
+    	} catch(Exception e) {}
+    	return encoderR.get();
     }
     
-    public int getEncoderFR()
+    public int getEncoderL()
     {
-    	return encoderFR.get();
-    }
-    
-    public int getEncoderFL()
-    {
-    	return encoderFL.get();
-    }
-    
-    public int getEncoderBL()
-    {
-    	return encoderBL.get();
-    }
-    
-    public int getEncoderBR()
-    {
-    	return encoderBR.get();
+    	try {
+    		return encoderL.get();
+    	} catch(Exception e) {}
+    	return encoderL.get();
     }
     
     public void zeroEncoders()
     {
-    	encoderFR.reset();
-    	encoderFL.reset();
-    	if(!RobotMap.flatbot)
-    	{
-    		encoderBL.reset();
-    		encoderBR.reset();
-    	}
-    	System.out.println(getEncoderFR());
+    	encoderR.reset();
+    	encoderL.reset();
     }
 
 	public void stop(){
-    	drive.tankDrive(0,0);
-    }	
-	
-	public void shiftUp()
-	{
-		LShift.set(DoubleSolenoid.Value.kForward);
-		RShift.set(DoubleSolenoid.Value.kForward);
-	}
-	
-	public void shiftDown()
-	{
-		LShift.set(DoubleSolenoid.Value.kReverse);
-		RShift.set(DoubleSolenoid.Value.kReverse);
-	}
-	
-	public void shiftNone()
-	{
-		LShift.set(DoubleSolenoid.Value.kOff);
-		RShift.set(DoubleSolenoid.Value.kOff);
-	}
+    	drive(0,0);
+    }
     
     public void initDefaultCommand() {
     	setDefaultCommand(new DrivewithJoystick());

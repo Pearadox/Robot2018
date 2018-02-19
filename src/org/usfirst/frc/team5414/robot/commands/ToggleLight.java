@@ -7,16 +7,16 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ShiftNone extends Command {
+public class ToggleLight extends Command {
 
-    public ShiftNone() {
+    public ToggleLight() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrain.shiftNone();
+    	Robot.limelight.toggleLight();
     }
 
     // Called repeatedly when this Command is scheduled to run

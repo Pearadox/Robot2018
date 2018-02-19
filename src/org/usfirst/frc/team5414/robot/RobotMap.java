@@ -17,53 +17,73 @@ public class RobotMap {
 	
 	//Fast switch between flatbot and 2018bot
 	public static boolean flatbot = true;
+	public static boolean compbot = false;
+	public static boolean hasLimelight = true;
+	public static boolean hasGyro = false;
+	public static boolean hasCompressor = false;
+	public static boolean hasCam = false;
 	
 	//Ports for random parts
 	public static int GyroPort = 0;
 	
-	//PWM for speed controllers
+	//CAN ports for compbot speed controllers
 	public static int CANRightMotor1 = 12;
 	public static int CANRightMotor2 = 16;
 	public static int CANRightMotor3 = 13;
-	public static int CANLeftMotor1 = 11;
+	public static int CANLeftMotor1 = 11;	
 	public static int CANLeftMotor2 = 14;
 	public static int CANLeftMotor3 = 10;
 	
 	//Encoder DIO ports
-	public static int DIOencoderFRa = 0;
-	public static int DIOencoderFRb = 1;
-	public static int DIOencoderFLa = 2;
-	public static int DIOencoderFLb = 3;
-	public static int DIOencoderBRa = 4;
-	public static int DIOencoderBRb = 5;
-	public static int DIOencoderBLa = 6;
-	public static int DIOencoderBLb = 7;
+	public static int DIOencoderRa = 0;
+	public static int DIOencoderRb = 1;
+	public static int DIOencoderLa = 2;
+	public static int DIOencoderLb = 3;
 	
 	//Solenoid Ports
-	public static int LShiftA = 0;
-	public static int LShiftB = 1;
-	public static int RShiftA = 2;
-	public static int RShiftB = 3;
+	
 	
 	//Wheel stuffs
-	public static double wheelDiameterFeet = 6. / 12; //IN FEET
-	public static double wheelDiameterMeters = wheelDiameterFeet * .3048; //IN FEET
-	public static double EncoderPulsePerRev = 1440;
-	public static double CircumferenceFeet = wheelDiameterFeet * Math.PI;
-	public static double CircumferenceMeters = wheelDiameterMeters * Math.PI;
-	public static double LengthPerTickFeet = CircumferenceFeet / EncoderPulsePerRev; 
-	public static double LengthPerTickMeters = CircumferenceMeters / EncoderPulsePerRev; 
-	public static double WheelBaseWidth = 0.6; //Meters
-	
+			//flatbot
+			public static double wheelDiameterFeetFlat = 6. / 12; //IN FEET
+			public static double wheelDiameterMetersFlat = wheelDiameterFeetFlat * .3048; //IN FEET
+			public static double EncoderPulsePerRevFlat = 1440;
+			public static double CircumferenceFeetFlat = wheelDiameterFeetFlat * Math.PI;
+			public static double CircumferenceMetersFlat = wheelDiameterMetersFlat * Math.PI;
+			public static double LengthPerTickFeetFlat = CircumferenceFeetFlat / EncoderPulsePerRevFlat; 
+			public static double LengthPerTickMetersFlat = CircumferenceMetersFlat / EncoderPulsePerRevFlat; 
+			//plybot
+			public static double wheelDiameterFeetPly = 6. / 12; //IN FEET
+			public static double wheelDiameterMetersPly = wheelDiameterFeetPly * .3048; //IN FEET
+			public static double EncoderPulsePerRevPly = 256;
+			public static double CircumferenceFeetPly = wheelDiameterFeetPly * Math.PI;
+			public static double CircumferenceMetersPly = wheelDiameterMetersPly * Math.PI;
+			public static double LengthPerTickFeetPly = CircumferenceFeetPly / EncoderPulsePerRevPly; 
+			public static double LengthPerTickMetersPly = CircumferenceMetersPly / EncoderPulsePerRevPly; 
+		
 	//Motion Profiling/Encoder Following PID Loop
-	public static double kP = .004;
-	public static double kI = 0.00007;
-	public static double kD = 0.007;
+	public static double flatbotkP = .004;
+	public static double flatbotkI = 0.00007;
+	public static double flatbotkD = 0.007;
+	public static double plybotLkD = 0.007;
+	public static double plybotLkI = 0.0002;
+	public static double plybotLkP = .0065;
+	public static double plybotRkD = 0.005;
+	public static double plybotRkI = 0.00015;
+	public static double plybotRkP = .0043;
 	
+	//Vision PID Loop
+	public static double turnLimekD = 0.5;
+	public static double turnLimekI = 0;
+	public static double turnLimekP = 0.01;
+	public static double forwardLimekD = 0.005;
+	public static double forwardLimekI = 0.0;
+	public static double forwardLimekP = 0.07;
+
 	//Gyro Turning PID Loop
-	public static double gykP = 0.01;
-	public static double gykI = 0.0001;
-	public static double gykD = 0;
-	public static double encodersLeftFullTurn = 815;
-	public static double encodersRightFullTurn = 438;
+//	public static double gykP = 0.01;
+//	public static double gykI = 0.0001;
+//	public static double gykD = 0;
+//	public static double encodersLeftFullTurn = 815;
+//	public static double encodersRightFullTurn = 438;
 }

@@ -33,9 +33,6 @@ public class IMU extends Subsystem{
     
     public void initialize()
     {
-    	RobotMap.kP = Robot.prefs.getDouble("Enc kP", RobotMap.kP);
-		RobotMap.kI = Robot.prefs.getDouble("Enc kI", RobotMap.kI);
-		RobotMap.kD = Robot.prefs.getDouble("Enc kD", RobotMap.kD);
     	ahrs.reset();
     	ahrs.zeroYaw();
 //    	gy.initGyro();
