@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class TurnRight extends Command {
 
-	double halfturn = 535;
+	double halfturn = 277;
 	double desired;
 	double errorSumLeft = 0;
 	double errorSumRight = 0;

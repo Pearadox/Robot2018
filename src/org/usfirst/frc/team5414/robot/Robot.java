@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------
-	Team 5414 Pearadox 2018 Build Season Code
+\	Team 5414 Pearadox 2018 Build Season Code
 	Heckled by 118
   ----------------------------------------------------------------------------*/
 
@@ -18,13 +18,15 @@ import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
 import org.usfirst.frc.team5414.robot.commands.DriveEncDist;
 import org.usfirst.frc.team5414.robot.commands.SetAngle;
 import org.usfirst.frc.team5414.robot.commands.TurnRight;
+import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
 import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
 import org.usfirst.frc.team5414.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team5414.robot.commands.ZeroGyro;
+import org.usfirst.frc.team5414.robot.subsystems.Arm;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5414.robot.subsystems.IMU;
 import org.usfirst.frc.team5414.robot.subsystems.Limelight;
-import org.usfirst.frc.team5414.robot.subsystems.Pneumatics;
+import org.usfirst.frc.team5414.robot.subsystems.Spintake;
 
 public class Robot extends TimedRobot {
 	
@@ -35,7 +37,8 @@ public class Robot extends TimedRobot {
 	public static Compressor compressor;
 	public static Preferences prefs;
 	public static Limelight limelight;
-	public static Pneumatics pneumatics;
+	public static Arm arm;
+	public static Spintake spintake;
 	public static I2C i2c = new I2C(Port.kOnboard, 4);
 	
 	Command autonomousCommand;
@@ -45,16 +48,19 @@ public class Robot extends TimedRobot {
 		drivetrain = new Drivetrain();
 		prefs = Preferences.getInstance();
 		limelight = new Limelight();
-		pneumatics = new Pneumatics();
+		if(RobotMap.hasArm)
+		{
+			arm = new Arm();	
+		}
+		if(RobotMap.hasSpintake)
+		{
+			spintake = new Spintake();
+		}
 		oi = new OI();
 		if(RobotMap.hasCompressor)
 		{
 			compressor = new Compressor(0);
 			compressor.start();
-//			UsbCamera cam = new UsbCamera("cam0", "/dev/video0");
-//			cam.setExposureAuto();
-//			cam.setBrightness(50);
-//			CameraServer.getInstance().startAutomaticCapture("cam0", "/dev/video0");
 		}
 		if(RobotMap.hasGyro)
 		{
@@ -63,11 +69,11 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 		}
 		addPreferences();
-		SmartDashboard.putData("Zero Encoders", new ZeroEncoders());
 		SmartDashboard.putData("Turn Right", new TurnRight(45));
 		if(RobotMap.hasLimelight)
 		{
 			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
+			SmartDashboard.putData("Vision Go To Cube", new VisionGoToCube());
 		}
 
 	}
@@ -80,7 +86,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-		if(!RobotMap.compbot) updateDashboard();
+		if(RobotMap.compbot) updateDashboard();
 		i2c.write(4, 0);
 	}
 
@@ -110,7 +116,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
-		if(!RobotMap.compbot) updateDashboard();
+		if(RobotMap.compbot) updateDashboard();
 		i2c.write(4, 1);
 	}
 
@@ -125,13 +131,8 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putNumber("ta", Robot.limelight.getArea());
 		}
 		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw", gyro.getYaw());
-		if(!RobotMap.flatbot)
-		{
-			SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
-			SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
-			SmartDashboard.putNumber("Left Encoder Feet", drivetrain.getEncoderLFeet());
-			SmartDashboard.putNumber("Right Encoder Feet", drivetrain.getEncoderRFeet());
-		}
+		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
+		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
 	}
 	
 	public void addPreferences() {
@@ -145,8 +146,10 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("PlyEnc R kI", RobotMap.plybotRkI);
 		prefs.putDouble("PlyEnc R kD", RobotMap.plybotRkD);
 		prefs.putDouble("Limelight kP", RobotMap.turnLimekP);
-		prefs.putDouble("Limelight kI", RobotMap.turnLimekI);
 		prefs.putDouble("Limelight kD", RobotMap.turnLimekD);
+		prefs.putDouble("Limelight Forward Turn kP", RobotMap.forwardTurnLimekP);
+		prefs.putDouble("Limelight Forward Turn kI", RobotMap.forwardTurnLimekI);
+		prefs.putDouble("Limelight Forward Turn kD", RobotMap.forwardTurnLimekD);
 		prefs.putDouble("Limelight Forward kP", RobotMap.forwardLimekP);
 		prefs.putDouble("Limelight Forward kD", RobotMap.forwardLimekD);
 		prefs.putInt("Desired Left Enc", 300);

@@ -9,18 +9,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *
  */
-public class VisionTurnToCube extends Command {
+public class VisionGoToCube extends Command {
 
 	final int timeoutLoops = 10; //loops * 20ms = milliseconds of timeout
 	final int settleLoopsGoal = 2;
 	int settleLoops = 0;
 	int currentTimeoutLoops = 0;
-	double targetArea = 12;
+	double targetArea = 30;
 	double errorSum;
 	double lastError;
 	double lastAreaError;
 	
-    public VisionTurnToCube() {
+    public VisionGoToCube() {
     	requires(Robot.drivetrain);
     }
 
@@ -30,9 +30,11 @@ public class VisionTurnToCube extends Command {
     	lastError = 0;
     	lastAreaError = 0;
     	settleLoops = 0;
-    	RobotMap.turnLimekP = Robot.prefs.getDouble("Limelight kP", RobotMap.turnLimekP);
-    	RobotMap.turnLimekI = Robot.prefs.getDouble("Limelight kI", RobotMap.turnLimekI);
-    	RobotMap.turnLimekD = Robot.prefs.getDouble("Limelight kD", RobotMap.turnLimekD);
+    	RobotMap.forwardTurnLimekP = Robot.prefs.getDouble("Limelight Forward Turn kP", RobotMap.forwardTurnLimekP);
+    	RobotMap.forwardTurnLimekI = Robot.prefs.getDouble("Limelight Forward Turn kI", RobotMap.forwardTurnLimekI);
+    	RobotMap.forwardTurnLimekD = Robot.prefs.getDouble("Limelight Forward Turn kD", RobotMap.forwardTurnLimekD);
+    	RobotMap.forwardLimekP = Robot.prefs.getDouble("Limelight Forward kP", RobotMap.forwardLimekP);
+    	RobotMap.forwardLimekD = Robot.prefs.getDouble("Limelight Forward kD", RobotMap.forwardLimekD);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -52,13 +54,20 @@ public class VisionTurnToCube extends Command {
     	errorSum += error;
     	if(Math.abs(error) <= 2) errorSum = 0;
     	double F = error > 0 ? 0.05 : -0.05;
-    	double P = error * RobotMap.turnLimekP;
-    	double I = errorSum * RobotMap.turnLimekI;
-    	double D = (lastError - error) * (area > 2 ? RobotMap.turnLimekD/20. : RobotMap.turnLimekD);
+    	double P = error * RobotMap.forwardTurnLimekP;
+    	double I = errorSum * RobotMap.forwardTurnLimekI;
+    	double D = (lastError - error) * RobotMap.forwardTurnLimekD;
     	double output = P + I - D + F;
     	leftOutput = -output;
     	rightOutput = output;
     	
+    	double areaError = targetArea - area;
+    	double forwardP = areaError * RobotMap.forwardLimekP;
+    	double forwardD = (lastError - areaError) * RobotMap.forwardLimekD;
+    	double forwardOutput = forwardP - forwardD;
+    	leftOutput += forwardOutput;
+    	rightOutput += forwardOutput;
+    	lastAreaError = areaError;
     	Robot.drivetrain.drive(leftOutput, rightOutput);
     	lastError = error;
     	SmartDashboard.putNumber("Vision Error", error);
@@ -69,11 +78,10 @@ public class VisionTurnToCube extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	if(lastError == 0) return false;
-    	if(Math.abs(lastError) < 2)
-    	{
-    		if(settleLoops++ == settleLoopsGoal) return true;
-        	else return false;
-    	}
+        if(lastAreaError < -1)
+        {
+        	if(settleLoops++ == settleLoopsGoal) return true;
+        }
     	return false;
     }
 

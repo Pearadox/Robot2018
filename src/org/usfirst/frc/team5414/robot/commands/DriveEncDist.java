@@ -90,7 +90,7 @@ public class DriveEncDist extends Command{
     	lastTime = Timer.getFPGATimestamp();
     	Robot.drivetrain.zeroEncoders();
     	initialEncoderTicks = Robot.drivetrain.getEncoderL();
-    	if(RobotMap.flatbot)
+    	if(RobotMap.hasGyro)
     	{
     		Robot.gyro.zeroYaw();
     		originalAngle = Robot.gyro.getYaw();
@@ -102,7 +102,7 @@ public class DriveEncDist extends Command{
     protected void execute() {
     	tracked= true;
     	double changeInAngle = 0;
-    	if(RobotMap.flatbot) changeInAngle = Robot.gyro.getYaw()-originalAngle;
+    	if(RobotMap.hasGyro) changeInAngle = Robot.gyro.getYaw()-originalAngle;
     	double elapsedTime = Timer.getFPGATimestamp() - initialTime;
     	changeInTime = elapsedTime;
     	SmartDashboard.putBoolean("Tracked", tracked);
@@ -123,10 +123,10 @@ public class DriveEncDist extends Command{
     		//PID Calculations
     		double leftP = leftError * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotLkP);
     		double rightP = rightError * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotRkP);
-    		double leftI = errorSumLeft * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotLkI);
-    		double rightI = errorSumRight * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotRkI);
-    		double leftD = ((leftEnc.get(recordedLoops) - lastDesiredLeft) - (leftError - lastLeftError)) * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotLkD); //dSetpoint - dError , prevents derivative kick
-    		double rightD = ((rightEnc.get(recordedLoops) - lastDesiredRight) - (rightError - lastRightError)) * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotRkD);//dSetpoint - dError
+    		double leftI = errorSumLeft * (RobotMap.flatbot ? RobotMap.flatbotkI : RobotMap.plybotLkI);
+    		double rightI = errorSumRight * (RobotMap.flatbot ? RobotMap.flatbotkI : RobotMap.plybotRkI);
+    		double leftD = ((leftEnc.get(recordedLoops) - lastDesiredLeft) - (leftError - lastLeftError)) * (RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotLkD); //dSetpoint - dError , prevents derivative kick
+    		double rightD = ((rightEnc.get(recordedLoops) - lastDesiredRight) - (rightError - lastRightError)) * (RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotRkD);//dSetpoint - dError
     		double leftOutput = leftP + leftI - leftD; 
     		double rightOutput = rightP + rightI - rightD;
     		

@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ToggleClaw extends Command {
+public class SpintakePushIn extends Command {
 
-    public ToggleClaw() {
+    public SpintakePushIn() {
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.arm.togglePincher();
+    	Robot.spintake.pushIn();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -28,10 +28,12 @@ public class ToggleClaw extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.spintake.stop();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

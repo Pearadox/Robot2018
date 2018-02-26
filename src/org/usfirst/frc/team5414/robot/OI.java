@@ -9,6 +9,13 @@ package org.usfirst.frc.team5414.robot;
 
 import java.io.IOException;
 
+import org.usfirst.frc.team5414.robot.commands.ArmDown;
+import org.usfirst.frc.team5414.robot.commands.ArmUp;
+import org.usfirst.frc.team5414.robot.commands.Intake;
+import org.usfirst.frc.team5414.robot.commands.Outtake;
+import org.usfirst.frc.team5414.robot.commands.SpintakeOrient;
+import org.usfirst.frc.team5414.robot.commands.SpintakePushIn;
+import org.usfirst.frc.team5414.robot.commands.SpintakePushOut;
 import org.usfirst.frc.team5414.robot.commands.ToggleClaw;
 import org.usfirst.frc.team5414.robot.commands.ToggleLight;
 import edu.wpi.first.wpilibj.Joystick;
@@ -37,8 +44,24 @@ public class OI {
 		JoystickButton btn10 = new JoystickButton(stick, 10);
 		JoystickButton btn11 = new JoystickButton(stick, 11);
 		JoystickButton btn12 = new JoystickButton(stick, 12);
-		btn1.whenPressed(new ToggleClaw());
-		btn2.whenPressed(new ToggleLight());
+		if(RobotMap.hasLimelight)
+		{
+			btn2.whenPressed(new ToggleLight());
+		}
+		if(RobotMap.hasArm)
+		{
+			btn1.whenPressed(new ToggleClaw());
+			btn7.whileHeld(new ArmDown());
+			btn8.whileHeld(new ArmUp());
+		}
+		if(RobotMap.hasSpintake)
+		{
+			btn4.whenPressed(new SpintakeOrient());
+			btn5.whenPressed(new SpintakePushIn());
+			btn6.whenPressed(new SpintakePushOut());
+			btn9.whileHeld(new Intake());
+			btn10.whileHeld(new Outtake());
+		}
 	}
 	
 	public Joystick getJoystick() {

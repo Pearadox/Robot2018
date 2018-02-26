@@ -18,10 +18,12 @@ public class RobotMap {
 	//Fast switch between flatbot and 2018bot
 	public static boolean flatbot = true;
 	public static boolean compbot = false;
-	public static boolean hasLimelight = true;
+	public static boolean hasLimelight = false;
 	public static boolean hasGyro = false;
-	public static boolean hasCompressor = false;
+	public static boolean hasCompressor = true;
 	public static boolean hasCam = false;
+	public static boolean hasArm = false;
+	public static boolean hasSpintake = true;
 	
 	//Ports for random parts
 	public static int GyroPort = 0;
@@ -34,11 +36,19 @@ public class RobotMap {
 	public static int CANLeftMotor2 = 14;
 	public static int CANLeftMotor3 = 10;
 	
-	//Encoder DIO ports
-	public static int DIOencoderRa = 0;
-	public static int DIOencoderRb = 1;
-	public static int DIOencoderLa = 2;
-	public static int DIOencoderLb = 3;
+	//CAN ports for manipulators
+	public static int CANArmTalon = 20;
+	
+	//Encoder DIO ports Flatbot
+	public static int DIOencoderRaFlat = 0;
+	public static int DIOencoderRbFlat = 1;
+	public static int DIOencoderLaFlat = 2;
+	public static int DIOencoderLbFlat = 3;
+	public static int DIOencoderRaComp = 9;
+	public static int DIOencoderRbComp = 8;
+	public static int DIOencoderLaComp = 7;
+	public static int DIOencoderLbComp = 6;
+	
 	
 	//Solenoid Ports
 	
@@ -65,21 +75,24 @@ public class RobotMap {
 	public static double flatbotkP = .004;
 	public static double flatbotkI = 0.00007;
 	public static double flatbotkD = 0.007;
-	public static double plybotLkD = 0.007;
-	public static double plybotLkI = 0.0002;
-	public static double plybotLkP = .0065;
-	public static double plybotRkD = 0.005;
-	public static double plybotRkI = 0.00015;
-	public static double plybotRkP = .0043;
+	public static double plybotLkD = 0.0061;
+	public static double plybotLkI = 0.00022;
+	public static double plybotLkP = .013;
+	public static double plybotRkD = 0.0035;
+	public static double plybotRkI = 0.000062;
+	public static double plybotRkP = .01;
 	
 	//Vision PID Loop
-	public static double turnLimekD = 0.5;
-	public static double turnLimekI = 0;
-	public static double turnLimekP = 0.01;
-	public static double forwardLimekD = 0.005;
-	public static double forwardLimekI = 0.0;
-	public static double forwardLimekP = 0.07;
-
+	public static double turnLimekD = 0.01;
+	public static double turnLimekI = 0.001;
+	public static double turnLimekP = 0.002;
+	public static double forwardLimekD = 0.03;
+	public static double forwardLimekI = 0.01;
+	public static double forwardLimekP = 0.085;
+	public static double forwardTurnLimekD = 0.2;
+	public static double forwardTurnLimekI = 0.00001;
+	public static double forwardTurnLimekP = 0.2;
+	
 	//Gyro Turning PID Loop
 //	public static double gykP = 0.01;
 //	public static double gykI = 0.0001;

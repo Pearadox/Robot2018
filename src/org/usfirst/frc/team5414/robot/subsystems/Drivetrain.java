@@ -56,17 +56,20 @@ public class Drivetrain extends Subsystem {
   private double mOldWheel = 0.0;
   private double mQuickStopAccumlator = 0.0;
   private double mNegInertiaAccumlator = 0.0;
+  
+  int encoderOffsetL = 0;
+  int encoderOffsetR = 0;
 
     public Drivetrain(){
     	if(RobotMap.flatbot) {
-//	    	encoderR = new Encoder(RobotMap.DIOencoderRa, RobotMap.DIOencoderRb, false, Encoder.EncodingType.k4X);
-//	    	encoderL = new Encoder(RobotMap.DIOencoderLa, RobotMap.DIOencoderLb, false, Encoder.EncodingType.k4X);
-//	    	encoderR.reset();
-//	    	encoderL.reset();
-//	    	encoderR.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
-//	    	encoderL.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
-//	    	encoderR.setReverseDirection(true);
-//	    	encoderL.setReverseDirection(true);
+	    	encoderR = new Encoder(RobotMap.DIOencoderRaFlat, RobotMap.DIOencoderRbFlat, false, Encoder.EncodingType.k4X);
+	    	encoderL = new Encoder(RobotMap.DIOencoderLaFlat, RobotMap.DIOencoderLbFlat, false, Encoder.EncodingType.k4X);
+	    	encoderR.reset();
+	    	encoderL.reset();
+	    	encoderR.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
+	    	encoderL.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
+	    	encoderR.setReverseDirection(true);
+	    	encoderL.setReverseDirection(true);
 	    	right1 = new Victor(2);
 	    	right2 = new Victor(3);
 	    	left1 = new Victor(0);
@@ -80,8 +83,8 @@ public class Drivetrain extends Subsystem {
 	    	drive = new DifferentialDrive(right, left);
     	}
     	else if (!RobotMap.flatbot && !RobotMap.compbot){
-    		encoderR = new Encoder(RobotMap.DIOencoderRa, RobotMap.DIOencoderRb, false, Encoder.EncodingType.k4X);
-	    	encoderL = new Encoder(RobotMap.DIOencoderLa, RobotMap.DIOencoderLb, false, Encoder.EncodingType.k4X);
+    		encoderR = new Encoder(RobotMap.DIOencoderRaFlat, RobotMap.DIOencoderRbFlat, false, Encoder.EncodingType.k4X);
+	    	encoderL = new Encoder(RobotMap.DIOencoderLaFlat, RobotMap.DIOencoderLbFlat, false, Encoder.EncodingType.k4X);
 	    	encoderR.reset();
 	    	encoderL.reset();
 	    	encoderR.setDistancePerPulse(RobotMap.LengthPerTickFeetPly);
@@ -105,6 +108,8 @@ public class Drivetrain extends Subsystem {
     	}
     	else if(RobotMap.compbot)
     	{
+    		encoderR = new Encoder(RobotMap.DIOencoderRbComp, RobotMap.DIOencoderRaComp, false, Encoder.EncodingType.k4X);
+	    	encoderL = new Encoder(RobotMap.DIOencoderLaComp, RobotMap.DIOencoderLbComp, false, Encoder.EncodingType.k4X);
 	    	left_motor1 = new WPI_VictorSPX(RobotMap.CANLeftMotor1);
 	    	left_motor2talon = new TalonSRX(RobotMap.CANLeftMotor2);
 	    	left_motor3 = new WPI_VictorSPX(RobotMap.CANLeftMotor3);
@@ -299,9 +304,9 @@ public class Drivetrain extends Subsystem {
     {
     	if(RobotMap.compbot)
     	{
-    		right_motor1.set(r);
-    		right_motor2talon.set(ControlMode.PercentOutput, r);
-    		right_motor3.set(r);
+    		right_motor1.set(-r);
+    		right_motor2talon.set(ControlMode.PercentOutput, -r);
+    		right_motor3.set(-r);
     		left_motor1.set(l);
     		left_motor2talon.set(ControlMode.PercentOutput, l);
     		left_motor3.set(l);
@@ -315,7 +320,7 @@ public class Drivetrain extends Subsystem {
     	if(RobotMap.flatbot) return getEncoderR() * RobotMap.LengthPerTickFeetFlat;
     	else return getEncoderR() * RobotMap.LengthPerTickFeetPly;
     }
-    
+   // 
     public double getEncoderLFeet()
     {
     	if(RobotMap.flatbot) return getEncoderL() * RobotMap.LengthPerTickFeetFlat;
@@ -327,7 +332,7 @@ public class Drivetrain extends Subsystem {
     	try {
     		return encoderR.get();
     	} catch(Exception e) {}
-    	return encoderR.get();
+    	return 0;
     }
     
     public int getEncoderL()
@@ -335,11 +340,16 @@ public class Drivetrain extends Subsystem {
     	try {
     		return encoderL.get();
     	} catch(Exception e) {}
-    	return encoderL.get();
+    	return 0;
     }
     
     public void zeroEncoders()
     {
+    	if(RobotMap.compbot)
+    	{
+    		encoderOffsetR += getEncoderR();
+    		encoderOffsetL += getEncoderL();
+    	}
     	encoderR.reset();
     	encoderL.reset();
     }
