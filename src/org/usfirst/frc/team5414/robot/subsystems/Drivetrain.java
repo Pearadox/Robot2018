@@ -4,7 +4,10 @@ import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 import org.usfirst.frc.team5414.robot.commands.DrivewithJoystick;
 
+import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -82,30 +85,6 @@ public class Drivetrain extends Subsystem {
 	    	right = new SpeedControllerGroup(right1, right2);
 	    	drive = new DifferentialDrive(right, left);
     	}
-    	else if (!RobotMap.flatbot && !RobotMap.compbot){
-    		encoderR = new Encoder(RobotMap.DIOencoderRaFlat, RobotMap.DIOencoderRbFlat, false, Encoder.EncodingType.k4X);
-	    	encoderL = new Encoder(RobotMap.DIOencoderLaFlat, RobotMap.DIOencoderLbFlat, false, Encoder.EncodingType.k4X);
-	    	encoderR.reset();
-	    	encoderL.reset();
-	    	encoderR.setDistancePerPulse(RobotMap.LengthPerTickFeetPly);
-	    	encoderL.setDistancePerPulse(RobotMap.LengthPerTickFeetPly);
-	    	encoderR.setReverseDirection(true);
-	    	encoderL.setReverseDirection(true);
-	    	
-	    	left_motor1 = new WPI_VictorSPX(RobotMap.CANLeftMotor1);
-	    	left_motor2 = new WPI_VictorSPX(RobotMap.CANLeftMotor2);
-	    	left_motor3 = new WPI_VictorSPX(RobotMap.CANLeftMotor3);
-			right_motor1 = new WPI_VictorSPX(RobotMap.CANRightMotor1);
-			right_motor2 = new WPI_VictorSPX(RobotMap.CANRightMotor2);
-			right_motor3 = new WPI_VictorSPX(RobotMap.CANRightMotor3);
-			left = new SpeedControllerGroup(left_motor1, left_motor2, left_motor3);
-			right = new SpeedControllerGroup(right_motor1, right_motor2, right_motor3);
-			drive = new DifferentialDrive(left, right);
-
-			
-			left_motor2.setInverted(true);
-			right_motor2.setInverted(true);
-    	}
     	else if(RobotMap.compbot)
     	{
     		encoderR = new Encoder(RobotMap.DIOencoderRbComp, RobotMap.DIOencoderRaComp, false, Encoder.EncodingType.k4X);
@@ -116,7 +95,46 @@ public class Drivetrain extends Subsystem {
 			right_motor1 = new WPI_VictorSPX(RobotMap.CANRightMotor1);
 			right_motor2talon = new TalonSRX(RobotMap.CANRightMotor2);
 			right_motor3 = new WPI_VictorSPX(RobotMap.CANRightMotor3);
+			
+			left_motor2talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+			left_motor2talon.configNeutralDeadband(.01, 0);
+			right_motor2talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+			right_motor2talon.configNeutralDeadband(.01, 0);
+			
+			Thread updateEncodersOnTalons = new Thread() {
+				public void run() {
+					try {
+						left_motor2talon.setSelectedSensorPosition(getEncoderL(), 0, 0);
+						right_motor2talon.setSelectedSensorPosition(getEncoderR(), 0, 0);
+						Thread.sleep(2);
+					} catch(Exception e) {e.printStackTrace();}
+				}
+			};
+			updateEncodersOnTalons.start();
+			
     	}
+    }
+    
+    public void motionProfile(Traj[] trajRaw)
+    {
+    	left_motor2talon.config_kF(0, 0, 0);
+		left_motor2talon.config_kP(0, 0, 0);
+		left_motor2talon.config_kI(0, 0, 0);
+		left_motor2talon.config_kD(0, 0, 0);
+		left_motor2talon.configMotionProfileTrajectoryPeriod(10, 0);
+		left_motor2talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
+		right_motor2talon.config_kF(0, 0, 0);
+		right_motor2talon.config_kP(0, 0, 0);
+		right_motor2talon.config_kI(0, 0, 0);
+		right_motor2talon.config_kD(0, 0, 0);
+		right_motor2talon.configMotionProfileTrajectoryPeriod(10, 0);
+		right_motor2talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
+		left_motor2talon.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
+    }
+    
+    public void stopMotionProfile() {
+    	left_motor2talon.clearMotionProfileTrajectories();
+    	right_motor2talon.clearMotionProfileTrajectories();
     }
     
     public void cheesyDrive(double throttle, double wheel, boolean isQuickTurn,
@@ -363,3 +381,24 @@ public class Drivetrain extends Subsystem {
     }
 }
 
+class Traj
+{
+
+    public double velocity = 0;
+    public double distance = 0;
+    public double acceleration = 0;
+
+    public Traj(double spd, double dist, double accel)
+    {
+        velocity = spd;
+        distance = dist;
+        acceleration = accel;
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%.2f", velocity) + "Ft/s | " + String.format("%.2f", distance)+ " Ft | " + acceleration + " Ft/s^2";
+    }
+    
+}

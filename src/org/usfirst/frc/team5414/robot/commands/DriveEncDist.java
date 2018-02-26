@@ -48,9 +48,7 @@ public class DriveEncDist extends Command{
 	final double Kd = 200;
 
     public DriveEncDist(double d) { //meters
-    	this((int)(d / RobotMap.LengthPerTickMetersFlat), (int)(d / RobotMap.LengthPerTickMetersFlat));
-//    	distance *= .92;
-//    	setTimeout(4);
+    	targetFeet = d;
 	}
     
     public DriveEncDist(double left, double right)
@@ -82,9 +80,11 @@ public class DriveEncDist extends Command{
 			RobotMap.plybotLkP = Robot.prefs.getDouble("PlyEnc L kP", RobotMap.plybotLkP);
 			RobotMap.plybotLkI = Robot.prefs.getDouble("PlyEnc L kI", RobotMap.plybotLkI);
 			RobotMap.plybotLkD = Robot.prefs.getDouble("PlyEnc L kD", RobotMap.plybotLkD);
+			RobotMap.plybotLkF = Robot.prefs.getDouble("PlyEnc L kF", RobotMap.plybotLkF);			
 			RobotMap.plybotRkP = Robot.prefs.getDouble("PlyEnc R kP", RobotMap.plybotRkP);
 			RobotMap.plybotRkI = Robot.prefs.getDouble("PlyEnc R kI", RobotMap.plybotRkI);
 			RobotMap.plybotRkD = Robot.prefs.getDouble("PlyEnc R kD", RobotMap.plybotRkD);
+			RobotMap.plybotRkF = Robot.prefs.getDouble("PlyEnc R kF", RobotMap.plybotRkF);
 		}
     	initialTime = Timer.getFPGATimestamp();
     	lastTime = Timer.getFPGATimestamp();
@@ -127,8 +127,8 @@ public class DriveEncDist extends Command{
     		double rightI = errorSumRight * (RobotMap.flatbot ? RobotMap.flatbotkI : RobotMap.plybotRkI);
     		double leftD = ((leftEnc.get(recordedLoops) - lastDesiredLeft) - (leftError - lastLeftError)) * (RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotLkD); //dSetpoint - dError , prevents derivative kick
     		double rightD = ((rightEnc.get(recordedLoops) - lastDesiredRight) - (rightError - lastRightError)) * (RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotRkD);//dSetpoint - dError
-    		double leftOutput = leftP + leftI - leftD; 
-    		double rightOutput = rightP + rightI - rightD;
+    		double leftOutput = leftP + leftI - leftD + RobotMap.plybotLkF; 
+    		double rightOutput = rightP + rightI - rightD + RobotMap.plybotRkF;
     		
     		Robot.drivetrain.drive(leftOutput, rightOutput);
     		
@@ -146,35 +146,7 @@ public class DriveEncDist extends Command{
     	}
     	else
     	{
-    		Traj trajectory = getTrajectory(Math.abs(targetFeet), elapsedTime);
-    		
-//	    	if(Robot.drivetrain.getEncoderL() < (initDistance + distance) && targetFeet >= 0) //positive
-//	    	{
-//	    		double error = trajectory.distance - (Robot.drivetrain.getEncoderL() - initialEncoderTicks) * RobotMap.LengthPerTickMetersFlat;
-//	    		double errorDeriv = (error - lastError) / lastTime;
-//	    		double motorSpeed = Kv * trajectory.velocity + Ka * trajectory.acceleration + Kp * error + Kd * errorDeriv;
-//	    		Robot.drivetrain.arcadeDrive(changeInAngle * drivep, motorSpeed, false);
-//	    		lastError = error;
-//	    		lastTime = Timer.getFPGATimestamp();
-//	    	}
-//	    	else if(Robot.drivetrain.getEncoderL() > (initDistance + distance) && targetFeet >= 0)
-//	    	{
-//	    		Robot.drivetrain.stop();
-//	    	}
-//	    	
-//	    	else if(Robot.drivetrain.getEncoderL() > (distance + initDistance) && targetFeet < 0) //negative
-//	    	{
-//	    		double error = (Robot.drivetrain.getEncoderL() - initialEncoderTicks) * RobotMap.LengthPerTickMetersFlat - trajectory.distance;
-//	    		double errorDeriv = (error - lastError) / lastTime;
-//	    		double motorSpeed = Kv * trajectory.velocity + Ka * trajectory.acceleration + Kp * error + Kd * errorDeriv;
-//	    		Robot.drivetrain.arcadeDrive(changeInAngle * drivep, -motorSpeed, false);
-//	    		lastError = error;
-//	    		lastTime = Timer.getFPGATimestamp();
-//	    	}
-//	    	else if(Robot.drivetrain.getEncoderL() < (distance + initDistance) && targetFeet < 0)
-//	    	{
-//	    		Robot.drivetrain.stop();
-//	    	}
+    		Traj[] trajectory = getTrajectory(targetFeet, .01);
     	}
     }
 
@@ -203,21 +175,6 @@ public class DriveEncDist extends Command{
     		}
     		return false;
     	}
-//    	if(presetTrajectory)
-//    	{
-//    		if(leftArr.length * timeStep >= changeInTime)
-//    			return true;
-//    		else return false;
-//    	}
-//    	if(Robot.drivetrain.getEncoderBL() >= initDistance + distance && targetFeet > 0){
-//    		return true;
-//    	}
-//    	else if((Robot.drivetrain.getEncoderBL() <= (initDistance + distance)) && targetFeet < 0)
-//    	{
-//    		return true;
-//    	}
-//    	else if(targetFeet == 0) return true;
-//    	
     	return false;
     }
 
@@ -236,67 +193,79 @@ public class DriveEncDist extends Command{
     	end();
     }
     
-    public static Traj getTrajectory(double distance, double time)
+    public static Traj[] getTrajectory(double distance, double interval) //meters, seconds
     {
         double accelTime = CRUISE_VELOCITY / ACCELERATION;
-        double accelDistance = .5 * ACCELERATION * accelTime * accelTime;
-
-        if(accelDistance * 2 <= distance) //trapezoidal
+        double accelDistance = .5 * ACCELERATION * accelTime * accelTime * Math.copySign(1, distance);
+        ArrayList<Traj> list = new ArrayList<>();
+        
+        if(Math.abs(accelDistance * 2) <= Math.abs(distance)) //trapezoidal
         {
-            double rectangleDistance = distance - accelDistance*2;
-            double cruiseTime = rectangleDistance / CRUISE_VELOCITY;
+            double rectangleDistance = (distance - accelDistance*2) * Math.copySign(1, distance);
+            double cruiseTime = Math.abs(rectangleDistance / CRUISE_VELOCITY);
 
-            if(time < accelTime)
+           
+            for(double time = 0 ;; time += interval)
             {
-                double s = ACCELERATION * time;
-                double a = ACCELERATION;
-                double d = .5 * s * time;
-                return new Traj(s, d, a);
+                if(time < accelTime)
+                {
+                    double s = ACCELERATION * time * Math.copySign(1, distance);
+                    double a = ACCELERATION * Math.copySign(1, distance);
+                    double d = .5 * s * time;
+                    list.add(new Traj(s, d, a));
+                }
+                else if(time <= cruiseTime + accelTime)
+                {
+                	double currentCruiseTime = time - accelTime;
+                	double s = CRUISE_VELOCITY;
+                	double a = 0;
+                	double d = accelDistance + currentCruiseTime * CRUISE_VELOCITY;
+                	list.add(new Traj(s, d, a));
+                }
+                else if(time <= cruiseTime + 2*accelTime)
+                {
+                    double timeAfterDecelerationStarted = time - cruiseTime - accelTime;
+                    double decelVelocity = (CRUISE_VELOCITY - ACCELERATION * timeAfterDecelerationStarted) * Math.copySign(1, distance);
+                    if(decelVelocity < 0) decelVelocity = 0;
+                    double s = decelVelocity;
+                    double a = -ACCELERATION * Math.copySign(1, distance);
+                    if(s == 0) a = 0;
+                    double d = distance - (accelTime - timeAfterDecelerationStarted)*s/2;
+                    list.add(new Traj(s, d, a));
+                }
+                else break;
             }
-
-            if(cruiseTime + accelTime <= time)
-            {
-                double timeAfterDecelerationStarted = time - cruiseTime - accelTime;
-                double toReturn = CRUISE_VELOCITY - ACCELERATION * timeAfterDecelerationStarted;
-                if(toReturn < 0) toReturn = 0;
-                double s = toReturn;
-                double a = -ACCELERATION;
-                if(toReturn == 0) a = 0;
-                double d = distance - (accelTime - timeAfterDecelerationStarted )*s/2;
-                return new Traj(s, d, a);
-            }
-            double s = CRUISE_VELOCITY;
-            double a = 0;
-            double d = accelDistance + (time - accelTime)*CRUISE_VELOCITY;
-            return new Traj(s, d, a);
+            
         }
-
-
         else //triangular
         {
-            accelDistance = distance / 2.;
-            accelTime = Math.sqrt(2 * accelDistance / ACCELERATION);
-            if(time <= accelTime)
+            accelDistance = distance / 2. * Math.copySign(1, distance);
+            accelTime = Math.sqrt(2 * accelDistance  * Math.copySign(1, distance)/ ACCELERATION);
+            for(double time = 0 ;; time+=interval)
             {
-                double s = ACCELERATION * time;
-                double a = ACCELERATION;
-                double d = .5 * s * time;
-                return new Traj(s, d, a);
-            }
-            else
-            {
-                double peakVelocity = ACCELERATION * accelTime;
-                double toReturn = peakVelocity - ACCELERATION * (time - accelTime);
-                if(toReturn < 0) toReturn = 0;
-                double s = toReturn;
-                double a = -ACCELERATION;
-                if(toReturn == 0) a = 0;
-                double d = distance - (accelTime * 2 - time) * s / 2;
-                return new Traj(s, d, a);
-            }
+	            if(time <= accelTime)
+	            {
+	                double s = ACCELERATION * time * Math.copySign(1, distance);
+	                double a = ACCELERATION * Math.copySign(1, distance);
+	                double d = .5 * s * time;
+	                list.add(new Traj(s, d, a));
+	            }
+	            else if(time <= 2 * accelTime)
+	            {
+	                double peakVelocity = ACCELERATION * accelTime * Math.copySign(1, distance);
+	                double decelVelocity = peakVelocity - ACCELERATION * (time - accelTime) * Math.copySign(1, distance);
+	                if(decelVelocity < 0) decelVelocity = 0;
+	                double s = decelVelocity;
+	                double a = -ACCELERATION * Math.copySign(1, distance);
+	                if(decelVelocity == 0) a = 0;
+	                double d = distance - (accelTime * 2 - time) * s / 2;
+	                list.add(new Traj(s, d, a));
+	            }
+	            else break;
+        	}
         }
+        return list.toArray(new Traj[list.size()]);
     }
-    
 }
 
 class Traj
@@ -319,22 +288,4 @@ class Traj
         return String.format("%.2f", velocity) + "Ft/s | " + String.format("%.2f", distance)+ " Ft | " + acceleration + " Ft/s^2";
     }
     
-}
-
-class MotorPair
-{
-	
-	public double one = 0;
-	public double two = 0;
-	
-	public MotorPair(double a, double b)
-	{
-		one = a;
-		two = b;
-	}
-	
-	public String toString()
-	{
-		return one + " " + two;
-	}
 }

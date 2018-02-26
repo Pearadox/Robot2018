@@ -139,9 +139,11 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("FlatEnc kP", RobotMap.flatbotkP);
 		prefs.putDouble("FlatEnc kI", RobotMap.flatbotkI);
 		prefs.putDouble("FlatEnc kD", RobotMap.flatbotkD);
+		prefs.putDouble("PlyEnc L kF", RobotMap.plybotLkF);
 		prefs.putDouble("PlyEnc L kP", RobotMap.plybotLkP);
 		prefs.putDouble("PlyEnc L kI", RobotMap.plybotLkI);
 		prefs.putDouble("PlyEnc L kD", RobotMap.plybotLkD);
+		prefs.putDouble("PlyEnc R kF", RobotMap.plybotRkF);
 		prefs.putDouble("PlyEnc R kP", RobotMap.plybotRkP);
 		prefs.putDouble("PlyEnc R kI", RobotMap.plybotRkI);
 		prefs.putDouble("PlyEnc R kD", RobotMap.plybotRkD);

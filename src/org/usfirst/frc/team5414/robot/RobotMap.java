@@ -75,9 +75,11 @@ public class RobotMap {
 	public static double flatbotkP = .004;
 	public static double flatbotkI = 0.00007;
 	public static double flatbotkD = 0.007;
+	public static double plybotLkF = .3;
 	public static double plybotLkD = 0.0061;
 	public static double plybotLkI = 0.00022;
 	public static double plybotLkP = .013;
+	public static double plybotRkF = .3;
 	public static double plybotRkD = 0.0035;
 	public static double plybotRkI = 0.000062;
 	public static double plybotRkP = .01;
