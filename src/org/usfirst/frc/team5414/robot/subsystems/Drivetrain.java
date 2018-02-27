@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5414.robot.subsystems;
 
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.followers.EncoderFollower;
 import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 import org.usfirst.frc.team5414.robot.commands.DrivewithJoystick;
@@ -34,6 +36,8 @@ public class Drivetrain extends Subsystem {
     public SpeedControllerGroup left;
     private DifferentialDrive drive;
     private static Encoder encoderL, encoderR;
+
+    private static final double MAX_VELOCITY = 5;
     
   private static final double kThrottleDeadband = 0.02;
   private static final double kWheelDeadband = 0.02;
@@ -114,16 +118,47 @@ public class Drivetrain extends Subsystem {
 			
     	}
     }
+
+    //returns true if finished
+    public boolean followTrajectory(EncoderFollower left, EncoderFollower right)
+	{
+		left.configureEncoder(getEncoderL(), 128, RobotMap.wheelDiameterFeet);
+		right.configureEncoder(getEncoderL(), 128, RobotMap.wheelDiameterFeet);
+		// The first argument is the proportional gain. Usually this will be quite high
+		// The second argument is the integral gain. This is unused for motion profiling
+		// The third argument is the derivative gain. Tweak this if you are unhappy with the tracking of the trajectory
+		// The fourth argument is the velocity ratio. This is 1 over the maximum velocity you provided in the
+		//      trajectory configuration (it translates m/s to a -1 to 1 scale that your motors can read)
+		// The fifth argument is your acceleration gain. Tweak this if you want to get to a higher or lower speed quicker
+		left.configurePIDVA(0,0,0, 1 / MAX_VELOCITY, 0);
+		right.configurePIDVA(0,0,0, 1 / MAX_VELOCITY, 0);
+        double outputL = left.calculate(getEncoderL());
+        double outputR = right.calculate(getEncoderR());
+        double turn = 0;
+        if (RobotMap.hasGyro)
+        {
+            double gyro_heading = Robot.gyro.getTrueYaw();    // Assuming the gyro is giving a value in degrees
+            double desired_heading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
+            double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
+            turn = 0.8 * (-1.0 / 80.0) * angleDifference;
+        }
+        Robot.drivetrain.drive(outputL + turn, outputR - turn);
+        return left.isFinished() && right.isFinished();
+	}
     
     public void motionProfile(Traj[] trajRaw)
     {
-    	left_motor2talon.config_kF(0, 0, 0);
+		final int maxTicksPer100msLeft = 0;
+		final int maxTicksPer100msRight = 0;
+
+    	left_motor2talon.config_kF(0, 1023/maxTicksPer100msLeft, 0);
 		left_motor2talon.config_kP(0, 0, 0);
 		left_motor2talon.config_kI(0, 0, 0);
 		left_motor2talon.config_kD(0, 0, 0);
 		left_motor2talon.configMotionProfileTrajectoryPeriod(10, 0);
 		left_motor2talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
-		right_motor2talon.config_kF(0, 0, 0);
+
+		right_motor2talon.config_kF(0, 1023/maxTicksPer100msRight, 0);
 		right_motor2talon.config_kP(0, 0, 0);
 		right_motor2talon.config_kI(0, 0, 0);
 		right_motor2talon.config_kD(0, 0, 0);
@@ -336,13 +371,13 @@ public class Drivetrain extends Subsystem {
     public double getEncoderRFeet()
     {
     	if(RobotMap.flatbot) return getEncoderR() * RobotMap.LengthPerTickFeetFlat;
-    	else return getEncoderR() * RobotMap.LengthPerTickFeetPly;
+    	else return getEncoderR() * RobotMap.LengthPerTickFeet;
     }
    // 
     public double getEncoderLFeet()
     {
     	if(RobotMap.flatbot) return getEncoderL() * RobotMap.LengthPerTickFeetFlat;
-    	else return getEncoderL() * RobotMap.LengthPerTickFeetPly;
+    	else return getEncoderL() * RobotMap.LengthPerTickFeet;
     }
     
     public int getEncoderR()

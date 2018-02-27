@@ -20,10 +20,10 @@ public class RobotMap {
 	public static boolean compbot = false;
 	public static boolean hasLimelight = false;
 	public static boolean hasGyro = false;
-	public static boolean hasCompressor = true;
+	public static boolean hasCompressor = false;
 	public static boolean hasCam = false;
 	public static boolean hasArm = false;
-	public static boolean hasSpintake = true;
+	public static boolean hasSpintake = false;
 	
 	//Ports for random parts
 	public static int GyroPort = 0;
@@ -63,13 +63,13 @@ public class RobotMap {
 			public static double LengthPerTickFeetFlat = CircumferenceFeetFlat / EncoderPulsePerRevFlat; 
 			public static double LengthPerTickMetersFlat = CircumferenceMetersFlat / EncoderPulsePerRevFlat; 
 			//plybot
-			public static double wheelDiameterFeetPly = 6. / 12; //IN FEET
-			public static double wheelDiameterMetersPly = wheelDiameterFeetPly * .3048; //IN FEET
-			public static double EncoderPulsePerRevPly = 256;
-			public static double CircumferenceFeetPly = wheelDiameterFeetPly * Math.PI;
-			public static double CircumferenceMetersPly = wheelDiameterMetersPly * Math.PI;
-			public static double LengthPerTickFeetPly = CircumferenceFeetPly / EncoderPulsePerRevPly; 
-			public static double LengthPerTickMetersPly = CircumferenceMetersPly / EncoderPulsePerRevPly; 
+			public static double wheelDiameterFeet = 6. / 12; //IN FEET
+			public static double wheelDiameterMeters = wheelDiameterFeet * .3048; //IN FEET
+			public static double EncoderPulsePerRev = 128;
+			public static double CircumferenceFeet = wheelDiameterFeet * Math.PI;
+			public static double CircumferenceMeters = wheelDiameterMeters * Math.PI;
+			public static double LengthPerTickFeet = CircumferenceFeet / EncoderPulsePerRev;
+			public static double LengthPerTickMeters = CircumferenceMeters / EncoderPulsePerRev;
 		
 	//Motion Profiling/Encoder Following PID Loop
 	public static double flatbotkP = .004;
