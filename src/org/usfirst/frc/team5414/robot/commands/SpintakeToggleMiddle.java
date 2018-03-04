@@ -7,15 +7,16 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ZeroGyro extends Command {
+public class SpintakeToggleMiddle extends Command {
 
-    public ZeroGyro() {
-        requires(Robot.gyro);
+    public SpintakeToggleMiddle() {
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.gyro.zeroYaw();
+    	Robot.spintake.toggleMiddle();
     }
 
     // Called repeatedly when this Command is scheduled to run

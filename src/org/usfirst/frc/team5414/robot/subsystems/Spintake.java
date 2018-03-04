@@ -13,15 +13,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Spintake extends Subsystem {
 
 	VictorSPX left, right;
-	DoubleSolenoid solLeft, solRight;
+	DoubleSolenoid solLeft, solRight, solMiddle;
 	boolean orienting = false;
 	
 	public Spintake()
 	{
-		left = new VictorSPX(21);
-		right = new VictorSPX(22);
+		left = new VictorSPX(22);
+		right = new VictorSPX(21);
 		solLeft = new DoubleSolenoid(2,5);
 		solRight = new DoubleSolenoid(1, 6);
+		solMiddle = new DoubleSolenoid(0, 7);
 	}
 	
 	public void pushIn() {
@@ -32,6 +33,12 @@ public class Spintake extends Subsystem {
 	public void pushOut() {
 		solLeft.set(DoubleSolenoid.Value.kForward);
 		solRight.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	public void toggleMiddle() {
+		if(solMiddle.get() == DoubleSolenoid.Value.kReverse) 
+			solMiddle.set(DoubleSolenoid.Value.kForward);
+    	else solMiddle.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	public void intake()
@@ -62,6 +69,16 @@ public class Spintake extends Subsystem {
 	{
 		left.set(ControlMode.PercentOutput, 0);
 		right.set(ControlMode.PercentOutput, 0);
+	}
+	
+	public void setLeft(double percentOutput)
+	{
+		left.set(ControlMode.PercentOutput, percentOutput);
+	}
+	
+	public void setRight(double percentOutput)
+	{
+		right.set(ControlMode.PercentOutput, percentOutput);
 	}
 
     public void initDefaultCommand() {

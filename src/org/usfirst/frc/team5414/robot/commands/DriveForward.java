@@ -10,16 +10,14 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class TurnRight extends CommandGroup {
+public class DriveForward extends CommandGroup {
 
-	double halfturn = 256;
-	double maxVelocity = 10;
-	double acceleration = 4;
+	double maxVelocity = 15;
+	double acceleration = 5;
 	
-    public TurnRight(double degrees) {
-        double desired = degrees / 180. * halfturn;
-        org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(desired*RobotMap.FeetPerTick, .02, maxVelocity, acceleration);
-        org.usfirst.frc.team5414.robot.Traj[] right = TrajectoryGenerator.getTrajectory(-desired*RobotMap.FeetPerTick, .02, maxVelocity, acceleration);
+    public DriveForward(double feet) {
+        org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(feet, .02, maxVelocity, acceleration);
+        org.usfirst.frc.team5414.robot.Traj[] right = TrajectoryGenerator.getTrajectory(feet, .02, maxVelocity, acceleration);
         ArrayList<Double> leftList = new ArrayList<>();
         ArrayList<Double> rightList = new ArrayList<>();
         int skip = 0;

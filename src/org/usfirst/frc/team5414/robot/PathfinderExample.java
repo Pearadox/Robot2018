@@ -1,9 +1,5 @@
 package org.usfirst.frc.team5414.robot;
 
-import jaci.pathfinder.Pathfinder;
-import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Waypoint;
-import jaci.pathfinder.modifiers.TankModifier;
 
 import java.io.File;
 
@@ -14,6 +10,7 @@ public class PathfinderExample
 
     public static void main(String[] args)
     {
+    	/*
         Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH,
                 0.05, 10, 2.0, 60.0);
         Waypoint[] points = new Waypoint[] {
@@ -43,6 +40,7 @@ public class PathfinderExample
         //reading trajectory
         File myFile2 = new File("myfile.traj");
         trajectory = Pathfinder.readFromFile(myFile2);
+        */
     }
 
 }

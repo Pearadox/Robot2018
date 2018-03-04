@@ -42,7 +42,7 @@ public class VisionGoToCube extends Command {
     	//turn to cube
     	if(!Robot.limelight.hasTarget()) //if robot doesn't see a cube, constantly turn left 
     	{
-    		Robot.drivetrain.drive(.55, -.55);
+    		Robot.drivetrain.drive(.23, -.23);
     		return;
     	}
     	currentTimeoutLoops = 0;
@@ -53,17 +53,17 @@ public class VisionGoToCube extends Command {
     	
     	errorSum += error;
     	if(Math.abs(error) <= 2) errorSum = 0;
-    	double F = error > 0 ? 0.05 : -0.05;
+    	double F = error > 0 ? 0.1 : -0.1;
     	double P = error * RobotMap.forwardTurnLimekP;
     	double I = errorSum * RobotMap.forwardTurnLimekI;
-    	double D = (lastError - error) * RobotMap.forwardTurnLimekD;
+    	double D = (lastError - error) * (area > 2 ? RobotMap.turnLimekD/20. : RobotMap.turnLimekD);
     	double output = P + I - D + F;
-    	leftOutput = -output;
-    	rightOutput = output;
+    	leftOutput = output;
+    	rightOutput = -output;
     	
     	double areaError = targetArea - area;
     	double forwardP = areaError * RobotMap.forwardLimekP;
-    	double forwardD = (lastError - areaError) * RobotMap.forwardLimekD;
+    	double forwardD = (lastAreaError - areaError) * RobotMap.forwardLimekD;
     	double forwardOutput = forwardP - forwardD;
     	leftOutput += forwardOutput;
     	rightOutput += forwardOutput;

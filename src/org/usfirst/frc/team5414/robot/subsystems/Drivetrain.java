@@ -1,9 +1,8 @@
 package org.usfirst.frc.team5414.robot.subsystems;
 
-import jaci.pathfinder.Pathfinder;
-import jaci.pathfinder.followers.EncoderFollower;
 import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
+import org.usfirst.frc.team5414.robot.Traj;
 import org.usfirst.frc.team5414.robot.commands.DrivewithJoystick;
 
 import com.ctre.phoenix.motion.SetValueMotionProfile;
@@ -29,15 +28,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Drivetrain extends Subsystem {
 
-    private WPI_VictorSPX right_motor1, right_motor2, right_motor3, left_motor1, left_motor2, left_motor3;
-    private TalonSRX right_motor2talon, left_motor2talon;
+    private WPI_VictorSPX rightSlave1, rightSlave2, leftSlave1, leftSlave2;
+    private TalonSRX rightMaster, leftMaster;
 	public SpeedController right1, right2, left1, left2;
     public SpeedControllerGroup right;
     public SpeedControllerGroup left;
     private DifferentialDrive drive;
     private static Encoder encoderL, encoderR;
-
-    private static final double MAX_VELOCITY = 5;
     
   private static final double kThrottleDeadband = 0.02;
   private static final double kWheelDeadband = 0.02;
@@ -73,8 +70,8 @@ public class Drivetrain extends Subsystem {
 	    	encoderL = new Encoder(RobotMap.DIOencoderLaFlat, RobotMap.DIOencoderLbFlat, false, Encoder.EncodingType.k4X);
 	    	encoderR.reset();
 	    	encoderL.reset();
-	    	encoderR.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
-	    	encoderL.setDistancePerPulse(RobotMap.LengthPerTickFeetFlat);
+	    	encoderR.setDistancePerPulse(RobotMap.FeetPerTickFlat);
+	    	encoderL.setDistancePerPulse(RobotMap.FeetPerTickFlat);
 	    	encoderR.setReverseDirection(true);
 	    	encoderL.setReverseDirection(true);
 	    	right1 = new Victor(2);
@@ -93,24 +90,31 @@ public class Drivetrain extends Subsystem {
     	{
     		encoderR = new Encoder(RobotMap.DIOencoderRbComp, RobotMap.DIOencoderRaComp, false, Encoder.EncodingType.k4X);
 	    	encoderL = new Encoder(RobotMap.DIOencoderLaComp, RobotMap.DIOencoderLbComp, false, Encoder.EncodingType.k4X);
-	    	left_motor1 = new WPI_VictorSPX(RobotMap.CANLeftMotor1);
-	    	left_motor2talon = new TalonSRX(RobotMap.CANLeftMotor2);
-	    	left_motor3 = new WPI_VictorSPX(RobotMap.CANLeftMotor3);
-			right_motor1 = new WPI_VictorSPX(RobotMap.CANRightMotor1);
-			right_motor2talon = new TalonSRX(RobotMap.CANRightMotor2);
-			right_motor3 = new WPI_VictorSPX(RobotMap.CANRightMotor3);
+	    	leftSlave1 = new WPI_VictorSPX(RobotMap.CANLeftSlave1);
+	    	leftMaster = new TalonSRX(RobotMap.CANLeftMaster);
+	    	leftSlave2 = new WPI_VictorSPX(RobotMap.CANLeftSlave2);
+			rightSlave1 = new WPI_VictorSPX(RobotMap.CANRightSlave1);
+			rightMaster = new TalonSRX(RobotMap.CANRightMaster);
+			rightSlave2 = new WPI_VictorSPX(RobotMap.CANRightSlave2);
 			
-			left_motor2talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-			left_motor2talon.configNeutralDeadband(.01, 0);
-			right_motor2talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-			right_motor2talon.configNeutralDeadband(.01, 0);
+			leftSlave1.follow(leftMaster);
+	    	leftSlave2.follow(leftMaster);
+	    	rightSlave1.follow(rightMaster);
+	    	rightSlave2.follow(rightMaster);
+	    	
+			leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+			leftMaster.configNeutralDeadband(.01, 0);
+			rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+			rightMaster.configNeutralDeadband(.01, 0);
 			
 			Thread updateEncodersOnTalons = new Thread() {
 				public void run() {
 					try {
-						left_motor2talon.setSelectedSensorPosition(getEncoderL(), 0, 0);
-						right_motor2talon.setSelectedSensorPosition(getEncoderR(), 0, 0);
-						Thread.sleep(2);
+						while(true) {
+							leftMaster.setSelectedSensorPosition(getEncoderL(), 0, 0);
+							rightMaster.setSelectedSensorPosition(getEncoderR(), 0, 0);
+							Thread.sleep(2);
+						}
 					} catch(Exception e) {e.printStackTrace();}
 				}
 			};
@@ -118,7 +122,43 @@ public class Drivetrain extends Subsystem {
 			
     	}
     }
-
+    
+    public void setPIDLeft(double kF, double kP, double kI, double kD)
+    {
+    	RobotMap.MMLeftkD = kD;
+    	RobotMap.MMLeftkF = kF;
+    	RobotMap.MMLeftkI = kI;
+    	RobotMap.MMLeftkP = kP;
+    	leftMaster.config_kF(0, RobotMap.MMLeftkF, 10);
+		leftMaster.config_kP(0, RobotMap.MMLeftkP, 10);
+		leftMaster.config_kI(0, RobotMap.MMLeftkI, 10);
+		leftMaster.config_kD(0, RobotMap.MMLeftkD, 10);
+    }
+    
+    public void setPIDRight(double kF, double kP, double kI, double kD)
+    {
+    	RobotMap.MMRightkD = kD;
+    	RobotMap.MMRightkF = kF;
+    	RobotMap.MMRightkI = kI;
+    	RobotMap.MMRightkP = kP;	
+    	rightMaster.config_kF(0, RobotMap.MMRightkF, 10);
+		rightMaster.config_kP(0, RobotMap.MMRightkP, 10);
+		rightMaster.config_kI(0, RobotMap.MMRightkI, 10);
+		rightMaster.config_kD(0, RobotMap.MMRightkD, 10);
+    }
+    
+    public void motionMagic(int leftTargetTicks, int rightTargetTicks)
+    {
+    	leftSlave1.follow(leftMaster);
+    	leftSlave2.follow(leftMaster);
+    	rightSlave1.follow(rightMaster);
+    	rightSlave2.follow(rightMaster);
+    	leftMaster.set(ControlMode.MotionMagic, leftTargetTicks);
+    	rightMaster.set(ControlMode.MotionMagic, rightTargetTicks);
+    }
+    
+    
+/*
     //returns true if finished
     public boolean followTrajectory(EncoderFollower left, EncoderFollower right)
 	{
@@ -145,33 +185,32 @@ public class Drivetrain extends Subsystem {
         Robot.drivetrain.drive(outputL + turn, outputR - turn);
         return left.isFinished() && right.isFinished();
 	}
-    
+ */
     public void motionProfile(Traj[] trajRaw)
     {
 		final int maxTicksPer100msLeft = 0;
 		final int maxTicksPer100msRight = 0;
 
-    	left_motor2talon.config_kF(0, 1023/maxTicksPer100msLeft, 0);
-		left_motor2talon.config_kP(0, 0, 0);
-		left_motor2talon.config_kI(0, 0, 0);
-		left_motor2talon.config_kD(0, 0, 0);
-		left_motor2talon.configMotionProfileTrajectoryPeriod(10, 0);
-		left_motor2talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
+		leftMaster.config_kF(0, 1023/maxTicksPer100msLeft, 0);
+		leftMaster.config_kP(0, 0, 0);
+		leftMaster.config_kI(0, 0, 0);
+		leftMaster.config_kD(0, 0, 0);
+//		leftMaster.configMotionProfileTrajectoryPeriod(10, 0);
+		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
 
-		right_motor2talon.config_kF(0, 1023/maxTicksPer100msRight, 0);
-		right_motor2talon.config_kP(0, 0, 0);
-		right_motor2talon.config_kI(0, 0, 0);
-		right_motor2talon.config_kD(0, 0, 0);
-		right_motor2talon.configMotionProfileTrajectoryPeriod(10, 0);
-		right_motor2talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
-		left_motor2talon.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
+		rightMaster.config_kF(0, 1023/maxTicksPer100msRight, 0);
+		rightMaster.config_kP(0, 0, 0);
+		rightMaster.config_kI(0, 0, 0);
+		rightMaster.config_kD(0, 0, 0);
+//		rightMaster.configMotionProfileTrajectoryPeriod(10, 0);
+		rightMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
+		rightMaster.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
     }
     
     public void stopMotionProfile() {
-    	left_motor2talon.clearMotionProfileTrajectories();
-    	right_motor2talon.clearMotionProfileTrajectories();
-    }
-    
+    	leftMaster.clearMotionProfileTrajectories();
+    	rightMaster.clearMotionProfileTrajectories();
+    }  
     public void cheesyDrive(double throttle, double wheel, boolean isQuickTurn,
     		boolean isHighGear) {
 		
@@ -343,12 +382,12 @@ public class Drivetrain extends Subsystem {
     		}
     		double leftSpeed = throttle - twist;
     		double rightSpeed = -throttle - twist;
-    		right_motor1.set(rightSpeed);
-    		right_motor2talon.set(ControlMode.PercentOutput, rightSpeed);
-    		right_motor3.set(rightSpeed);
-    		left_motor1.set(leftSpeed);
-    		left_motor2talon.set(ControlMode.PercentOutput, leftSpeed);
-    		left_motor3.set(leftSpeed);
+//    		rightSlave1.set(rightSpeed);
+    		rightMaster.set(ControlMode.PercentOutput, rightSpeed);
+//    		rightSlave2.set(rightSpeed);
+//    		leftSlave1.set(leftSpeed);
+    		leftMaster.set(ControlMode.PercentOutput, leftSpeed);
+//    		leftSlave2.set(leftSpeed);
     	}
     	else drive.arcadeDrive(throttle,twist, squared);
     }
@@ -357,12 +396,12 @@ public class Drivetrain extends Subsystem {
     {
     	if(RobotMap.compbot)
     	{
-    		right_motor1.set(-r);
-    		right_motor2talon.set(ControlMode.PercentOutput, -r);
-    		right_motor3.set(-r);
-    		left_motor1.set(l);
-    		left_motor2talon.set(ControlMode.PercentOutput, l);
-    		left_motor3.set(l);
+//    		rightSlave1.set(-r);
+    		rightMaster.set(ControlMode.PercentOutput, -r);
+//    		rightSlave2.set(-r);
+//    		leftSlave1.set(l);
+    		leftMaster.set(ControlMode.PercentOutput, l);
+//    		leftSlave2.set(l);
     	}
     	else if(RobotMap.flatbot) drive.tankDrive(-l, r);
     	else drive.tankDrive(l, r);
@@ -370,14 +409,14 @@ public class Drivetrain extends Subsystem {
     
     public double getEncoderRFeet()
     {
-    	if(RobotMap.flatbot) return getEncoderR() * RobotMap.LengthPerTickFeetFlat;
-    	else return getEncoderR() * RobotMap.LengthPerTickFeet;
+    	if(RobotMap.flatbot) return getEncoderR() * RobotMap.FeetPerTickFlat;
+    	else return getEncoderR() * RobotMap.FeetPerTick;
     }
    // 
     public double getEncoderLFeet()
     {
-    	if(RobotMap.flatbot) return getEncoderL() * RobotMap.LengthPerTickFeetFlat;
-    	else return getEncoderL() * RobotMap.LengthPerTickFeet;
+    	if(RobotMap.flatbot) return getEncoderL() * RobotMap.FeetPerTickFlat;
+    	else return getEncoderL() * RobotMap.FeetPerTick;
     }
     
     public int getEncoderR()
@@ -398,11 +437,6 @@ public class Drivetrain extends Subsystem {
     
     public void zeroEncoders()
     {
-    	if(RobotMap.compbot)
-    	{
-    		encoderOffsetR += getEncoderR();
-    		encoderOffsetL += getEncoderL();
-    	}
     	encoderR.reset();
     	encoderL.reset();
     }
@@ -414,26 +448,4 @@ public class Drivetrain extends Subsystem {
     public void initDefaultCommand() {
     	setDefaultCommand(new DrivewithJoystick());
     }
-}
-
-class Traj
-{
-
-    public double velocity = 0;
-    public double distance = 0;
-    public double acceleration = 0;
-
-    public Traj(double spd, double dist, double accel)
-    {
-        velocity = spd;
-        distance = dist;
-        acceleration = accel;
-    }
-
-    @Override
-    public String toString()
-    {
-        return String.format("%.2f", velocity) + "Ft/s | " + String.format("%.2f", distance)+ " Ft | " + acceleration + " Ft/s^2";
-    }
-    
 }

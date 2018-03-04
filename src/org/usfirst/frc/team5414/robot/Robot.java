@@ -14,9 +14,12 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team5414.robot.commands.AutonomousLeftToRightScale;
-import org.usfirst.frc.team5414.robot.commands.DriveEncDist;
-import org.usfirst.frc.team5414.robot.commands.SetAngle;
+import org.usfirst.frc.team5414.robot.commands.AutoPathLtoRScale;
+import org.usfirst.frc.team5414.robot.commands.AutoPathMtoRScale;
+import org.usfirst.frc.team5414.robot.commands.AutoPathRtoLScale;
+import org.usfirst.frc.team5414.robot.commands.DriveForward;
+import org.usfirst.frc.team5414.robot.commands.FollowEncoder;
+import org.usfirst.frc.team5414.robot.commands.MotionMagic;
 import org.usfirst.frc.team5414.robot.commands.TurnRight;
 import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
 import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
@@ -26,6 +29,7 @@ import org.usfirst.frc.team5414.robot.subsystems.Arm;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5414.robot.subsystems.IMU;
 import org.usfirst.frc.team5414.robot.subsystems.Limelight;
+import org.usfirst.frc.team5414.robot.subsystems.PDP;
 import org.usfirst.frc.team5414.robot.subsystems.Spintake;
 
 public class Robot extends TimedRobot {
@@ -40,6 +44,7 @@ public class Robot extends TimedRobot {
 	public static Arm arm;
 	public static Spintake spintake;
 	public static I2C i2c = new I2C(Port.kOnboard, 4);
+	public static PDP pdp;
 	
 	Command autonomousCommand;
 	
@@ -48,14 +53,12 @@ public class Robot extends TimedRobot {
 		drivetrain = new Drivetrain();
 		prefs = Preferences.getInstance();
 		limelight = new Limelight();
+//		pdp = new PDP();
 		if(RobotMap.hasArm)
 		{
 			arm = new Arm();	
 		}
-		if(RobotMap.hasSpintake)
-		{
-			spintake = new Spintake();
-		}
+		if(RobotMap.hasSpintake) spintake = new Spintake();
 		oi = new OI();
 		if(RobotMap.hasCompressor)
 		{
@@ -66,10 +69,12 @@ public class Robot extends TimedRobot {
 		{
 			gyro = new IMU();
 			gyro.initialize();
+			
 			SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 		}
 		addPreferences();
-		SmartDashboard.putData("Turn Right", new TurnRight(45));
+		SmartDashboard.putData("Turn Right", new TurnRight(90));
+		SmartDashboard.putData("Drive Forward", new DriveForward(10));
 		if(RobotMap.hasLimelight)
 		{
 			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
@@ -92,7 +97,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = new AutonomousLeftToRightScale();
+//		autonomousCommand = new AutoPathRtoLScale();
+		autonomousCommand = new AutoPathMtoRScale();
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
@@ -115,7 +121,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putData("Test Drive Enc", new DriveEncDist(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
+		SmartDashboard.putData("Test Drive Enc", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
+		SmartDashboard.putData("Motion Magic", new MotionMagic(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		if(RobotMap.compbot) updateDashboard();
 		i2c.write(4, 1);
 	}
@@ -130,7 +137,12 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putNumber("ty", Robot.limelight.getY());
 			SmartDashboard.putNumber("ta", Robot.limelight.getArea());
 		}
-		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw", gyro.getYaw());
+		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw", gyro.getYaw()%360);
+		if(RobotMap.hasSpintake)
+		{
+			SmartDashboard.putNumber("Left Spintake Current", pdp.getLeftSpintake());
+			SmartDashboard.putNumber("Right Spintake Current", pdp.getRightSpintake());
+		}
 		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
 		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
 	}
@@ -154,6 +166,14 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Limelight Forward Turn kD", RobotMap.forwardTurnLimekD);
 		prefs.putDouble("Limelight Forward kP", RobotMap.forwardLimekP);
 		prefs.putDouble("Limelight Forward kD", RobotMap.forwardLimekD);
+		prefs.putDouble("Motion Magic Left kP", RobotMap.MMLeftkP);
+		prefs.putDouble("Motion Magic Left kI", RobotMap.MMLeftkI);
+		prefs.putDouble("Motion Magic Left kD", RobotMap.MMLeftkD);
+		prefs.putDouble("Motion Magic Left kF", RobotMap.MMLeftkF);
+		prefs.putDouble("Motion Magic Right kP", RobotMap.MMRightkP);
+		prefs.putDouble("Motion Magic Right kI", RobotMap.MMRightkI);
+		prefs.putDouble("Motion Magic Right kD", RobotMap.MMRightkD);
+		prefs.putDouble("Motion Magic Right kF", RobotMap.MMRightkF);
 		prefs.putInt("Desired Left Enc", 300);
 		prefs.putInt("Desired Right Enc", 300);
 		prefs.putDouble("Desired Angle", 0);

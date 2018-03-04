@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class Intake extends Command {
+public class ArmHold extends Command {
 
-    public Intake() {
+    public ArmHold() {
+        requires(Robot.arm);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.spintake.intake();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -28,12 +28,10 @@ public class Intake extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.spintake.stop();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
     }
 }

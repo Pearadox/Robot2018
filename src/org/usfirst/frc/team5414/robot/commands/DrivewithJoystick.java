@@ -5,6 +5,7 @@ import org.usfirst.frc.team5414.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
  *
@@ -32,6 +33,12 @@ public class DrivewithJoystick extends Command {
     	}
     	else Robot.drivetrain.arcadeDrive(Robot.oi.getJoystick());
 //    	Robot.drivetrain.arcadeDrive(-Robot.oi.getJoystick().getY(), Robot.oi.getJoystick().getZ());
+    	
+    	int pov = js.getPOV();
+    	if(pov != -1)
+    	{
+    		Scheduler.getInstance().add(new SetAngle(pov));
+    	}
     }
 
    
