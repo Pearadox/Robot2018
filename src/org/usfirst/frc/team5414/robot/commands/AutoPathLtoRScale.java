@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
  * Goes from left side of starting area to the front of the right scale
+ * 
+ * 	Approximate Time: 6 sec
  */
 public class AutoPathLtoRScale extends CommandGroup {
 

@@ -17,21 +17,24 @@ public class Arm extends Subsystem {
 	TalonSRX talon;
 	DoubleSolenoid solPincher;
 	
-	final double VHigh = 5;
-	final double VLow = 0;
-	final double angleLow = 0;
-	final double angleHigh = 360;
+	//potentiometer parameters
+	final static double VHigh = 5;
+	final static double VLow = 0;
+	final static double angleLow = 0;
+	final static double angleHigh = 360;
 	
 	final double kP = 0;
 	final double kI = 0;
 	final double kD = 0;
 	
-	
+	/*
+	 * postive motor output will raise arm, negative will lower arm
+	 */
 	public Arm() {
 		talon = new TalonSRX(RobotMap.CANArmTalon);
 		talon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
 		talon.setSensorPhase(true);
-		talon.setInverted(false);
+		talon.setInverted(true);
 		talon.configNominalOutputForward(0, 10);
 		talon.configNominalOutputReverse(0, 10);
 		talon.configPeakOutputForward(1, 10);
@@ -50,6 +53,9 @@ public class Arm extends Subsystem {
 	
 	public void setAngle(double degrees)
 	{
+		RobotMap.armkP = Robot.prefs.getDouble("Arm kP", RobotMap.armkP);
+		RobotMap.armkI = Robot.prefs.getDouble("Arm kI", RobotMap.armkI);
+		RobotMap.armkD = Robot.prefs.getDouble("Arm kD", RobotMap.armkD);
 		talon.set(ControlMode.Position, map(degrees, angleLow, angleHigh, VLow, VHigh));
 	}
 	
@@ -62,11 +68,11 @@ public class Arm extends Subsystem {
 	}
 	
 	public void armUp() {
-		talon.set(ControlMode.PercentOutput, -.7);
+		talon.set(ControlMode.PercentOutput, .7);
 	}
 	
 	public void armDown() {
-		talon.set(ControlMode.PercentOutput, .4);
+		talon.set(ControlMode.PercentOutput, -.4);
 	}
 	
 	public void stop() {

@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- *
+ *	Goes and turns to cube at same time
+ *	CAMERA IS INVERSED
  */
 public class VisionGoToCube extends Command {
 
@@ -24,7 +25,6 @@ public class VisionGoToCube extends Command {
     	requires(Robot.drivetrain);
     }
 
-    // Called just before this Command runs the first time
     protected void initialize() {
     	errorSum = 0;
     	lastError = 0;
@@ -37,7 +37,6 @@ public class VisionGoToCube extends Command {
     	RobotMap.forwardLimekD = Robot.prefs.getDouble("Limelight Forward kD", RobotMap.forwardLimekD);
     }
 
-    // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	//turn to cube
     	if(!Robot.limelight.hasTarget()) //if robot doesn't see a cube, constantly turn left 

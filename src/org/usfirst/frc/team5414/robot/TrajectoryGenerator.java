@@ -12,18 +12,21 @@ public class TrajectoryGenerator {
     {
 		CRUISE_VELOCITY = cruiseVelocity;
 		ACCELERATION = acceleration;
+
+		//Calculate trapezoidal distance to determine whether to use trapezoidal or triangular motion profile
         double accelTime = CRUISE_VELOCITY / ACCELERATION;
         double accelDistance = .5 * ACCELERATION * accelTime * accelTime * Math.copySign(1, distance);
-        ArrayList<Traj> list = new ArrayList<>();
         
+        ArrayList<Traj> list = new ArrayList<>();        
         if(Math.abs(accelDistance * 2) <= Math.abs(distance)) //trapezoidal
         {
             double rectangleDistance = (distance - accelDistance*2);
             double cruiseTime = Math.abs(rectangleDistance / CRUISE_VELOCITY);
-
-           
+            
+            //create trajectory for every single point in time
             for(double time = 0 ;; time += interval)
             {
+            	//section 1: accelerating to cruise velocity
                 if(time < accelTime)
                 {
                     double s = ACCELERATION * time * Math.copySign(1, distance);
@@ -31,6 +34,7 @@ public class TrajectoryGenerator {
                     double d = .5 * s * time;
                     list.add(new Traj(s, d, a));
                 }
+                //section 2: cruising along at CRUISE_VELOCITY
                 else if(time < cruiseTime + accelTime)
                 {
                 	double currentCruiseTime = time - accelTime;
@@ -39,6 +43,7 @@ public class TrajectoryGenerator {
                 	double d = (accelDistance + currentCruiseTime * s);
                 	list.add(new Traj(s, d, a));
                 }
+                //section 3: decelerating from cruise velocity to 0
                 else if(time < cruiseTime + 2*accelTime)
                 {
                     double timeAfterDecelerationStarted = time - cruiseTime - accelTime;
@@ -55,13 +60,16 @@ public class TrajectoryGenerator {
             }
             
         }
-        else //triangular
+        else //triangular: used if trapezoidal will not fit into the desired distance
         {
-        	
             accelDistance = distance / 2. * Math.copySign(1, distance);
             accelTime = Math.sqrt(2 * Math.abs(accelDistance) / ACCELERATION);
+            
+            //peak velocity is reached when robot is halfway to the desired distance
+            double peakVelocity = ACCELERATION * accelTime * Math.copySign(1, distance); 
             for(double time = 0 ;; time+=interval)
             {
+            	//section 1: accelerate to peak velocity
 	            if(time <= accelTime)
 	            {
 	                double s = ACCELERATION * time * Math.copySign(1, distance);
@@ -69,10 +77,9 @@ public class TrajectoryGenerator {
 	                double d = .5 * s * time;
 	                list.add(new Traj(s, d, a));
 	            }
+	            //section 2: decelerate from peak velocity to 0
 	            else if(time <= 2 * accelTime)
 	            {
-	                double peakVelocity = ACCELERATION * accelTime * Math.copySign(1, distance);
-	                
 	                double decelVelocity = peakVelocity - ACCELERATION * (time - accelTime) * Math.copySign(1, distance);
 	                if(distance > 0 && decelVelocity < 0) decelVelocity = 0;
                     else if(distance < 0 && decelVelocity > 0) decelVelocity = 0;

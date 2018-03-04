@@ -23,8 +23,23 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
- * This class is the glue that binds the controls on the physical operator
- * interface to the commands and command groups that allow control of the robot.
+Commands/Functions we will probably need:
+	arm manual up
+	arm manual down
+	set arm to down position
+	set arm to switch position
+	set arm to scale position
+	toggle pincher on arm
+	spintake orient
+	spintake intake
+	spintake outtake
+	spintake push in (pneumatics)
+	spintake push out (pneumatics)
+	vision turn/go to cube (driver assitance, might use, might not)
+	hold to go straight (driver assistance, might use, probably not)
+	throw scale (maybe one for throwing upwards from the front and one for throwing from the back?)
+	throw switch
+Current Total: 15/16
  */
 public class OI {
 	

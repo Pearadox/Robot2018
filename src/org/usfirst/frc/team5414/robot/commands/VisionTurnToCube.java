@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- *
+ *	Quickly turns to the first seen cube
+ *	CAMERA IS INVERSED
  */
 public class VisionTurnToCube extends Command {
 

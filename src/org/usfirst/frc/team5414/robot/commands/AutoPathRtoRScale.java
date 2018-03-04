@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 //import jaci.pathfinder.Pathfinder;
 
 /**
- * Goes from left side of starting area to the front of the right scale
+ * Goes from right side of starting area to the front of the right scale
+ * 
+ * Approximate Time: 4 sec
  */
 public class AutoPathRtoRScale extends CommandGroup {
 

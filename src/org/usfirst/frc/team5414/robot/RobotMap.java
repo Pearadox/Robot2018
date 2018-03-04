@@ -94,6 +94,11 @@ public class RobotMap {
 	public static double forwardTurnLimekD = .3;
 	public static double forwardTurnLimekI = 0.0;
 	public static double forwardTurnLimekP = 0.007;
+	
+	//Arm PID Loop
+	public static double armkP = 0.0;
+	public static double armkI = 0.0;
+	public static double armkD = 0.0;
 
 	//Motion Magic PID Loop
 	public static double MMLeftkD = 0.0;

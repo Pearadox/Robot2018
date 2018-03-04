@@ -8,13 +8,15 @@ import org.usfirst.frc.team5414.robot.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
- *
+ *	Drivers forward/backwards an accurate amount of distance
+ *	To go backwards, set the feet to negative
  */
 public class DriveForward extends CommandGroup {
 
 	double maxVelocity = 15;
 	double acceleration = 5;
 	
+//	Generates a trapezoidal trajectory and follows the encoders
     public DriveForward(double feet) {
         org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(feet, .02, maxVelocity, acceleration);
         org.usfirst.frc.team5414.robot.Traj[] right = TrajectoryGenerator.getTrajectory(feet, .02, maxVelocity, acceleration);

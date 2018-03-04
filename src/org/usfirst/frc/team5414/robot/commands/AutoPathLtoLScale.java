@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 //import jaci.pathfinder.Pathfinder;
 
 /**
- * Goes from left side of starting area to the front of the right scale
+ * Goes from left side of starting area to the front of the left scale
+ * 
+ * 	Approximate Time: 4 sec
  */
 public class AutoPathLtoLScale extends CommandGroup {
 
@@ -55,6 +57,7 @@ public class AutoPathLtoLScale extends CommandGroup {
     		Robot.drivetrain.stop();
     		DriverStation.reportWarning("NOOOO", true);
     	}
+    	
 		addSequential(new ZeroGyro());
     	addSequential(new FollowEncoder(left, right));
     	addSequential(new SetAngle(30));

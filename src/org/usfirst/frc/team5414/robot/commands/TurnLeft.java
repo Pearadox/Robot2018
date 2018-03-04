@@ -8,15 +8,15 @@ import org.usfirst.frc.team5414.robot.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
- *
+ *	Turns the robot to the relative left the specified amount of degress
  */
 public class TurnLeft extends CommandGroup {
 
 	double halfturn = 256;
-	double maxVelocity = 10;
-	double acceleration = 4;
+	final static double maxVelocity_default = 10;
+	final static double acceleration_default = 4;
 	
-    public TurnLeft(double degrees) {
+    public TurnLeft(double degrees, double maxVelocity, double acceleration) {
         double desired = degrees / 180. * halfturn;
         org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(-desired*RobotMap.FeetPerTick, .02, maxVelocity, acceleration);
         org.usfirst.frc.team5414.robot.Traj[] right = TrajectoryGenerator.getTrajectory(desired*RobotMap.FeetPerTick, .02, maxVelocity, acceleration);
@@ -29,5 +29,10 @@ public class TurnLeft extends CommandGroup {
         	rightList.add(right[i].distance / RobotMap.FeetPerTick);
        	}
         addSequential(new FollowEncoder(leftList, rightList));
+    }
+    
+    public TurnLeft(double degrees)
+    {
+    	this(degrees, maxVelocity_default, acceleration_default);
     }
 }

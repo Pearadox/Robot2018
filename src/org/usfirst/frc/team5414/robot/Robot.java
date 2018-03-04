@@ -32,9 +32,27 @@ import org.usfirst.frc.team5414.robot.subsystems.Limelight;
 import org.usfirst.frc.team5414.robot.subsystems.PDP;
 import org.usfirst.frc.team5414.robot.subsystems.Spintake;
 
+/*
+ * Order of who to blame if the program doesn't work:
+ * 0. electrical
+ * 1. mechanical
+ * 2. chairmans
+ * 3. imagery
+ * 4. scouting
+ * 5. OpenMesh©
+ * 6. 118
+ * 7. the butler
+ * 8. Hayden Christensen's terrible acting in the prequels
+ * 9. me? (nah)
+ * 
+ * Shoutout to mechanical for getting me 4 full minutes of the 
+ * competition robot for autonomous testing during build season
+ * 
+ * Please love me Charles From 1477
+ */
+
 public class Robot extends TimedRobot {
 	
-//	NetworkTable table = NetworkTable.getTable("limelight");
 	public static Drivetrain drivetrain;
 	public static OI oi;
 	public static IMU gyro; 
@@ -53,12 +71,15 @@ public class Robot extends TimedRobot {
 		drivetrain = new Drivetrain();
 		prefs = Preferences.getInstance();
 		limelight = new Limelight();
-//		pdp = new PDP();
 		if(RobotMap.hasArm)
 		{
 			arm = new Arm();	
 		}
-		if(RobotMap.hasSpintake) spintake = new Spintake();
+		if(RobotMap.hasSpintake) 
+		{
+			spintake = new Spintake();
+			pdp = new PDP();
+		}
 		oi = new OI();
 		if(RobotMap.hasCompressor)
 		{
@@ -166,19 +187,11 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Limelight Forward Turn kD", RobotMap.forwardTurnLimekD);
 		prefs.putDouble("Limelight Forward kP", RobotMap.forwardLimekP);
 		prefs.putDouble("Limelight Forward kD", RobotMap.forwardLimekD);
-		prefs.putDouble("Motion Magic Left kP", RobotMap.MMLeftkP);
-		prefs.putDouble("Motion Magic Left kI", RobotMap.MMLeftkI);
-		prefs.putDouble("Motion Magic Left kD", RobotMap.MMLeftkD);
-		prefs.putDouble("Motion Magic Left kF", RobotMap.MMLeftkF);
-		prefs.putDouble("Motion Magic Right kP", RobotMap.MMRightkP);
-		prefs.putDouble("Motion Magic Right kI", RobotMap.MMRightkI);
-		prefs.putDouble("Motion Magic Right kD", RobotMap.MMRightkD);
-		prefs.putDouble("Motion Magic Right kF", RobotMap.MMRightkF);
 		prefs.putInt("Desired Left Enc", 300);
 		prefs.putInt("Desired Right Enc", 300);
-		prefs.putDouble("Desired Angle", 0);
-		prefs.putDouble("Vision Error", limelight.getX());
-		
+		prefs.putDouble("Arm kP", RobotMap.armkP);
+		prefs.putDouble("Arm kI", RobotMap.armkI);
+		prefs.putDouble("Arm kD", RobotMap.armkD);
 	}
 }
 //

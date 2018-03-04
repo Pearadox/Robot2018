@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
- *
+ *	Goes from starting middle point to front of left scale
+ * 
+ * 	Approximate Time: 5 sec
  */
 public class AutoPathMtoLScale extends CommandGroup {
 
