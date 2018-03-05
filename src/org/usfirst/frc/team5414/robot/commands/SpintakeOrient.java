@@ -24,7 +24,7 @@ public class SpintakeOrient extends Command {
     protected void execute() {
 //    	double leftPeakCurrent = 9999;
 //    	double rightPeakCurrent = 9999;
-    	double leftTriggerRightCurrent = 27 //left triggers right when left current reaches threshold 
+    	double leftTriggerRightCurrent = 27; //left triggers right when left current reaches threshold 
     	boolean left = true;
     	boolean right = false;
     	if(Robot.pdp.getLeftSpintake() >= leftTriggerRightCurrent || rightIsTriggered) 

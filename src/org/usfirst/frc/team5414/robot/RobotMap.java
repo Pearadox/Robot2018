@@ -18,12 +18,12 @@ public class RobotMap {
 	//Fast switch between flatbot and 2018bot
 	public static boolean flatbot = false;
 	public static boolean compbot = true;
-	public static boolean hasLimelight = true;
-	public static boolean hasGyro = true;
+	public static boolean hasLimelight = false;
+	public static boolean hasGyro = false;
 	public static boolean hasCompressor = false;
 	public static boolean hasCam = false;
-	public static boolean hasArm = false;
-	public static boolean hasSpintake = false;
+	public static boolean hasArm = true;
+	public static boolean hasSpintake = true;
 	
 	//Ports for random parts
 	public static int GyroPort = 0;
@@ -96,9 +96,9 @@ public class RobotMap {
 	public static double forwardTurnLimekP = 0.007;
 	
 	//Arm PID Loop
-	public static double armkP = 0.0;
-	public static double armkI = 0.0;
-	public static double armkD = 0.0;
+	public static double armkP = 0.025;
+	public static double armkI = 0.00009;
+	public static double armkD = 0.2;
 
 	//Motion Magic PID Loop
 	public static double MMLeftkD = 0.0;

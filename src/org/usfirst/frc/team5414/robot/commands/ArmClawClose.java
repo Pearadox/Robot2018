@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ToggleClaw extends Command {
+public class ArmClawClose extends Command {
 
-    public ToggleClaw() {
+    public ArmClawClose() {
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.arm.togglePincher();
+    	Robot.arm.closePincher();
     }
 
     // Called repeatedly when this Command is scheduled to run

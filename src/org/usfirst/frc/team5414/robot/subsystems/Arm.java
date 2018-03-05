@@ -8,20 +8,24 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 
 public class Arm extends Subsystem {
 
 	TalonSRX talon;
 	DoubleSolenoid solPincher;
+	AnalogInput potentiometer;
 	
 	//potentiometer parameters
-	final static double VHigh = 5;
-	final static double VLow = 0;
-	final static double angleLow = 0;
-	final static double angleHigh = 360;
+	final static double VHigh = 1.407;
+	final static double VLow = 4.288;
+	final static double angleLow = 38.7;
+	final static double angleHigh = 190.7;
+	final static double maxAngleStop = 155;
 	
 	final double kP = 0;
 	final double kI = 0;
@@ -32,35 +36,34 @@ public class Arm extends Subsystem {
 	 */
 	public Arm() {
 		talon = new TalonSRX(RobotMap.CANArmTalon);
-		talon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
+//		talon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
 		talon.setSensorPhase(true);
-		talon.setInverted(true);
+		talon.setInverted(false);
 		talon.configNominalOutputForward(0, 10);
 		talon.configNominalOutputReverse(0, 10);
 		talon.configPeakOutputForward(1, 10);
 		talon.configPeakOutputReverse(-1, 10);
-		talon.config_kP(0, kP, 10);
-		talon.config_kI(0, kI, 10);
-		talon.config_kD(0, kD, 10);
-		talon.configAllowableClosedloopError(0, 0, 10);
+//		talon.config_kP(0, kP, 10);
+//		talon.config_kI(0, kI, 10);
+//		talon.config_kD(0, kD, 10);
+//		talon.configAllowableClosedloopError(0, 0, 10);
 		
 		solPincher = new DoubleSolenoid(2, 5);
+		potentiometer = new AnalogInput(0);
 	}
 	
 	public double getAngle() {
 		return map(getAnalogIn(), VLow, VHigh, angleLow, angleHigh);
 	}
 	
-	public void setAngle(double degrees)
+	public double calculateHoldOutput(double angle)
 	{
-		RobotMap.armkP = Robot.prefs.getDouble("Arm kP", RobotMap.armkP);
-		RobotMap.armkI = Robot.prefs.getDouble("Arm kI", RobotMap.armkI);
-		RobotMap.armkD = Robot.prefs.getDouble("Arm kD", RobotMap.armkD);
-		talon.set(ControlMode.Position, map(degrees, angleLow, angleHigh, VLow, VHigh));
+//		if(angle >= 165) return 0;
+		return 0.155 * Math.sin(0.0175 * angle);
 	}
 	
-	public double getAnalogIn() {
-		return talon.getSensorCollection().getAnalogIn();
+	private double getAnalogIn() {
+		return potentiometer.getVoltage();
 	}
 	
 	public double getError() { 
@@ -68,11 +71,22 @@ public class Arm extends Subsystem {
 	}
 	
 	public void armUp() {
-		talon.set(ControlMode.PercentOutput, .7);
+		double currentAngle = getAngle();
+		if(currentAngle >= maxAngleStop)
+		{
+			set(calculateHoldOutput(currentAngle));
+		}
+		else set(.7);
 	}
 	
 	public void armDown() {
-		talon.set(ControlMode.PercentOutput, -.4);
+		set(-.4);
+	}
+	
+	public void set(double percentOutput)
+	{
+		if(percentOutput > 0 && getAngle() >= maxAngleStop) return;
+		talon.set(ControlMode.PercentOutput, percentOutput);
 	}
 	
 	public void stop() {
@@ -83,6 +97,14 @@ public class Arm extends Subsystem {
 		if(solPincher.get() == DoubleSolenoid.Value.kReverse) 
 			solPincher.set(DoubleSolenoid.Value.kForward);
     	else solPincher.set(DoubleSolenoid.Value.kReverse);
+	}
+	
+	public void closePincher() {
+		solPincher.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	public void openPincher() {
+		solPincher.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	private double map(double x, double in_min, double in_max, double out_min, double out_max)

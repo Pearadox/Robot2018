@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.usfirst.frc.team5414.robot.commands.ArmSetAngle;
 import org.usfirst.frc.team5414.robot.commands.AutoPathLtoRScale;
 import org.usfirst.frc.team5414.robot.commands.AutoPathMtoRScale;
 import org.usfirst.frc.team5414.robot.commands.AutoPathRtoLScale;
@@ -39,7 +40,7 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
  * 2. chairmans
  * 3. imagery
  * 4. scouting
- * 5. OpenMesh©
+ * 5. OpenMesh
  * 6. 118
  * 7. the butler
  * 8. Hayden Christensen's terrible acting in the prequels
@@ -96,6 +97,9 @@ public class Robot extends TimedRobot {
 		addPreferences();
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
 		SmartDashboard.putData("Drive Forward", new DriveForward(10));
+		SmartDashboard.putData("Arm angle 130", new ArmSetAngle(130));
+		SmartDashboard.putData("Arm angle 160", new ArmSetAngle(160));
+		SmartDashboard.putData("Arm angle 50.", new ArmSetAngle(50));
 		if(RobotMap.hasLimelight)
 		{
 			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
@@ -146,6 +150,11 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Motion Magic", new MotionMagic(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		if(RobotMap.compbot) updateDashboard();
 		i2c.write(4, 1);
+		if(RobotMap.hasArm)
+		{
+			if(arm.getAngle() >= 165)
+				arm.set(-.065);
+		}
 	}
 
 	@Override
@@ -163,6 +172,10 @@ public class Robot extends TimedRobot {
 		{
 			SmartDashboard.putNumber("Left Spintake Current", pdp.getLeftSpintake());
 			SmartDashboard.putNumber("Right Spintake Current", pdp.getRightSpintake());
+		}
+		if(RobotMap.hasArm)
+		{
+			SmartDashboard.putNumber("Arm Potentiometer", arm.getAngle());
 		}
 		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
 		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());

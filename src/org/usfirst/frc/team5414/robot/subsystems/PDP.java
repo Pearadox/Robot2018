@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class PDP extends Subsystem {
 
-	PowerDistributionPanel pdp = new PowerDistributionPanel(3);
+	PowerDistributionPanel pdp = new PowerDistributionPanel(1);
 	
 	public double getCurrent(int port) {
 		return pdp.getCurrent(port);

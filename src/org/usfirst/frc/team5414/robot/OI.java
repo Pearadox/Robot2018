@@ -17,7 +17,7 @@ import org.usfirst.frc.team5414.robot.commands.SpintakeOrient;
 import org.usfirst.frc.team5414.robot.commands.SpintakePushIn;
 import org.usfirst.frc.team5414.robot.commands.SpintakePushOut;
 import org.usfirst.frc.team5414.robot.commands.SpintakeToggleMiddle;
-import org.usfirst.frc.team5414.robot.commands.ToggleClaw;
+import org.usfirst.frc.team5414.robot.commands.ArmClawToggle;
 import org.usfirst.frc.team5414.robot.commands.ToggleLight;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -63,11 +63,9 @@ public class OI {
 		
 		btn2.whenPressed(new ToggleLight());
 		
-		
-		btn1.whenPressed(new ToggleClaw()); //temporary
 		if(RobotMap.hasArm)
 		{
-//			btn1.whenPressed(new ToggleClaw());
+			btn1.whenPressed(new ArmClawToggle());
 			btn7.whileHeld(new ArmDownManual());
 			btn8.whileHeld(new ArmUpManual());
 		}

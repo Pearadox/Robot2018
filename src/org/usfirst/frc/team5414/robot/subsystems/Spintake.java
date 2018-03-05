@@ -20,9 +20,9 @@ public class Spintake extends Subsystem {
 	{
 		left = new VictorSPX(22);
 		right = new VictorSPX(21);
-		solLeft = new DoubleSolenoid(2,5);
+		solLeft = new DoubleSolenoid(0,7);
 		solRight = new DoubleSolenoid(1, 6);
-		solMiddle = new DoubleSolenoid(0, 7);
+		solMiddle = new DoubleSolenoid(3, 4);
 	}
 	
 	public void pushIn() {
