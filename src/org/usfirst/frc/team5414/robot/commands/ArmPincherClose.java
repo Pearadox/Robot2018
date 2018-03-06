@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ArmClawClose extends Command {
+public class ArmPincherClose extends Command {
 
-    public ArmClawClose() {
+    public ArmPincherClose() {
     }
 
     // Called just before this Command runs the first time

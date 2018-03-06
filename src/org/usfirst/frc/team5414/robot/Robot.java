@@ -15,6 +15,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team5414.robot.commands.ArmSetAngle;
+import org.usfirst.frc.team5414.robot.commands.ArmSetLow;
+import org.usfirst.frc.team5414.robot.commands.ArmSetScale;
+import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
+import org.usfirst.frc.team5414.robot.commands.ArmThrowback;
 import org.usfirst.frc.team5414.robot.commands.AutoPathLtoRScale;
 import org.usfirst.frc.team5414.robot.commands.AutoPathMtoRScale;
 import org.usfirst.frc.team5414.robot.commands.AutoPathRtoLScale;
@@ -97,15 +101,15 @@ public class Robot extends TimedRobot {
 		addPreferences();
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
 		SmartDashboard.putData("Drive Forward", new DriveForward(10));
-		SmartDashboard.putData("Arm angle 130", new ArmSetAngle(130));
-		SmartDashboard.putData("Arm angle 160", new ArmSetAngle(160));
-		SmartDashboard.putData("Arm angle 50.", new ArmSetAngle(50));
+		SmartDashboard.putData("Arm Switch", new ArmSetSwitch());
+		SmartDashboard.putData("Arm Scale", new ArmSetScale());
+		SmartDashboard.putData("Arm Low", new ArmSetLow());
+		SmartDashboard.putData("Arm Throwback", new ArmThrowback());
 		if(RobotMap.hasLimelight)
 		{
 			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
 			SmartDashboard.putData("Vision Go To Cube", new VisionGoToCube());
 		}
-
 	}
 
 	@Override
@@ -123,7 +127,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 //		autonomousCommand = new AutoPathRtoLScale();
-		autonomousCommand = new AutoPathMtoRScale();
+//		autonomousCommand = new AutoPathMtoRScale();
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
@@ -147,14 +151,8 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putData("Test Drive Enc", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
-		SmartDashboard.putData("Motion Magic", new MotionMagic(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		if(RobotMap.compbot) updateDashboard();
 		i2c.write(4, 1);
-		if(RobotMap.hasArm)
-		{
-			if(arm.getAngle() >= 165)
-				arm.set(-.065);
-		}
 	}
 
 	@Override
@@ -205,6 +203,11 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Arm kP", RobotMap.armkP);
 		prefs.putDouble("Arm kI", RobotMap.armkI);
 		prefs.putDouble("Arm kD", RobotMap.armkD);
+		prefs.putDouble("Arm Throw kP", RobotMap.armThrowkP);
+		prefs.putDouble("Arm Throw kD", RobotMap.armThrowkD);
+		prefs.putDouble("Motion Profile kP", RobotMap.MPkP);
+		prefs.putDouble("Motion Profile kI", RobotMap.MPkI);
+		prefs.putDouble("Motion Profile kD", RobotMap.MPkD);
 	}
 }
 //

@@ -20,8 +20,7 @@ public class ArmHold extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-//    	Robot.arm.set(Robot.arm.calculateHoldOutput(Robot.arm.getAngle()));
-    	Scheduler.getInstance().add(new ArmSetAngle(Robot.arm.getAngle()));
+    	Robot.arm.set(Robot.arm.calculateHoldOutput(Robot.arm.getAngle()));
     }
 
     // Make this return true when this Command no longer needs to run execute()

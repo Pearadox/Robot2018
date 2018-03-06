@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5414.robot.subsystems;
 
+import java.io.File;
+
 import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 import org.usfirst.frc.team5414.robot.Traj;
@@ -22,6 +24,11 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.Waypoint;
+import jaci.pathfinder.followers.EncoderFollower;
+import jaci.pathfinder.modifiers.TankModifier;
 
 /**
  *
@@ -35,6 +42,12 @@ public class Drivetrain extends Subsystem {
     public SpeedControllerGroup left;
     private DifferentialDrive drive;
     private static Encoder encoderL, encoderR;
+    
+    private static final double MAX_VELOCITY = 12;
+    private static final double ACCELERATION = 4;
+    private static final double JERK = 16;
+    double lastGyroError = 0;
+    double angleOffset = 0;
     
   private static final double kThrottleDeadband = 0.02;
   private static final double kWheelDeadband = 0.02;
@@ -123,95 +136,77 @@ public class Drivetrain extends Subsystem {
     	}
     }
     
-    public void setPIDLeft(double kF, double kP, double kI, double kD)
-    {
-    	RobotMap.MMLeftkD = kD;
-    	RobotMap.MMLeftkF = kF;
-    	RobotMap.MMLeftkI = kI;
-    	RobotMap.MMLeftkP = kP;
-    	leftMaster.config_kF(0, RobotMap.MMLeftkF, 10);
-		leftMaster.config_kP(0, RobotMap.MMLeftkP, 10);
-		leftMaster.config_kI(0, RobotMap.MMLeftkI, 10);
-		leftMaster.config_kD(0, RobotMap.MMLeftkD, 10);
-    }
-    
-    public void setPIDRight(double kF, double kP, double kI, double kD)
-    {
-    	RobotMap.MMRightkD = kD;
-    	RobotMap.MMRightkF = kF;
-    	RobotMap.MMRightkI = kI;
-    	RobotMap.MMRightkP = kP;	
-    	rightMaster.config_kF(0, RobotMap.MMRightkF, 10);
-		rightMaster.config_kP(0, RobotMap.MMRightkP, 10);
-		rightMaster.config_kI(0, RobotMap.MMRightkI, 10);
-		rightMaster.config_kD(0, RobotMap.MMRightkD, 10);
-    }
-    
-    public void motionMagic(int leftTargetTicks, int rightTargetTicks)
-    {
-    	leftSlave1.follow(leftMaster);
-    	leftSlave2.follow(leftMaster);
-    	rightSlave1.follow(rightMaster);
-    	rightSlave2.follow(rightMaster);
-    	leftMaster.set(ControlMode.MotionMagic, leftTargetTicks);
-    	rightMaster.set(ControlMode.MotionMagic, rightTargetTicks);
-    }
-    
-    
-/*
-    //returns true if finished
-    public boolean followTrajectory(EncoderFollower left, EncoderFollower right)
-	{
-		left.configureEncoder(getEncoderL(), 128, RobotMap.wheelDiameterFeet);
-		right.configureEncoder(getEncoderL(), 128, RobotMap.wheelDiameterFeet);
-		// The first argument is the proportional gain. Usually this will be quite high
-		// The second argument is the integral gain. This is unused for motion profiling
-		// The third argument is the derivative gain. Tweak this if you are unhappy with the tracking of the trajectory
-		// The fourth argument is the velocity ratio. This is 1 over the maximum velocity you provided in the
-		//      trajectory configuration (it translates m/s to a -1 to 1 scale that your motors can read)
-		// The fifth argument is your acceleration gain. Tweak this if you want to get to a higher or lower speed quicker
-		left.configurePIDVA(0,0,0, 1 / MAX_VELOCITY, 0);
-		right.configurePIDVA(0,0,0, 1 / MAX_VELOCITY, 0);
-        double outputL = left.calculate(getEncoderL());
-        double outputR = right.calculate(getEncoderR());
-        double turn = 0;
-        if (RobotMap.hasGyro)
+    public EncoderFollower[] pathSetup(Waypoint[] path) {
+        EncoderFollower left = new EncoderFollower();
+        EncoderFollower right = new EncoderFollower();
+        Trajectory.Config cfg = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH,
+                .02, MAX_VELOCITY, ACCELERATION, JERK);
+        String pathHash = String.valueOf(path.hashCode());
+        SmartDashboard.putString("Path Hash", pathHash);
+        Trajectory toFollow;// = Pathfinder.generate(path, cfg);
+        File trajectory = new File("/home/lvuser/paths/" + pathHash + ".csv");
+        if (!trajectory.exists()) 
         {
-            double gyro_heading = Robot.gyro.getTrueYaw();    // Assuming the gyro is giving a value in degrees
-            double desired_heading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
-            double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
-            turn = 0.8 * (-1.0 / 80.0) * angleDifference;
+            toFollow = Pathfinder.generate(path, cfg);
+            Pathfinder.writeToCSV(trajectory, toFollow);
+            System.out.println(pathHash + ".csv not found, wrote to file");
+        } 
+        else 
+        {
+            System.out.println(pathHash + ".csv read from file");
+            toFollow = Pathfinder.readFromCSV(trajectory);
         }
-        Robot.drivetrain.drive(outputL + turn, outputR - turn);
-        return left.isFinished() && right.isFinished();
-	}
- */
-    public void motionProfile(Traj[] trajRaw)
-    {
-		final int maxTicksPer100msLeft = 0;
-		final int maxTicksPer100msRight = 0;
 
-		leftMaster.config_kF(0, 1023/maxTicksPer100msLeft, 0);
-		leftMaster.config_kP(0, 0, 0);
-		leftMaster.config_kI(0, 0, 0);
-		leftMaster.config_kD(0, 0, 0);
-//		leftMaster.configMotionProfileTrajectoryPeriod(10, 0);
-		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
-
-		rightMaster.config_kF(0, 1023/maxTicksPer100msRight, 0);
-		rightMaster.config_kP(0, 0, 0);
-		rightMaster.config_kI(0, 0, 0);
-		rightMaster.config_kD(0, 0, 0);
-//		rightMaster.configMotionProfileTrajectoryPeriod(10, 0);
-		rightMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
-		rightMaster.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
+        TankModifier modifier = new TankModifier(toFollow).modify(RobotMap.wheelBaseWidth); //CHANGE THIS
+        lastGyroError = 0;
+        left = new EncoderFollower(modifier.getLeftTrajectory());
+        right = new EncoderFollower(modifier.getRightTrajectory());
+        left.configureEncoder(getEncoderL(), (int)RobotMap.EncoderTicksPerRev, RobotMap.wheelDiameterFeet);
+        right.configureEncoder(getEncoderR(), (int)RobotMap.EncoderTicksPerRev, RobotMap.wheelDiameterFeet);
+        left.configurePIDVA(RobotMap.MPkP, RobotMap.MPkI, RobotMap.MPkD, 1/MAX_VELOCITY, ACCELERATION);
+        right.configurePIDVA(RobotMap.MPkP, RobotMap.MPkI, RobotMap.MPkD, 1/MAX_VELOCITY, ACCELERATION);
+        return new EncoderFollower[]{
+                left, // 0
+                right, // 1
+        };
     }
     
-    public void stopMotionProfile() {
-    	leftMaster.clearMotionProfileTrajectories();
-    	rightMaster.clearMotionProfileTrajectories();
-    }  
-    public void cheesyDrive(double throttle, double wheel, boolean isQuickTurn,
+    public boolean pathFollow(EncoderFollower[] followers, boolean reverse) {
+
+        EncoderFollower left = followers[0];
+        EncoderFollower right = followers[1];
+        double l;
+        double r;
+        double localGp = .02;
+        if (!reverse) {
+            localGp *= -1;
+
+            l = left.calculate(-getEncoderL());
+            r = right.calculate(-getEncoderR());
+        } else {
+            l = left.calculate(getEncoderL());
+            r = right.calculate(getEncoderR());
+        }
+
+        double gyro = reverse ? -Robot.gyro.getYaw() - angleOffset : Robot.gyro.getYaw() + angleOffset;
+
+        double desiredHeading = Pathfinder.r2d(left.getHeading());
+        double angleDifference = Pathfinder.boundHalfDegrees(((desiredHeading - gyro)+36000)%360-180);
+        double turn = localGp * angleDifference;
+        
+        if (!reverse) {
+            drive(l + turn, r - turn);
+        } else {
+            drive(-l + turn, -r - turn);
+        }
+
+        if (left.isFinished() && right.isFinished()) {
+            angleOffset = angleDifference;
+        }
+        return left.isFinished() && right.isFinished();
+    }
+    
+    public void cheesyDrive(double throttle, double wheel,
     		boolean isHighGear) {
 		
 		wheel = handleDeadband(wheel, kWheelDeadband);
@@ -280,27 +275,15 @@ public class Drivetrain extends Subsystem {
 		  mNegInertiaAccumlator = 0;
 		}
 		linearPower = throttle;
-		
-		// Quickturn!
-		if (isQuickTurn) {
-		  if (Math.abs(linearPower) < kQuickStopDeadband) {
-		      double alpha = kQuickStopWeight;
-//		      mQuickStopAccumlator = (1 - alpha) * mQuickStopAccumlator
-//		              + alpha * Util.limit(wheel, 1.0) * kQuickStopScalar;
-		  }
-		  overPower = 1.0;
-		  angularPower = wheel;
-		} else {
-		  overPower = 0.0;
-		  angularPower = Math.abs(throttle) * wheel * sensitivity - mQuickStopAccumlator;
-		  if (mQuickStopAccumlator > 1) {
-		      mQuickStopAccumlator -= 1;
-		  } else if (mQuickStopAccumlator < -1) {
-		      mQuickStopAccumlator += 1;
-		  } else {
-		      mQuickStopAccumlator = 0.0;
-		  }
-		}
+	  overPower = 0.0;
+	  angularPower = Math.abs(throttle) * wheel * sensitivity - mQuickStopAccumlator;
+	  if (mQuickStopAccumlator > 1) {
+	      mQuickStopAccumlator -= 1;
+	  } else if (mQuickStopAccumlator < -1) {
+	      mQuickStopAccumlator += 1;
+	  } else {
+	      mQuickStopAccumlator = 0.0;
+	  }
 		
 		rightPwm = leftPwm = linearPower;
 		leftPwm += angularPower;

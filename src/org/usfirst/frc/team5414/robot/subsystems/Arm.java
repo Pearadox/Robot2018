@@ -3,6 +3,7 @@ package org.usfirst.frc.team5414.robot.subsystems;
 import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 import org.usfirst.frc.team5414.robot.commands.ArmHold;
+import org.usfirst.frc.team5414.robot.commands.ArmSetAngle;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -10,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
@@ -25,11 +27,13 @@ public class Arm extends Subsystem {
 	final static double VLow = 4.288;
 	final static double angleLow = 38.7;
 	final static double angleHigh = 190.7;
-	final static double maxAngleStop = 155;
+	final static double maxAngleStop = 165;
 	
 	final double kP = 0;
 	final double kI = 0;
 	final double kD = 0;
+	
+	static boolean pinched = false;
 	
 	/*
 	 * postive motor output will raise arm, negative will lower arm
@@ -50,6 +54,13 @@ public class Arm extends Subsystem {
 		
 		solPincher = new DoubleSolenoid(2, 5);
 		potentiometer = new AnalogInput(0);
+		
+		if(solPincher.get() == DoubleSolenoid.Value.kForward) pinched = true; 
+	}
+	
+	public void setAngle(double angle)
+	{
+		Scheduler.getInstance().add(new ArmSetAngle(angle));
 	}
 	
 	public double getAngle() {
@@ -58,8 +69,10 @@ public class Arm extends Subsystem {
 	
 	public double calculateHoldOutput(double angle)
 	{
-//		if(angle >= 165) return 0;
-		return 0.155 * Math.sin(0.0175 * angle);
+		double amplitude = pinched ? 0.17 : 0.155;
+		double equation = amplitude * Math.sin(Math.PI / 180. * angle); 
+		if(angle >= 180) return -equation;
+		return equation;
 	}
 	
 	private double getAnalogIn() {
@@ -72,10 +85,8 @@ public class Arm extends Subsystem {
 	
 	public void armUp() {
 		double currentAngle = getAngle();
-		if(currentAngle >= maxAngleStop)
-		{
+		if(currentAngle >= maxAngleStop) 
 			set(calculateHoldOutput(currentAngle));
-		}
 		else set(.7);
 	}
 	
@@ -94,16 +105,17 @@ public class Arm extends Subsystem {
 	}
 	
 	public void togglePincher() {
-		if(solPincher.get() == DoubleSolenoid.Value.kReverse) 
-			solPincher.set(DoubleSolenoid.Value.kForward);
-    	else solPincher.set(DoubleSolenoid.Value.kReverse);
+		if(pinched) openPincher();
+		else closePincher();
 	}
 	
 	public void closePincher() {
+		pinched = false;
 		solPincher.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	public void openPincher() {
+		pinched = true;
 		solPincher.set(DoubleSolenoid.Value.kReverse);
 	}
 	

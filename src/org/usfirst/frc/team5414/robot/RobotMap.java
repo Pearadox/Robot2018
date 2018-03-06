@@ -57,19 +57,20 @@ public class RobotMap {
 			//flatbot
 			public static double wheelDiameterFeetFlat = 6. / 12; //IN FEET
 			public static double wheelDiameterMetersFlat = wheelDiameterFeetFlat * .3048; //IN FEET
-			public static double EncoderPulsePerRevFlat = 1440;
+			public static double EncoderTicksPerRevFlat = 1440;
 			public static double CircumferenceFeetFlat = wheelDiameterFeetFlat * Math.PI;
 			public static double CircumferenceMetersFlat = wheelDiameterMetersFlat * Math.PI;
-			public static double FeetPerTickFlat = CircumferenceFeetFlat / EncoderPulsePerRevFlat; 
-			public static double MetersPerTickFlat = CircumferenceMetersFlat / EncoderPulsePerRevFlat; 
+			public static double FeetPerTickFlat = CircumferenceFeetFlat / EncoderTicksPerRevFlat; 
+			public static double MetersPerTickFlat = CircumferenceMetersFlat / EncoderTicksPerRevFlat; 
 			//plybot
 			public static double wheelDiameterFeet = 6. / 12; //IN FEET
 			public static double wheelDiameterMeters = wheelDiameterFeet * .3048; //IN FEET
-			public static double EncoderPulsePerRev = 128;
+			public static double EncoderTicksPerRev = 128;
 			public static double CircumferenceFeet = wheelDiameterFeet * Math.PI;
 			public static double CircumferenceMeters = wheelDiameterMeters * Math.PI;
-			public static double FeetPerTick = CircumferenceFeet / EncoderPulsePerRev;
-			public static double MetersPerTick = CircumferenceMeters / EncoderPulsePerRev;
+			public static double FeetPerTick = CircumferenceFeet / EncoderTicksPerRev;
+			public static double MetersPerTick = CircumferenceMeters / EncoderTicksPerRev;
+			public static double wheelBaseWidth = 5;
 		
 	//Motion Profiling/Encoder Following PID Loop
 	public static double flatbotkP = .004;
@@ -99,14 +100,12 @@ public class RobotMap {
 	public static double armkP = 0.025;
 	public static double armkI = 0.00009;
 	public static double armkD = 0.2;
+	public static double armThrowkP = 0.03;
+	public static double armThrowkD = 0.15;
 
-	//Motion Magic PID Loop
-	public static double MMLeftkD = 0.0;
-	public static double MMLeftkF = 0.0;
-	public static double MMLeftkI = 0.0;
-	public static double MMLeftkP = 0.0;
-	public static double MMRightkD = 0.0;
-	public static double MMRightkF = 0.0;
-	public static double MMRightkI = 0.0;
-	public static double MMRightkP = 0.0;
+	//Motion Profile PID Loop (Jaci's Pathfinder)
+	public static double MPkD = 0.0;
+	public static double MPkI = 0.0;
+	public static double MPkP = 0.0;
+
 }

@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ArmClawOpen extends Command {
+public class ArmPincherOpen extends Command {
 
-    public ArmClawOpen() {
+    public ArmPincherOpen() {
     }
 
     // Called just before this Command runs the first time
