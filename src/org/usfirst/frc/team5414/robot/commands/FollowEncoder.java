@@ -25,7 +25,9 @@ public class FollowEncoder extends Command{
 	int recordedLoops = 0;
 	double lastLeftError = 0;
 	double lastRightError = 0;
-	int settleLoops = 0;
+	int settleLoops;
+	int lastLeft;
+	int lastRight;
     
     public FollowEncoder(double left, double right)
     {
@@ -61,28 +63,26 @@ public class FollowEncoder extends Command{
 			RobotMap.plybotRkF = Robot.prefs.getDouble("PlyEnc R kF", RobotMap.plybotRkF);
 		}
     	Robot.drivetrain.zeroEncoders();
-    	settleLoops = 1;
+    	lastLeft = 0;
+    	lastRight = 0;
+    	settleLoops = 3;
     }
 
     protected void execute() {
-		double currentLeft = Robot.drivetrain.getEncoderL();
-		double currentRight = Robot.drivetrain.getEncoderR();
+		int currentLeft = Robot.drivetrain.getEncoderL();
+		int currentRight = Robot.drivetrain.getEncoderR();
 		double leftError = leftEnc.get(recordedLoops) - currentLeft;
 		double rightError = rightEnc.get(recordedLoops) - currentRight;
 		errorSumLeft += leftError;
 		errorSumRight += rightError;
-		double lastDesiredLeft = recordedLoops > 0 ? leftEnc.get(recordedLoops-1) : 0;
-		double lastDesiredRight = recordedLoops > 0 ? rightEnc.get(recordedLoops-1) : 0;
 		
 		//PID Calculations
 		double leftP = leftError * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotLkP);
 		double rightP = rightError * (RobotMap.flatbot ? RobotMap.flatbotkP : RobotMap.plybotRkP);
 		double leftI = errorSumLeft * (RobotMap.flatbot ? RobotMap.flatbotkI : RobotMap.plybotLkI);
 		double rightI = errorSumRight * (RobotMap.flatbot ? RobotMap.flatbotkI : RobotMap.plybotRkI);
-		double leftD = ((leftEnc.get(recordedLoops) - lastDesiredLeft) - (leftError - lastLeftError)) * 
-				(RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotLkD); //dSetpoint - dError , prevents derivative kick
-		double rightD = ((rightEnc.get(recordedLoops) - lastDesiredRight) - (rightError - lastRightError)) * 
-				(RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotRkD);//dSetpoint - dError
+		double leftD = (currentLeft - lastLeft) * (RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotLkD); //dInput
+		double rightD = (currentRight - lastRight)  * (RobotMap.flatbot ? RobotMap.flatbotkD : RobotMap.plybotRkD);//dInput
 		double leftOutput = leftP + leftI - leftD; 
 		double rightOutput = rightP + rightI - rightD;
 		leftOutput += Math.copySign(RobotMap.plybotLkF, leftError);
@@ -94,7 +94,9 @@ public class FollowEncoder extends Command{
 		SmartDashboard.putNumber("output R", rightOutput);
 		SmartDashboard.putNumber("error L", leftError);
 		SmartDashboard.putNumber("error R", rightError);
-		
+
+		lastLeft = currentLeft;
+		lastRight = currentRight;
 		lastLeftError = leftError;
 		lastRightError = rightError;
     }
@@ -103,22 +105,23 @@ public class FollowEncoder extends Command{
     	if(settleLoops == 0)
         {
         	recordedLoops++;
-        	settleLoops = 5;
+        	settleLoops = 0;
         	if(recordedLoops >= leftEnc.size()) return true;
         	return false;
         }
-    	if(leftEnc.size() == 1 || settleLoops == leftEnc.size()-1)
+    	if(leftEnc.size() == 1 || recordedLoops == leftEnc.size()-1)
     	{
-    		if(Math.abs(lastLeftError) < 3 && Math.abs(lastRightError) < 3)
+    		if(Math.abs(lastLeftError) < 10 && Math.abs(lastRightError) < 10)
     		{
 				return true;
 			}
 			else return false;
 		}
-		else if(Math.abs(lastLeftError) < 70 && Math.abs(lastRightError) < 70)
+		else if(Math.abs(lastLeftError) < 10 && Math.abs(lastRightError) < 10)
 		{
-			recordedLoops++;
-			if(recordedLoops >= leftEnc.size()) return true;
+			settleLoops--;
+//			recordedLoops++;
+//			if(recordedLoops >= leftEnc.size()) return true;
 		}
 		return false;
     }

@@ -1,41 +1,38 @@
 package org.usfirst.frc.team5414.robot.commands;
 
-import org.usfirst.frc.team5414.robot.Robot;
-
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *
+ *	For autonomous commands, makes robot wait a certain amount of time before doing something
  */
-public class ArmDownManual extends Command {
+public class Wait extends Command {
 
-    public ArmDownManual() {
-    	requires(Robot.arm);
+	double seconds;
+	
+    public Wait(double seconds) {
+        this.seconds = seconds;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	
+    	setTimeout(seconds);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.arm.armDown();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return isTimedOut();
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.arm.stop();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
     }
 }

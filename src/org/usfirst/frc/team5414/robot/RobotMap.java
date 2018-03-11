@@ -19,7 +19,7 @@ public class RobotMap {
 	public static boolean flatbot = false;
 	public static boolean compbot = true;
 	public static boolean hasLimelight = false;
-	public static boolean hasGyro = false;
+	public static boolean hasGyro = true;
 	public static boolean hasCompressor = false;
 	public static boolean hasCam = false;
 	public static boolean hasArm = true;
@@ -76,6 +76,8 @@ public class RobotMap {
 	public static double flatbotkP = .004;
 	public static double flatbotkI = 0.00007;
 	public static double flatbotkD = 0.007;
+	
+	/* PROGRAMMING BOT 
 	public static double plybotLkF = .11;
 	public static double plybotLkD = 0.0055;
 	public static double plybotLkI = 0.00013;
@@ -84,6 +86,15 @@ public class RobotMap {
 	public static double plybotRkD = 0.0034;
 	public static double plybotRkI = 0.00011;
 	public static double plybotRkP = 0.008;
+	*/
+	public static double plybotLkF = .13;
+	public static double plybotLkD = 0.09;
+	public static double plybotLkI = 0.00000;
+	public static double plybotLkP = 0.0053;
+	public static double plybotRkF = .13;
+	public static double plybotRkD = 0.09;
+	public static double plybotRkI = 0.00000;
+	public static double plybotRkP = 0.005;
 	
 	//Vision PID Loop
 	public static double turnLimekD = 0.05;
@@ -98,10 +109,10 @@ public class RobotMap {
 	
 	//Arm PID Loop
 	public static double armkP = 0.025;
-	public static double armkI = 0.00009;
-	public static double armkD = 0.2;
-	public static double armThrowkP = 0.03;
-	public static double armThrowkD = 0.15;
+	public static double armkI = 0.00001;
+	public static double armkD = 0.22;
+	public static double armThrowkP = 0.11;
+	public static double armThrowkD = 0.22;
 
 	//Motion Profile PID Loop (Jaci's Pathfinder)
 	public static double MPkD = 0.0;

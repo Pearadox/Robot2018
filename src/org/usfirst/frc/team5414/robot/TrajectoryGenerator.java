@@ -5,10 +5,11 @@ import java.util.ArrayList;
 
 public class TrajectoryGenerator {
 	
-	static double CRUISE_VELOCITY = 8;
-	static double ACCELERATION = 3;
+	//METERS
+	static double CRUISE_VELOCITY = 4;
+	static double ACCELERATION = 4;
 
-	public static Traj[] getTrajectory(double distance, double interval, double cruiseVelocity, double acceleration) //feet, seconds, ft/s, ft/s/s
+	public static Traj[] getTrajectory(double distance, double interval, double cruiseVelocity, double acceleration) //meters, seconds, m/s, m/s/s
     {
 		CRUISE_VELOCITY = cruiseVelocity;
 		ACCELERATION = acceleration;

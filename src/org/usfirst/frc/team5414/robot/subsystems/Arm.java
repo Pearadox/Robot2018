@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Arm extends Subsystem {
@@ -23,17 +24,14 @@ public class Arm extends Subsystem {
 	AnalogInput potentiometer;
 	
 	//potentiometer parameters
-	final static double VHigh = 1.407;
-	final static double VLow = 4.288;
+	final static double VHigh = 1.38;
+	final static double VLow = 4.133;
 	final static double angleLow = 38.7;
 	final static double angleHigh = 190.7;
 	final static double maxAngleStop = 165;
+	final static double minAngleStop = 49;
 	
-	final double kP = 0;
-	final double kI = 0;
-	final double kD = 0;
-	
-	static boolean pinched = false;
+	static boolean pinched;
 	
 	/*
 	 * postive motor output will raise arm, negative will lower arm
@@ -55,7 +53,7 @@ public class Arm extends Subsystem {
 		solPincher = new DoubleSolenoid(2, 5);
 		potentiometer = new AnalogInput(0);
 		
-		if(solPincher.get() == DoubleSolenoid.Value.kForward) pinched = true; 
+		pinched = solPincher.get() == DoubleSolenoid.Value.kForward; 
 	}
 	
 	public void setAngle(double angle)
@@ -64,18 +62,18 @@ public class Arm extends Subsystem {
 	}
 	
 	public double getAngle() {
-		return map(getAnalogIn(), VLow, VHigh, angleLow, angleHigh);
+		return map(getRaw(), VLow, VHigh, angleLow, angleHigh);
 	}
 	
 	public double calculateHoldOutput(double angle)
 	{
-		double amplitude = pinched ? 0.17 : 0.155;
-		double equation = amplitude * Math.sin(Math.PI / 180. * angle); 
-		if(angle >= 180) return -equation;
+		double amplitude = pinched ? 0.142 : 0.14; //if there's a cube, the magnitude must be higher due to more TORQUE
+		double equation = amplitude * Math.sin(angle*Math.PI/180);
+		SmartDashboard.putNumber("calculate", equation);
 		return equation;
 	}
 	
-	private double getAnalogIn() {
+	public double getRaw() {
 		return potentiometer.getVoltage();
 	}
 	
@@ -87,16 +85,20 @@ public class Arm extends Subsystem {
 		double currentAngle = getAngle();
 		if(currentAngle >= maxAngleStop) 
 			set(calculateHoldOutput(currentAngle));
-		else set(.7);
+		else set(calculateHoldOutput(currentAngle) + .6);
 	}
 	
 	public void armDown() {
-		set(-.4);
+		double currentAngle = getAngle();
+		if(currentAngle <= minAngleStop)
+			set(calculateHoldOutput(currentAngle));
+		set(calculateHoldOutput(currentAngle) - .6);
 	}
 	
 	public void set(double percentOutput)
 	{
 		if(percentOutput > 0 && getAngle() >= maxAngleStop) return;
+		SmartDashboard.putNumber("Arm Output", percentOutput);
 		talon.set(ControlMode.PercentOutput, percentOutput);
 	}
 	
@@ -107,15 +109,16 @@ public class Arm extends Subsystem {
 	public void togglePincher() {
 		if(pinched) openPincher();
 		else closePincher();
+		System.out.println(pinched);
 	}
 	
 	public void closePincher() {
-		pinched = false;
+		pinched = true;
 		solPincher.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	public void openPincher() {
-		pinched = true;
+		pinched = false;
 		solPincher.set(DoubleSolenoid.Value.kReverse);
 	}
 	

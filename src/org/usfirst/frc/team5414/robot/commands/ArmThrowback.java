@@ -20,12 +20,12 @@ public class ArmThrowback extends Command {
 	
     public ArmThrowback() {
         requires(Robot.arm);
-        desiredAngle = 170;
+        desiredAngle = 145;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if(Robot.arm.getAngle() >= 130) Robot.arm.setAngle(130);
+    	setTimeout(1.5);
     	errorSum = 0;
     	lastError = (desiredAngle-Robot.arm.getAngle());
     	settleLoops = 0;
@@ -36,7 +36,7 @@ public class ArmThrowback extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	
-    	if(Robot.arm.getAngle() >= 165) Robot.arm.openPincher();
+    	if(Robot.arm.getAngle() >= desiredAngle-10) Robot.arm.openPincher();
     	
     	double error = desiredAngle - Robot.arm.getAngle();
     	double F = Robot.arm.calculateHoldOutput(Robot.arm.getAngle());
@@ -52,7 +52,7 @@ public class ArmThrowback extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return lastError < 0;
+    	return lastError < 0 || isTimedOut();
     }
 
     // Called once after isFinished returns true

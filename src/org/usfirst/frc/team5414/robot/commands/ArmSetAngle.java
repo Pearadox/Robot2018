@@ -4,6 +4,7 @@ import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -15,11 +16,16 @@ public class ArmSetAngle extends Command {
 	double lastError;
 	double errorSum;
 	int settleLoops;
-	final static int settleLoopsGoal = 10;
+	final static int settleLoopsGoal = 3;
+	boolean accurate = false;
 	
-    public ArmSetAngle(double angle) {
+	public ArmSetAngle(double angle, boolean accurate) {
         requires(Robot.arm);
         desiredAngle = angle;
+    }
+	
+	public ArmSetAngle(double angle) {
+        this(angle, false);
     }
 
     // Called just before this Command runs the first time
@@ -51,13 +57,14 @@ public class ArmSetAngle extends Command {
     protected boolean isFinished() {
     	if(settleLoops == settleLoopsGoal) 
     		return true;
-    	if(Math.abs(lastError) < 2) 
+    	if(Math.abs(lastError) < (accurate ? 1 : 4)) 
     		settleLoops++;
         return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.arm.set(Robot.arm.calculateHoldOutput(Robot.arm.getAngle()));
     }
 
     // Called when another command which requires one or more of the same

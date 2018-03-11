@@ -43,8 +43,8 @@ public class Drivetrain extends Subsystem {
     private DifferentialDrive drive;
     private static Encoder encoderL, encoderR;
     
-    private static final double MAX_VELOCITY = 12;
-    private static final double ACCELERATION = 4;
+    private static final double MAX_VELOCITY = 4;
+    private static final double MAX_ACCELERATION = 3.8;
     private static final double JERK = 16;
     double lastGyroError = 0;
     double angleOffset = 0;
@@ -73,9 +73,8 @@ public class Drivetrain extends Subsystem {
   private double mOldWheel = 0.0;
   private double mQuickStopAccumlator = 0.0;
   private double mNegInertiaAccumlator = 0.0;
-  
-  int encoderOffsetL = 0;
-  int encoderOffsetR = 0;
+
+  int lastEncoder = 0;
 
     public Drivetrain(){
     	if(RobotMap.flatbot) {
@@ -83,8 +82,6 @@ public class Drivetrain extends Subsystem {
 	    	encoderL = new Encoder(RobotMap.DIOencoderLaFlat, RobotMap.DIOencoderLbFlat, false, Encoder.EncodingType.k4X);
 	    	encoderR.reset();
 	    	encoderL.reset();
-	    	encoderR.setDistancePerPulse(RobotMap.FeetPerTickFlat);
-	    	encoderL.setDistancePerPulse(RobotMap.FeetPerTickFlat);
 	    	encoderR.setReverseDirection(true);
 	    	encoderL.setReverseDirection(true);
 	    	right1 = new Victor(2);
@@ -103,6 +100,8 @@ public class Drivetrain extends Subsystem {
     	{
     		encoderR = new Encoder(RobotMap.DIOencoderRbComp, RobotMap.DIOencoderRaComp, false, Encoder.EncodingType.k4X);
 	    	encoderL = new Encoder(RobotMap.DIOencoderLaComp, RobotMap.DIOencoderLbComp, false, Encoder.EncodingType.k4X);
+	    	encoderR.setDistancePerPulse(RobotMap.MetersPerTick);
+	    	encoderL.setDistancePerPulse(RobotMap.MetersPerTick);
 	    	leftSlave1 = new WPI_VictorSPX(RobotMap.CANLeftSlave1);
 	    	leftMaster = new TalonSRX(RobotMap.CANLeftMaster);
 	    	leftSlave2 = new WPI_VictorSPX(RobotMap.CANLeftSlave2);
@@ -140,10 +139,9 @@ public class Drivetrain extends Subsystem {
         EncoderFollower left = new EncoderFollower();
         EncoderFollower right = new EncoderFollower();
         Trajectory.Config cfg = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH,
-                .02, MAX_VELOCITY, ACCELERATION, JERK);
+                .02, MAX_VELOCITY, MAX_ACCELERATION, JERK);
         String pathHash = String.valueOf(path.hashCode());
-        SmartDashboard.putString("Path Hash", pathHash);
-        Trajectory toFollow;// = Pathfinder.generate(path, cfg);
+        Trajectory toFollow;
         File trajectory = new File("/home/lvuser/paths/" + pathHash + ".csv");
         if (!trajectory.exists()) 
         {
@@ -161,10 +159,10 @@ public class Drivetrain extends Subsystem {
         lastGyroError = 0;
         left = new EncoderFollower(modifier.getLeftTrajectory());
         right = new EncoderFollower(modifier.getRightTrajectory());
-        left.configureEncoder(getEncoderL(), (int)RobotMap.EncoderTicksPerRev, RobotMap.wheelDiameterFeet);
-        right.configureEncoder(getEncoderR(), (int)RobotMap.EncoderTicksPerRev, RobotMap.wheelDiameterFeet);
-        left.configurePIDVA(RobotMap.MPkP, RobotMap.MPkI, RobotMap.MPkD, 1/MAX_VELOCITY, ACCELERATION);
-        right.configurePIDVA(RobotMap.MPkP, RobotMap.MPkI, RobotMap.MPkD, 1/MAX_VELOCITY, ACCELERATION);
+        left.configureEncoder(getEncoderL(), (int)RobotMap.EncoderTicksPerRev, RobotMap.wheelDiameterMeters);
+        right.configureEncoder(getEncoderR(), (int)RobotMap.EncoderTicksPerRev, RobotMap.wheelDiameterMeters);
+        left.configurePIDVA(RobotMap.MPkP, RobotMap.MPkI, RobotMap.MPkD, 1/MAX_VELOCITY, .05);
+        right.configurePIDVA(RobotMap.MPkP, RobotMap.MPkI, RobotMap.MPkD, 1/MAX_VELOCITY, 05);
         return new EncoderFollower[]{
                 left, // 0
                 right, // 1
@@ -203,6 +201,7 @@ public class Drivetrain extends Subsystem {
         if (left.isFinished() && right.isFinished()) {
             angleOffset = angleDifference;
         }
+        SmartDashboard.putNumber("MP Left Enc Difference", left.getSegment().x-getEncoderL());
         return left.isFinished() && right.isFinished();
     }
     
@@ -324,7 +323,7 @@ public class Drivetrain extends Subsystem {
     	{
     		ax1 = stick.getRawAxis(2);
     	}
-    	if(Math.abs(stick.getRawAxis(1)) < .18)		//Setting deazone for the y-axis
+    	if(Math.abs(stick.getRawAxis(1)) < .18)		//Setting deadzone for the y-axis
     	{
     		ax2 = 0;
     	}
@@ -343,7 +342,6 @@ public class Drivetrain extends Subsystem {
     	if(Robot.oi.getJoystick().getRawButtonPressed(11)) zeroEncoders();
     	if(Robot.oi.getJoystick().getRawButton(11)) 
     	{
-//    		System.out.print(String.format("%.7s", ax2) + " " + String.format("%.7s", ax1) + " ");
     		System.out.print(getEncoderL() + " " + getEncoderR() + " ");
     	}
     	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println("----------------------------");
@@ -365,12 +363,8 @@ public class Drivetrain extends Subsystem {
     		}
     		double leftSpeed = throttle - twist;
     		double rightSpeed = -throttle - twist;
-//    		rightSlave1.set(rightSpeed);
     		rightMaster.set(ControlMode.PercentOutput, rightSpeed);
-//    		rightSlave2.set(rightSpeed);
-//    		leftSlave1.set(leftSpeed);
     		leftMaster.set(ControlMode.PercentOutput, leftSpeed);
-//    		leftSlave2.set(leftSpeed);
     	}
     	else drive.arcadeDrive(throttle,twist, squared);
     }
@@ -379,12 +373,8 @@ public class Drivetrain extends Subsystem {
     {
     	if(RobotMap.compbot)
     	{
-//    		rightSlave1.set(-r);
     		rightMaster.set(ControlMode.PercentOutput, -r);
-//    		rightSlave2.set(-r);
-//    		leftSlave1.set(l);
     		leftMaster.set(ControlMode.PercentOutput, l);
-//    		leftSlave2.set(l);
     	}
     	else if(RobotMap.flatbot) drive.tankDrive(-l, r);
     	else drive.tankDrive(l, r);
@@ -405,7 +395,9 @@ public class Drivetrain extends Subsystem {
     public int getEncoderR()
     {
     	try {
-    		return encoderR.get();
+    		int get = encoderR.get();
+    		get /= 2;
+    		return get;
     	} catch(Exception e) {}
     	return 0;
     }
@@ -413,7 +405,25 @@ public class Drivetrain extends Subsystem {
     public int getEncoderL()
     {
     	try {
-    		return encoderL.get();
+    		int get = encoderL.get();
+    		get /= 2;
+    		return get;
+    	} catch(Exception e) {}
+    	return 0;
+    }
+    
+    public double getSpeedR() // m/s 
+    {
+    	try {
+    		return encoderR.getRate();
+    	} catch(Exception e) {}
+    	return 0;
+    }
+    
+    public double getSpeedL() // m/s 
+    {
+    	try {
+    		return encoderL.getRate();
     	} catch(Exception e) {}
     	return 0;
     }

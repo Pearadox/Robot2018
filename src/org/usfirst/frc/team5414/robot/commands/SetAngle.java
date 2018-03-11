@@ -2,17 +2,23 @@ package org.usfirst.frc.team5414.robot.commands;
 
 import org.usfirst.frc.team5414.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
- *	Turns the robot to the absolute angle specified (compared to relative inside TurnLeft and TurnRight commands)
- *	This will always turn in the quickest way possible
- *	You can pretty much use any possible desired angle (negative, positive, greater than 360), the program will fix the angle for you :) 
+ *
  */
-public class SetAngle extends CommandGroup {
+public class SetAngle extends Command {
 
+	double desired;
+	
     public SetAngle(double desired) {
-    	double current = (Robot.gyro.getYaw()%360+360)%360;
+    	this.desired = desired;
+    }
+
+    // Called just before this Command runs the first time
+    protected void initialize() {
+    	double current = (Robot.gyro.getYaw()+360)%360;
     	desired += 360000;
     	desired %= 360;
     	double error = Math.abs(current-desired);
@@ -22,23 +28,41 @@ public class SetAngle extends CommandGroup {
     		error = 360 - error;
     		if(current > desired)
     		{
-    			addSequential(new TurnRight(error));
+    			Scheduler.getInstance().add(new TurnRight(error));
     		}
     		else
     		{
-    			addSequential(new TurnLeft(error));
+    			Scheduler.getInstance().add(new TurnLeft(error));
     		}
     	}
     	else
     	{
     		if(current > desired)
     		{
-    			addSequential(new TurnLeft(error));
+    			Scheduler.getInstance().add(new TurnLeft(error));
     		}
     		else
     		{
-    			addSequential(new TurnRight(error));
+    			Scheduler.getInstance().add(new TurnRight(error));
     		}
     	}
+    }
+
+    // Called repeatedly when this Command is scheduled to run
+    protected void execute() {
+    }
+
+    // Make this return true when this Command no longer needs to run execute()
+    protected boolean isFinished() {
+        return true;
+    }
+
+    // Called once after isFinished returns true
+    protected void end() {
+    }
+
+    // Called when another command which requires one or more of the same
+    // subsystems is scheduled to run
+    protected void interrupted() {
     }
 }

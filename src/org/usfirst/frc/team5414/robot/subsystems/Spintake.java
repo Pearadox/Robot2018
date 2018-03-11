@@ -35,6 +35,11 @@ public class Spintake extends Subsystem {
 		solRight.set(DoubleSolenoid.Value.kForward);
 	}
 	
+	public void pushOff() {
+		solLeft.set(DoubleSolenoid.Value.kOff);
+		solRight.set(DoubleSolenoid.Value.kOff);
+	}
+	
 	public void toggleMiddle() {
 		if(solMiddle.get() == DoubleSolenoid.Value.kReverse) 
 			solMiddle.set(DoubleSolenoid.Value.kForward);
@@ -43,7 +48,7 @@ public class Spintake extends Subsystem {
 	
 	public void intake()
 	{
-		left.set(ControlMode.PercentOutput, 1);
+		left.set(ControlMode.PercentOutput, .7);
 		right.set(ControlMode.PercentOutput, -1);
 	}
 	

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ZeroGyro extends Command {
 
     public ZeroGyro() {
-        requires(Robot.gyro);
     }
 
     // Called just before this Command runs the first time

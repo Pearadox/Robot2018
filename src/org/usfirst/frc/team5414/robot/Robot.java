@@ -1,6 +1,5 @@
 /*----------------------------------------------------------------------------
-\	Team 5414 Pearadox 2018 Build Season Code
-	Heckled by 118
+	Team 5414 Pearadox 2018 Build Season Code
   ----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team5414.robot;
@@ -15,20 +14,18 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team5414.robot.commands.ArmSetAngle;
+import org.usfirst.frc.team5414.robot.commands.ArmSetHover;
 import org.usfirst.frc.team5414.robot.commands.ArmSetLow;
 import org.usfirst.frc.team5414.robot.commands.ArmSetScale;
 import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowback;
-import org.usfirst.frc.team5414.robot.commands.AutoPathLtoRScale;
-import org.usfirst.frc.team5414.robot.commands.AutoPathMtoRScale;
-import org.usfirst.frc.team5414.robot.commands.AutoPathRtoLScale;
+import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoL;
+import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoR;
 import org.usfirst.frc.team5414.robot.commands.DriveForward;
 import org.usfirst.frc.team5414.robot.commands.FollowEncoder;
-import org.usfirst.frc.team5414.robot.commands.MotionMagic;
 import org.usfirst.frc.team5414.robot.commands.TurnRight;
 import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
 import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
-import org.usfirst.frc.team5414.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team5414.robot.commands.ZeroGyro;
 import org.usfirst.frc.team5414.robot.subsystems.Arm;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
@@ -104,7 +101,9 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Arm Switch", new ArmSetSwitch());
 		SmartDashboard.putData("Arm Scale", new ArmSetScale());
 		SmartDashboard.putData("Arm Low", new ArmSetLow());
+		SmartDashboard.putData("Arm Hover", new ArmSetHover());
 		SmartDashboard.putData("Arm Throwback", new ArmThrowback());
+//		SmartDashboard.putData("Path test", new FollowPath(GenericPaths.path, false));
 		if(RobotMap.hasLimelight)
 		{
 			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
@@ -126,8 +125,14 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-//		autonomousCommand = new AutoPathRtoLScale();
-//		autonomousCommand = new AutoPathMtoRScale();
+//		autonomousCommand = new AutoScaleRtoL();
+//		autonomousCommand = new AutoScaleLtoR();
+//		autonomousCommand = new AutoScaleLtoL();
+//		autonomousCommand = new AutoScaleRtoR();
+//		autonomousCommand = new AutoSwitchMtoR();
+		autonomousCommand = new AutoSwitchMtoL();
+//		autonomousCommand = new AutoSwitchRtoR();
+//		autonomousCommand = new AutoSwitchLtoL();
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
@@ -150,7 +155,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putData("Test Drive Enc", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
+		SmartDashboard.putData("Test Drive Encs", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		if(RobotMap.compbot) updateDashboard();
 		i2c.write(4, 1);
 	}
@@ -165,6 +170,7 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putNumber("ty", Robot.limelight.getY());
 			SmartDashboard.putNumber("ta", Robot.limelight.getArea());
 		}
+		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw Raw", gyro.getYaw());
 		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw", gyro.getYaw()%360);
 		if(RobotMap.hasSpintake)
 		{
@@ -173,10 +179,13 @@ public class Robot extends TimedRobot {
 		}
 		if(RobotMap.hasArm)
 		{
-			SmartDashboard.putNumber("Arm Potentiometer", arm.getAngle());
+			SmartDashboard.putNumber("Arm Angle", arm.getAngle());
+			SmartDashboard.putNumber("Arm Potentiometer", arm.getRaw());
 		}
 		SmartDashboard.putNumber("Left Encoder", drivetrain.getEncoderL());
 		SmartDashboard.putNumber("Right Encoder", drivetrain.getEncoderR());
+		SmartDashboard.putNumber("Left Velocity", drivetrain.getSpeedL());
+		SmartDashboard.putNumber("Right Velocity", drivetrain.getSpeedR());
 	}
 	
 	public void addPreferences() {
@@ -198,8 +207,8 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Limelight Forward Turn kD", RobotMap.forwardTurnLimekD);
 		prefs.putDouble("Limelight Forward kP", RobotMap.forwardLimekP);
 		prefs.putDouble("Limelight Forward kD", RobotMap.forwardLimekD);
-		prefs.putInt("Desired Left Enc", 300);
-		prefs.putInt("Desired Right Enc", 300);
+		prefs.putInt("Desired Left Enc", 20);
+		prefs.putInt("Desired Right Enc", 20);
 		prefs.putDouble("Arm kP", RobotMap.armkP);
 		prefs.putDouble("Arm kI", RobotMap.armkI);
 		prefs.putDouble("Arm kD", RobotMap.armkD);
@@ -210,4 +219,3 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Motion Profile kD", RobotMap.MPkD);
 	}
 }
-//
