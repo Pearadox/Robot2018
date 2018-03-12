@@ -205,6 +205,17 @@ public class Drivetrain extends Subsystem {
         return left.isFinished() && right.isFinished();
     }
     
+    /*
+     * Stitches flatline caused by squaring inputs
+     */
+    public void pearDrive(double throttle, double twist)
+    {
+    	double f = .55;
+    	throttle = Math.copySign((throttle * throttle + Math.abs(2*throttle*f)) / (1+2*f), throttle);
+    	twist = Math.copySign((twist * twist + Math.abs(2*twist *f)) / (1+2*f), twist );
+    	arcadeDrive(throttle, twist*.7, false);
+    }
+    
     public void cheesyDrive(double throttle, double wheel,
     		boolean isHighGear) {
 		
@@ -332,13 +343,6 @@ public class Drivetrain extends Subsystem {
     		ax2 = stick.getRawAxis(1);
     	}
     	
-    	boolean ax1n = false, ax2n = false;
-    	if(ax1 < 0) ax1n = true;
-    	if(ax2 < 0) ax2n = true;
-    	ax1 *= ax1; ax2 *= ax2; //scaling the output of the joystick to fine tune the end result
-    	if(ax1n) ax1 *= -1;
-    	if(ax2n) ax2 *= -1;
-    	ax1 *= -1;
     	if(Robot.oi.getJoystick().getRawButtonPressed(11)) zeroEncoders();
     	if(Robot.oi.getJoystick().getRawButton(11)) 
     	{
@@ -355,12 +359,12 @@ public class Drivetrain extends Subsystem {
   }
     
     public void arcadeDrive(double throttle, double twist, boolean squared){
+    	if (squared) {
+			throttle = Math.copySign(throttle * throttle * throttle, throttle);
+		    twist = -Math.copySign(twist * twist * twist, twist);
+		}
     	if(RobotMap.compbot)
     	{
-    		if (squared) {
-    			throttle = Math.copySign(throttle * throttle * throttle, throttle);
-  		      	twist = -Math.copySign(twist * twist * twist, twist);
-    		}
     		double leftSpeed = throttle - twist;
     		double rightSpeed = -throttle - twist;
     		rightMaster.set(ControlMode.PercentOutput, rightSpeed);

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team5414.robot.commands.ArmSetAngle;
@@ -18,9 +19,21 @@ import org.usfirst.frc.team5414.robot.commands.ArmSetHover;
 import org.usfirst.frc.team5414.robot.commands.ArmSetLow;
 import org.usfirst.frc.team5414.robot.commands.ArmSetScale;
 import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
-import org.usfirst.frc.team5414.robot.commands.ArmThrowback;
+import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHigh;
+import org.usfirst.frc.team5414.robot.commands.AutoScaleLtoL;
+import org.usfirst.frc.team5414.robot.commands.AutoScaleLtoR;
+import org.usfirst.frc.team5414.robot.commands.AutoScaleRtoR;
+import org.usfirst.frc.team5414.robot.commands.AutoSwitchLtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoR;
+import org.usfirst.frc.team5414.robot.commands.AutoSwitchRtoR;
+import org.usfirst.frc.team5414.robot.commands.AutonomousDriveForward;
+import org.usfirst.frc.team5414.robot.commands.AutonomousMidSwitch;
+import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityLeft;
+import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityRight;
+import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
+import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityLeft;
+import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityRight;
 import org.usfirst.frc.team5414.robot.commands.DriveForward;
 import org.usfirst.frc.team5414.robot.commands.FollowEncoder;
 import org.usfirst.frc.team5414.robot.commands.TurnRight;
@@ -65,11 +78,13 @@ public class Robot extends TimedRobot {
 	public static Spintake spintake;
 	public static I2C i2c = new I2C(Port.kOnboard, 4);
 	public static PDP pdp;
+	public static SendableChooser chooser;
 	
 	Command autonomousCommand;
 	
 	@Override
 	public void robotInit() {
+		chooser = new SendableChooser();
 		drivetrain = new Drivetrain();
 		prefs = Preferences.getInstance();
 		limelight = new Limelight();
@@ -80,7 +95,7 @@ public class Robot extends TimedRobot {
 		if(RobotMap.hasSpintake) 
 		{
 			spintake = new Spintake();
-			pdp = new PDP();
+//			pdp = new PDP();
 		}
 		oi = new OI();
 		if(RobotMap.hasCompressor)
@@ -96,14 +111,20 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 		}
 		addPreferences();
+		chooser.addDefault("Cross Baseline", new AutonomousDriveForward());
+		chooser.addObject("Middle Switch", new AutonomousSwitchMiddle());
+		chooser.addObject("Left Switch Priority", new AutonomousSwitchPriorityLeft());
+		chooser.addObject("Right Switch Priority", new AutonomousSwitchPriorityRight());
+		chooser.addObject("Left Scale Priority", new AutonomousScalePriorityLeft());
+		chooser.addObject("Right Scale Priority", new AutonomousScalePriorityRight());
+		SmartDashboard.putData("Autonomous Mode Chooser", chooser);
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
 		SmartDashboard.putData("Drive Forward", new DriveForward(10));
 		SmartDashboard.putData("Arm Switch", new ArmSetSwitch());
 		SmartDashboard.putData("Arm Scale", new ArmSetScale());
 		SmartDashboard.putData("Arm Low", new ArmSetLow());
 		SmartDashboard.putData("Arm Hover", new ArmSetHover());
-		SmartDashboard.putData("Arm Throwback", new ArmThrowback());
-//		SmartDashboard.putData("Path test", new FollowPath(GenericPaths.path, false));
+		SmartDashboard.putData("Arm Throwback", new ArmThrowbackHigh());
 		if(RobotMap.hasLimelight)
 		{
 			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
@@ -125,14 +146,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-//		autonomousCommand = new AutoScaleRtoL();
-//		autonomousCommand = new AutoScaleLtoR();
-//		autonomousCommand = new AutoScaleLtoL();
-//		autonomousCommand = new AutoScaleRtoR();
-//		autonomousCommand = new AutoSwitchMtoR();
-		autonomousCommand = new AutoSwitchMtoL();
-//		autonomousCommand = new AutoSwitchRtoR();
-//		autonomousCommand = new AutoSwitchLtoL();
+//		autonomousCommand = new AutonomousMidSwitch();
+		autonomousCommand = (Command) chooser.getSelected();
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
@@ -172,11 +187,6 @@ public class Robot extends TimedRobot {
 		}
 		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw Raw", gyro.getYaw());
 		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw", gyro.getYaw()%360);
-		if(RobotMap.hasSpintake)
-		{
-			SmartDashboard.putNumber("Left Spintake Current", pdp.getLeftSpintake());
-			SmartDashboard.putNumber("Right Spintake Current", pdp.getRightSpintake());
-		}
 		if(RobotMap.hasArm)
 		{
 			SmartDashboard.putNumber("Arm Angle", arm.getAngle());

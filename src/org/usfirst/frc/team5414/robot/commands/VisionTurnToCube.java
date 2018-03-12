@@ -41,7 +41,7 @@ public class VisionTurnToCube extends Command {
     	//turn to cube
     	if(!Robot.limelight.hasTarget()) //if robot doesn't see a cube, constantly turn left 
     	{
-    		Robot.drivetrain.drive(.23, -.23);
+    		Robot.drivetrain.drive(.18, -.18);
     		return;
     	}
     	currentTimeoutLoops = 0;

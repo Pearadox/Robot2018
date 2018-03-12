@@ -54,9 +54,9 @@ public class AutoSwitchMtoL extends CommandGroup {
     	}
     	
     	addSequential(new ArmPincherClose());
+    	addSequential(new Wait(.5));
     	addParallel(new ArmSetSwitch());
     	addSequential(new FollowEncoder(left, right));
-    	addSequential(new SetAngle(0));
     	addSequential(new DriveForward(.6));
     	addSequential(new ArmPincherOpen());
     	addSequential(new Wait(.5));

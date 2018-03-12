@@ -11,22 +11,16 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *	- maybe if there's time, try to place it in the switch if it's on same side of scale
  *		-if it's not on same side of scale, put it on the scale
  */
-public class AutonomousScaleRight extends CommandGroup {
+public class AutonomousScalePriorityRight extends CommandGroup {
 
-    public AutonomousScaleRight() {
+    public AutonomousScalePriorityRight() {
 
     	String gameData = DriverStation.getInstance().getGameSpecificMessage();
     	char switchSide = gameData.charAt(0); // 'L' or 'R'
     	char scaleSide = gameData.charAt(1); // 'L' or 'R'
     	
-    	if(scaleSide == 'R')
-    	{
-    		addSequential(new AutoScaleRtoR());
-    	}
-    	else if(scaleSide == 'L')
-    	{
-    		addSequential(new AutoScaleRtoL());
-    	}
-    	
+    	if(scaleSide == 'R') addSequential(new AutoScaleRtoR());
+    	else if(switchSide == 'R') addSequential(new AutoSwitchRtoR());
+    	else addSequential(new AutoScaleRtoL());
     }
 }

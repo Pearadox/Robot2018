@@ -18,7 +18,7 @@ public class RobotMap {
 	//Fast switch between flatbot and 2018bot
 	public static boolean flatbot = false;
 	public static boolean compbot = true;
-	public static boolean hasLimelight = false;
+	public static boolean hasLimelight = true;
 	public static boolean hasGyro = true;
 	public static boolean hasCompressor = false;
 	public static boolean hasCam = false;
@@ -111,8 +111,8 @@ public class RobotMap {
 	public static double armkP = 0.025;
 	public static double armkI = 0.00001;
 	public static double armkD = 0.22;
-	public static double armThrowkP = 0.11;
-	public static double armThrowkD = 0.22;
+	public static double armThrowkP = 0.24;
+	public static double armThrowkD = 0.2;
 
 	//Motion Profile PID Loop (Jaci's Pathfinder)
 	public static double MPkD = 0.0;

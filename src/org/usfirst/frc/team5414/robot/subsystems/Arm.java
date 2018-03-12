@@ -67,7 +67,7 @@ public class Arm extends Subsystem {
 	
 	public double calculateHoldOutput(double angle)
 	{
-		double amplitude = pinched ? 0.142 : 0.14; //if there's a cube, the magnitude must be higher due to more TORQUE
+		double amplitude = pinched ? 0.15 : 0.143; //if there's a cube, the magnitude must be higher due to more TORQUE
 		double equation = amplitude * Math.sin(angle*Math.PI/180);
 		SmartDashboard.putNumber("calculate", equation);
 		return equation;

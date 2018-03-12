@@ -17,11 +17,14 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoScaleLtoL extends CommandGroup {
 
     public AutoScaleLtoL() {
-		addSequential(new ZeroGyro());
-    	addSequential(new DriveForward(7.2));
+    	
+    	addSequential(new ArmPincherClose());
+    	addSequential(new Wait(.5));
+    	addSequential(new ZeroGyro());
+    	addSequential(new DriveForward(7));
     	addSequential(new SetAngle(-150));
     	addSequential(new Wait(3));
-    	addSequential(new DriveForward(0));
-    	addSequential(new ArmThrowback());
+    	addSequential(new DriveForward(-.3));
+    	addSequential(new ArmThrowbackHigh());
     }
 }

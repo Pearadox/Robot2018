@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *
  */
-public class ArmThrowback extends Command {
+public class ArmThrowbackHigh extends Command {
 
 	double desiredAngle;
 	double lastError;
@@ -18,7 +18,7 @@ public class ArmThrowback extends Command {
 	int settleLoops;
 	final static int settleLoopsGoal = 2;
 	
-    public ArmThrowback() {
+    public ArmThrowbackHigh() {
         requires(Robot.arm);
         desiredAngle = 145;
     }
