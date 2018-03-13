@@ -1,11 +1,5 @@
 package org.usfirst.frc.team5414.robot.commands;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
-import org.usfirst.frc.team5414.robot.Robot;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 //import jaci.pathfinder.Pathfinder;
 
@@ -18,12 +12,11 @@ public class AutoScaleLtoL extends CommandGroup {
 
     public AutoScaleLtoL() {
     	
-    	addSequential(new ArmPincherClose());
-    	addSequential(new Wait(.5));
+    	addParallel(new ArmPincherClose());
+    	addSequential(new Wait(.3));
     	addSequential(new ZeroGyro());
     	addSequential(new DriveForward(7));
     	addSequential(new SetAngle(-150));
-    	addSequential(new Wait(3));
     	addSequential(new DriveForward(-.3));
     	addSequential(new ArmThrowbackHigh());
     }

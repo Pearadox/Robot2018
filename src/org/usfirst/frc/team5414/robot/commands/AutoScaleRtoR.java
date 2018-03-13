@@ -17,12 +17,11 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoScaleRtoR extends CommandGroup {
 
     public AutoScaleRtoR() {
-    	addSequential(new ArmPincherClose());
-    	addSequential(new Wait(.5));
-    	addSequential(new ZeroGyro());
+    	addParallel(new ZeroGyro());
+    	addParallel(new ArmPincherClose());
+    	addSequential(new Wait(.3));
     	addSequential(new DriveForward(7));
     	addSequential(new SetAngle(150));
-    	addSequential(new Wait(3));
     	addSequential(new DriveForward(-.3));
     	addSequential(new ArmThrowbackHigh());
     }

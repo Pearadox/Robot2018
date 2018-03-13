@@ -212,7 +212,7 @@ public class Drivetrain extends Subsystem {
     {
     	double f = .55;
     	throttle = Math.copySign((throttle * throttle + Math.abs(2*throttle*f)) / (1+2*f), throttle);
-    	twist = Math.copySign((twist * twist + Math.abs(2*twist *f)) / (1+2*f), twist );
+    	twist = Math.copySign((twist * twist + Math.abs(2*twist *f)) / (1+2*f), twist);
     	arcadeDrive(throttle, twist*.7, false);
     }
     
@@ -400,7 +400,7 @@ public class Drivetrain extends Subsystem {
     {
     	try {
     		int get = encoderR.get();
-    		get /= 2;
+//    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
     		return get;
     	} catch(Exception e) {}
     	return 0;
@@ -410,7 +410,7 @@ public class Drivetrain extends Subsystem {
     {
     	try {
     		int get = encoderL.get();
-    		get /= 2;
+//    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
     		return get;
     	} catch(Exception e) {}
     	return 0;

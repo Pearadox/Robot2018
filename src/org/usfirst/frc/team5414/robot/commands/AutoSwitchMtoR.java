@@ -53,14 +53,17 @@ public class AutoSwitchMtoR extends CommandGroup {
     		DriverStation.reportWarning("NOOOO", true);
     	}
     	
-    	addSequential(new ArmPincherClose());
+    	addParallel(new ZeroGyro());
+    	addParallel(new ArmPincherClose());
+    	addSequential(new Wait(.3));
     	addParallel(new ArmSetSwitch());
     	addSequential(new FollowEncoder(left, right));
-    	addSequential(new Wait(.3));
     	addSequential(new DriveForward(.4));
     	addSequential(new ArmPincherOpen());
-    	addSequential(new DriveForward(-.5));
+    	addSequential(new Wait(.5));
+    	addSequential(new DriveForward(-1));
     	addSequential(new SetAngle(90));
+    	addSequential(new DriveForward(.7));
 
     }
 }

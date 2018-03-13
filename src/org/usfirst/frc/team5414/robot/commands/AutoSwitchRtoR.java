@@ -54,8 +54,9 @@ public class AutoSwitchRtoR extends CommandGroup {
     		DriverStation.reportWarning("NOOOO", true);
     	}
 
-    	addSequential(new ArmPincherClose());
-    	addSequential(new Wait(.5));
+    	addParallel(new ZeroGyro());
+    	addParallel(new ArmPincherClose());
+    	addSequential(new Wait(.3));
     	addParallel(new ArmSetSwitch());
     	addSequential(new FollowEncoder(left, right));
     	addSequential(new TurnLeft(45));

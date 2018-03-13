@@ -52,15 +52,17 @@ public class AutoSwitchMtoL extends CommandGroup {
     		Robot.drivetrain.stop();
     		DriverStation.reportWarning("NOOOO", true);
     	}
-    	
-    	addSequential(new ArmPincherClose());
-    	addSequential(new Wait(.5));
+
+    	addParallel(new ZeroGyro());
+    	addParallel(new ArmPincherClose());
+    	addSequential(new Wait(.3));
     	addParallel(new ArmSetSwitch());
     	addSequential(new FollowEncoder(left, right));
     	addSequential(new DriveForward(.6));
     	addSequential(new ArmPincherOpen());
     	addSequential(new Wait(.5));
-    	addSequential(new DriveForward(-.5));
+    	addSequential(new DriveForward(-1));
     	addSequential(new SetAngle(-90));
+    	addSequential(new DriveForward(.7));
     }
 }

@@ -1,3 +1,4 @@
+
 package org.usfirst.frc.team5414.robot.commands;
 
 import org.usfirst.frc.team5414.robot.Robot;
@@ -31,17 +32,17 @@ public class DrivewithJoystick extends Command {
     		if(RobotMap.flatbot) Robot.drivetrain.cheesyDrive(js.getRawAxis(1), -js.getRawAxis(2)*.85, false);
     		if(RobotMap.compbot) Robot.drivetrain.cheesyDrive(-js.getRawAxis(1), -js.getRawAxis(2)*.85, false);
     	}
-    	if(peary) {
+    	else if(peary) {
     		Robot.drivetrain.pearDrive(js.getRawAxis(1), js.getRawAxis(2));
     	}
     	else Robot.drivetrain.arcadeDrive(Robot.oi.getJoystick());
 //    	Robot.drivetrain.arcadeDrive(-Robot.oi.getJoystick().getY(), Robot.oi.getJoystick().getZ());
-    	
-    	int pov = js.getPOV();
-    	if(pov != -1)
-    	{
-    		Scheduler.getInstance().add(new SetAngle(pov));
-    	}
+//    	
+//    	int pov = js.getPOV();
+//    	if(pov != -1)
+//    	{
+//    		Scheduler.getInstance().add(new SetAngle(pov));
+//    	}
     }
 
    

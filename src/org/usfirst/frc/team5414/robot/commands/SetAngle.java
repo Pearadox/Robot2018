@@ -22,7 +22,7 @@ public class SetAngle extends Command {
     	desired += 360000;
     	desired %= 360;
     	double error = Math.abs(current-desired);
-    	System.out.println(desired);
+    	Robot.turnIsDone = false;
     	if(error >= 180)
     	{
     		error = 360 - error;
@@ -54,7 +54,7 @@ public class SetAngle extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+        return Robot.turnIsDone;
     }
 
     // Called once after isFinished returns true

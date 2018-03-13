@@ -53,6 +53,7 @@ public class AutoSwitchLtoL extends CommandGroup {
     		DriverStation.reportWarning("NOOOO", true);
     	}
 
+    	addParallel(new ZeroGyro());
     	addSequential(new ArmPincherClose());
     	addParallel(new ArmSetSwitch());
     	addSequential(new FollowEncoder(left, right));

@@ -5,6 +5,7 @@
 package org.usfirst.frc.team5414.robot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Preferences;
@@ -80,6 +81,11 @@ public class Robot extends TimedRobot {
 	public static PDP pdp;
 	public static SendableChooser chooser;
 	
+	public static boolean turnIsDone = true;
+	DigitalInput Mid = new DigitalInput(0);
+	DigitalInput Left = new DigitalInput(1);
+	DigitalInput Scale = new DigitalInput(2);
+	
 	Command autonomousCommand;
 	
 	@Override
@@ -146,8 +152,21 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-//		autonomousCommand = new AutonomousMidSwitch();
-		autonomousCommand = (Command) chooser.getSelected();
+//		autonomousCommand = (Command) chooser.getSelected();
+		boolean mid = Mid.get();
+		boolean left = Left.get();
+		boolean scale = Scale.get();
+		if(mid) autonomousCommand = new AutonomousSwitchMiddle();
+		else if(left)
+		{
+			if(scale) autonomousCommand = new AutonomousScalePriorityLeft();
+			else autonomousCommand = new AutonomousSwitchPriorityLeft();
+		}
+		else
+		{
+			if(scale) autonomousCommand = new AutonomousScalePriorityRight();
+			else autonomousCommand = new AutonomousSwitchPriorityRight();
+		}
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}

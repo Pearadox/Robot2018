@@ -133,6 +133,7 @@ public class FollowEncoder extends Command{
     	errorSumRight = 0;
     	lastLeftError = 0;
     	lastRightError = 0;
+    	Robot.turnIsDone = true;
     }
 
     protected void interrupted() {
