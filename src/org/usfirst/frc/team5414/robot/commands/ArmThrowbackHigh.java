@@ -38,6 +38,7 @@ public class ArmThrowbackHigh extends Command {
     	
     	if(Robot.arm.getAngle() >= desiredAngle-10) Robot.arm.openPincher();
     	
+    	
     	double error = desiredAngle - Robot.arm.getAngle();
     	double F = Robot.arm.calculateHoldOutput(Robot.arm.getAngle());
     	double P = error * RobotMap.armThrowkP;

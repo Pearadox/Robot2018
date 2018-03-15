@@ -13,7 +13,8 @@ import org.usfirst.frc.team5414.robot.commands.ArmDownManual;
 import org.usfirst.frc.team5414.robot.commands.ArmUpManual;
 import org.usfirst.frc.team5414.robot.commands.SpintakeIntake;
 import org.usfirst.frc.team5414.robot.commands.SpintakeOuttake;
-import org.usfirst.frc.team5414.robot.commands.SpintakeOrient;
+import org.usfirst.frc.team5414.robot.commands.SpintakeOrientLeft;
+import org.usfirst.frc.team5414.robot.commands.SpintakeOrientRight;
 import org.usfirst.frc.team5414.robot.commands.SpintakePushIn;
 import org.usfirst.frc.team5414.robot.commands.SpintakePushOff;
 import org.usfirst.frc.team5414.robot.commands.SpintakePushOut;
@@ -109,28 +110,26 @@ public class OI {
 		//------OPERATOR-------------------------
 		JoystickButton btnOp1 = new JoystickButton(operator, 1);
 		JoystickButton btnOp2 = new JoystickButton(operator, 2);
+		JoystickButton btnOp3 = new JoystickButton(operator, 3);
 		JoystickButton btnOp4 = new JoystickButton(operator, 4);
 		JoystickButton btnOp5 = new JoystickButton(operator, 5);
+		JoystickButton btnOp6 = new JoystickButton(operator, 6);
 		JoystickButton btnOp7 = new JoystickButton(operator, 7);
 		JoystickButton btnOp8 = new JoystickButton(operator, 8);
 		JoystickButton btnOp9 = new JoystickButton(operator, 9);
 		JoystickButton btnOp10 = new JoystickButton(operator, 10);
-		JoystickButton btnOp11 = new JoystickButton(operator, 11);
-		JoystickButton btnOp12 = new JoystickButton(operator, 12);
 		JoystickButton btnOp13 = new JoystickButton(operator, 13);
 		
-		btnOp1.whileHeld(new SpintakeIntake());
-		btnOp2.whileHeld(new SpintakeOrient());
-		btnOp4.whileHeld(new SpintakeOuttake());
-		btnOp5.whenPressed(new ArmSetScale());
-		btnOp7.whileHeld(new SpintakePushOut());
-		btnOp8.whenPressed(new ArmSetSwitch());
-		btnOp9.whileHeld(new SpintakePushIn());
-		btnOp10.whenPressed(new ArmSetLow());
-		btnOp11.whenPressed(new ToggleLight());
-		btnOp12.whenPressed(new ArmThrowbackHigh());
-//		btnOp13.whenPressed(new SpintakeToggleMiddle());
-		btnOp13.whenPressed(new ArmThrowbackLow());
+		btnOp1.whenPressed(new ArmThrowbackHigh());
+		btnOp2.whenPressed(new ArmThrowbackLow());
+		btnOp3.whenPressed(new ArmSetLow());
+		btnOp4.whenPressed(new ArmSetSwitch());
+		btnOp5.whenPressed(new SpintakePushIn());
+		btnOp6.whileHeld(new SpintakeIntake());
+		btnOp7.whenPressed(new SpintakePushOut());
+		btnOp8.whileHeld(new SpintakeOuttake());
+		btnOp10.whileHeld(new SpintakeOrientRight());
+		btnOp13.whileHeld(new SpintakeOrientLeft());
 	}
 	
 	public Joystick getJoystick() {

@@ -58,16 +58,21 @@ public class Spintake extends Subsystem {
 		right.set(ControlMode.PercentOutput, 1);
 	}
 	
-	public void orient() {
-		if(orienting)
-		{
-			stop();
-			orienting = false;
-			return;
-		}
+	public void orientLeft() {
+//		if(orienting)
+//		{
+//			stop();
+//			orienting = false;
+//			return;
+//		}
 		left.set(ControlMode.PercentOutput, 1);
 		right.set(ControlMode.PercentOutput, 0);
-		orienting = true;
+//		orienting = true;
+	}
+	
+	public void orientRight() {
+		left.set(ControlMode.PercentOutput, 0);
+		right.set(ControlMode.PercentOutput, -1);
 	}
 	
 	public void stop() 

@@ -41,12 +41,22 @@ public class ArmSetAngle extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	double error = desiredAngle - Robot.arm.getAngle();
+    	
     	double F = Robot.arm.calculateHoldOutput(Robot.arm.getAngle());
     	double P = error * RobotMap.armkP;
     	double I = errorSum * RobotMap.armkI;
     	double D = (error-lastError) * RobotMap.armkD;
     	double output = P + I + D + F;
-    	output = Math.max(-.4, output);
+    	
+    	if(Math.abs(error) < 1)
+    	{
+        	output = Robot.arm.calculateHoldOutput(Robot.arm.getAngle());    		
+    	}
+    	else
+    	{
+	    	output = Math.max(-.4, output);
+
+    	}
     	Robot.arm.set(output);
     	errorSum += error;
     	lastError = error;
@@ -55,10 +65,10 @@ public class ArmSetAngle extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	if(settleLoops == settleLoopsGoal) 
-    		return true;
-    	if(Math.abs(lastError) < (accurate ? 1 : 4)) 
-    		settleLoops++;
+//    	if(settleLoops == settleLoopsGoal) 
+//    		return true;
+//    	if(Math.abs(lastError) < (accurate ? 1 : 4)) 
+//    		settleLoops++;
         return false;
     }
 
@@ -70,5 +80,6 @@ public class ArmSetAngle extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

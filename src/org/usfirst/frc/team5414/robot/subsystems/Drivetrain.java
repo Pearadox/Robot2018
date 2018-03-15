@@ -211,8 +211,8 @@ public class Drivetrain extends Subsystem {
     public void pearDrive(double throttle, double twist)
     {
     	double f = .55;
-    	throttle = Math.copySign((throttle * throttle + Math.abs(2*throttle*f)) / (1+2*f), throttle);
-    	twist = Math.copySign((twist * twist + Math.abs(2*twist *f)) / (1+2*f), twist);
+    	throttle = Math.copySign(((throttle * throttle + Math.abs(2*throttle*f)) / (1+2*f)), throttle);
+    	twist = Math.copySign(((twist * twist + Math.abs(2*twist *f)) / (1+2*f)), twist);
     	arcadeDrive(throttle, twist*.7, false);
     }
     

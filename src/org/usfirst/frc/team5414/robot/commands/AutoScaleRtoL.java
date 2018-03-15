@@ -58,6 +58,7 @@ public class AutoScaleRtoL extends CommandGroup {
     	}
     	addParallel(new ArmPincherClose());
 		addParallel(new ZeroGyro());
+		addSequential(new Wait(.3));
 		addParallel(new ArmSetAngle(60));
 		addSequential(new TurnRight(4.5));
     	addSequential(new FollowEncoder(left, right));
@@ -65,6 +66,6 @@ public class AutoScaleRtoL extends CommandGroup {
 		addSequential(new DriveForward(1.4));
     	addSequential(new SetAngle(-90));
     	addSequential(new ArmThrowbackHigh());
-    	addSequential(new ArmSetSwitch());
+    	addParallel(new ArmSetSwitch());
     }
 }

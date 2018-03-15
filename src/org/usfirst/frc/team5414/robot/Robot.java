@@ -29,7 +29,7 @@ import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoR;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchRtoR;
 import org.usfirst.frc.team5414.robot.commands.AutonomousDriveForward;
-import org.usfirst.frc.team5414.robot.commands.AutonomousMidSwitch;
+import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityRight;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
@@ -68,7 +68,7 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
  */
 
 public class Robot extends TimedRobot {
-	
+
 	public static Drivetrain drivetrain;
 	public static OI oi;
 	public static IMU gyro; 
@@ -117,12 +117,12 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 		}
 		addPreferences();
-		chooser.addDefault("Cross Baseline", new AutonomousDriveForward());
-		chooser.addObject("Middle Switch", new AutonomousSwitchMiddle());
-		chooser.addObject("Left Switch Priority", new AutonomousSwitchPriorityLeft());
-		chooser.addObject("Right Switch Priority", new AutonomousSwitchPriorityRight());
-		chooser.addObject("Left Scale Priority", new AutonomousScalePriorityLeft());
-		chooser.addObject("Right Scale Priority", new AutonomousScalePriorityRight());
+		chooser.addDefault("Cross", new AutonomousDriveForward());
+		chooser.addObject("Middle", new AutonomousSwitchMiddle());
+		chooser.addObject("LeftSwitch", new AutonomousSwitchPriorityLeft());
+		chooser.addObject("RightSwitch", new AutonomousSwitchPriorityRight());
+		chooser.addObject("LeftScale", new AutonomousScalePriorityLeft());
+		chooser.addObject("RightScale", new AutonomousScalePriorityRight());
 		SmartDashboard.putData("Autonomous Mode Chooser", chooser);
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
 		SmartDashboard.putData("Drive Forward", new DriveForward(10));
@@ -136,6 +136,7 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putData("Vision Turn Cube", new VisionTurnToCube());
 			SmartDashboard.putData("Vision Go To Cube", new VisionGoToCube());
 		}
+		limelight.lightOff();
 	}
 
 	@Override
@@ -171,6 +172,7 @@ public class Robot extends TimedRobot {
 			autonomousCommand.start();
 		}
 	}
+	
 
 	@Override
 	public void autonomousPeriodic() {

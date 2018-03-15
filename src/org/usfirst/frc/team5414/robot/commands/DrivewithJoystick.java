@@ -14,10 +14,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 public class DrivewithJoystick extends Command {
 
     public DrivewithJoystick() {
-        requires(Robot.drivetrain);
-        
+        requires(Robot.drivetrain);   
     }
-
   
     protected void initialize() {
     }
@@ -25,15 +23,15 @@ public class DrivewithJoystick extends Command {
    
     protected void execute() {
     	Joystick js = Robot.oi.getJoystick();
-    	boolean cheesy = false;
-    	boolean peary = true;
+    	boolean cheesy = true;
+    	boolean peary = false;
     	if(cheesy)
     	{
     		if(RobotMap.flatbot) Robot.drivetrain.cheesyDrive(js.getRawAxis(1), -js.getRawAxis(2)*.85, false);
-    		if(RobotMap.compbot) Robot.drivetrain.cheesyDrive(-js.getRawAxis(1), -js.getRawAxis(2)*.85, false);
+    		if(RobotMap.compbot) Robot.drivetrain.cheesyDrive(-js.getRawAxis(1), js.getRawAxis(2)*.35, false); //changed angle factor
     	}
     	else if(peary) {
-    		Robot.drivetrain.pearDrive(js.getRawAxis(1), js.getRawAxis(2));
+    		Robot.drivetrain.pearDrive(-js.getRawAxis(1), -js.getRawAxis(2));
     	}
     	else Robot.drivetrain.arcadeDrive(Robot.oi.getJoystick());
 //    	Robot.drivetrain.arcadeDrive(-Robot.oi.getJoystick().getY(), Robot.oi.getJoystick().getZ());
