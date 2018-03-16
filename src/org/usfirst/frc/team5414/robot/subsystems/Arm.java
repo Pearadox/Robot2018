@@ -25,9 +25,9 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 	final static double VHigh = 1.38;
-	final static double VLow = 4.133;
+	final static double VLow = 4.04;
 	final static double angleLow = 38.7;
-	final static double angleHigh = 190.7;
+	final static double angleHigh = 180;
 	final static double maxAngleStop = 165;
 	final static double minAngleStop = 49;
 	
@@ -82,17 +82,17 @@ public class Arm extends Subsystem {
 	}
 	
 	public void armUp() {
-		double currentAngle = getAngle();
-		if(currentAngle >= maxAngleStop) 
-			set(calculateHoldOutput(currentAngle));
-		else set(calculateHoldOutput(currentAngle) + .6);
+			double currentAngle = getAngle();
+			set(calculateHoldOutput(currentAngle) + .6);
 	}
 	
 	public void armDown() {
+		try {
 		double currentAngle = getAngle();
 		if(currentAngle <= minAngleStop)
 			set(calculateHoldOutput(currentAngle));
 		set(calculateHoldOutput(currentAngle) - .6);
+		} catch(Exception e) {set(-.4);}
 	}
 	
 	public void set(double percentOutput)

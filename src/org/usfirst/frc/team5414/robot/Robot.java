@@ -6,6 +6,8 @@ package org.usfirst.frc.team5414.robot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Preferences;
@@ -50,6 +52,7 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
 
 /*
  * Order of who to blame if the program doesn't work:
+ * not bharath
  * 0. electrical
  * 1. mechanical
  * 2. chairmans
@@ -64,9 +67,10 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
  * Shoutout to mechanical for getting me 4 full minutes of the 
  * competition robot for autonomous testing during build season
  * 
+ * Shoutout to Bharath
  * Please love me Charles From 1477
  */
-
+ 
 public class Robot extends TimedRobot {
 
 	public static Drivetrain drivetrain;
@@ -86,6 +90,10 @@ public class Robot extends TimedRobot {
 	DigitalInput Left = new DigitalInput(1);
 	DigitalInput Scale = new DigitalInput(2);
 	
+	public static char switchSide = 'X';
+	public static char scaleSide = 'X';
+	
+	
 	Command autonomousCommand;
 	
 	@Override
@@ -103,7 +111,6 @@ public class Robot extends TimedRobot {
 			spintake = new Spintake();
 //			pdp = new PDP();
 		}
-		oi = new OI();
 		if(RobotMap.hasCompressor)
 		{
 			compressor = new Compressor(0);
@@ -116,6 +123,7 @@ public class Robot extends TimedRobot {
 			
 			SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 		}
+		oi = new OI();
 		addPreferences();
 		chooser.addDefault("Cross", new AutonomousDriveForward());
 		chooser.addObject("Middle", new AutonomousSwitchMiddle());
@@ -148,26 +156,58 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		if(RobotMap.compbot) updateDashboard();
-		i2c.write(4, 0);
+//		i2c.write(4, 5); //changed from 0 to 5 for disabled arduino pattern
 	}
 
 	@Override
 	public void autonomousInit() {
 //		autonomousCommand = (Command) chooser.getSelected();
+		String gameData = "";
+		for(int i = 0; i < 20; i++)
+			gameData = DriverStation.getInstance().getGameSpecificMessage();
+		try {
+	    	switchSide = gameData.charAt(0); // 'L' or 'R'
+	    	scaleSide = gameData.charAt(1); // 'L' or 'R'
+		} catch(Exception e) {System.out.println("Failed to retrieve FMS stuff");}
+		SmartDashboard.putString("Game Data", gameData);
 		boolean mid = Mid.get();
 		boolean left = Left.get();
 		boolean scale = Scale.get();
-		if(mid) autonomousCommand = new AutonomousSwitchMiddle();
+		if(mid) 
+		{
+			autonomousCommand = new AutonomousSwitchMiddle();
+			SmartDashboard.putString("Auto Mode", "SwitchMiddle");
+		}
+		else if(switchSide == 'X') autonomousCommand = new AutonomousDriveForward();
 		else if(left)
 		{
-			if(scale) autonomousCommand = new AutonomousScalePriorityLeft();
-			else autonomousCommand = new AutonomousSwitchPriorityLeft();
+			if(scale)
+			{
+				autonomousCommand = new AutonomousScalePriorityLeft();
+				SmartDashboard.putString("Auto Mode", "ScaleLeft");
+			}
+			else 
+			{
+				autonomousCommand = new AutonomousSwitchPriorityLeft();
+				SmartDashboard.putString("Auto Mode", "SwitchLeft");
+			}
 		}
 		else
 		{
-			if(scale) autonomousCommand = new AutonomousScalePriorityRight();
-			else autonomousCommand = new AutonomousSwitchPriorityRight();
+			if(scale)
+			{
+				autonomousCommand = new AutonomousScalePriorityRight();
+				SmartDashboard.putString("Auto Mode", "ScaleRight");
+			}
+			else 
+			{
+				autonomousCommand = new AutonomousSwitchPriorityRight();
+				SmartDashboard.putString("Auto Mode", "SwitchRight");
+			}
 		}
+		
+		autonomousCommand = new AutonomousSwitchMiddle();
+		
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
@@ -178,7 +218,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateDashboard();
-		i2c.write(4, 2);
+//		i2c.write(4, 1);
 	}
 
 	@Override
@@ -193,7 +233,13 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		SmartDashboard.putData("Test Drive Encs", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		if(RobotMap.compbot) updateDashboard();
+		/*
+		if(DriverStation.getInstance().getAlliance() == Alliance.Blue )
+			i2c.write(4,  2);
+		else
+			i2c.write(4, 3);
 		i2c.write(4, 1);
+		*/
 	}
 
 	@Override

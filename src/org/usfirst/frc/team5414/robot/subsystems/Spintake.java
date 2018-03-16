@@ -1,5 +1,8 @@
 package org.usfirst.frc.team5414.robot.subsystems;
 
+import org.usfirst.frc.team5414.robot.commands.ArmHold;
+import org.usfirst.frc.team5414.robot.commands.SpintakePOVControl;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -13,31 +16,28 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Spintake extends Subsystem {
 
 	VictorSPX left, right;
-	DoubleSolenoid solLeft, solRight, solMiddle;
+	DoubleSolenoid sols, solMiddle;
 	boolean orienting = false;
 	
 	public Spintake()
 	{
 		left = new VictorSPX(22);
 		right = new VictorSPX(21);
-		solLeft = new DoubleSolenoid(0,7);
-		solRight = new DoubleSolenoid(1, 6);
-		solMiddle = new DoubleSolenoid(3, 4);
+		sols = new DoubleSolenoid(3,4);
+//		solRight = new DoubleSolenoid(1, 6);
+//		solMiddle = new DoubleSolenoid(3, 4);
 	}
 	
 	public void pushIn() {
-		solLeft.set(DoubleSolenoid.Value.kReverse);
-		solRight.set(DoubleSolenoid.Value.kReverse);
+		sols.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	public void pushOut() {
-		solLeft.set(DoubleSolenoid.Value.kForward);
-		solRight.set(DoubleSolenoid.Value.kForward);
+		sols.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	public void pushOff() {
-		solLeft.set(DoubleSolenoid.Value.kOff);
-		solRight.set(DoubleSolenoid.Value.kOff);
+		sols.set(DoubleSolenoid.Value.kOff);
 	}
 	
 	public void toggleMiddle() {
@@ -48,14 +48,16 @@ public class Spintake extends Subsystem {
 	
 	public void intake()
 	{
-		left.set(ControlMode.PercentOutput, .7);
-		right.set(ControlMode.PercentOutput, -1);
+		System.out.println("in");
+		left.set(ControlMode.PercentOutput, -.7);
+		right.set(ControlMode.PercentOutput, .7);
 	}
 	
 	public void outtake()
 	{
-		left.set(ControlMode.PercentOutput, -1);
-		right.set(ControlMode.PercentOutput, 1);
+		System.out.println("out");
+		left.set(ControlMode.PercentOutput, .6);
+		right.set(ControlMode.PercentOutput, -.6);
 	}
 	
 	public void orientLeft() {
@@ -65,14 +67,16 @@ public class Spintake extends Subsystem {
 //			orienting = false;
 //			return;
 //		}
-		left.set(ControlMode.PercentOutput, 1);
+		System.out.println("left");
+		left.set(ControlMode.PercentOutput, .4);
 		right.set(ControlMode.PercentOutput, 0);
 //		orienting = true;
 	}
 	
 	public void orientRight() {
+		System.out.println("right");
 		left.set(ControlMode.PercentOutput, 0);
-		right.set(ControlMode.PercentOutput, -1);
+		right.set(ControlMode.PercentOutput, -.4);
 	}
 	
 	public void stop() 
@@ -92,8 +96,7 @@ public class Spintake extends Subsystem {
 	}
 
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+    	setDefaultCommand(new SpintakePOVControl());
     }
 }
 

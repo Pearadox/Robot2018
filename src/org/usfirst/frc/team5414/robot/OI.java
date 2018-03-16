@@ -101,6 +101,7 @@ public class OI {
 		btn6.whenPressed(new ArmSetScale());
 		btn7.whileHeld(new ArmDownManual());
 		btn8.whileHeld(new ArmUpManual());
+		
 		btn9.whileHeld(new SpintakeIntake());
 		btn10.whileHeld(new SpintakeOuttake());
 		btn11.whenPressed(new SpintakePushIn());
@@ -112,7 +113,7 @@ public class OI {
 		JoystickButton btnOp2 = new JoystickButton(operator, 2);
 		JoystickButton btnOp3 = new JoystickButton(operator, 3);
 		JoystickButton btnOp4 = new JoystickButton(operator, 4);
-		JoystickButton btnOp5 = new JoystickButton(operator, 5);
+		JoystickButton btnOp5 =	new JoystickButton(operator, 5);
 		JoystickButton btnOp6 = new JoystickButton(operator, 6);
 		JoystickButton btnOp7 = new JoystickButton(operator, 7);
 		JoystickButton btnOp8 = new JoystickButton(operator, 8);
@@ -120,20 +121,26 @@ public class OI {
 		JoystickButton btnOp10 = new JoystickButton(operator, 10);
 		JoystickButton btnOp13 = new JoystickButton(operator, 13);
 		
+		
 		btnOp1.whenPressed(new ArmThrowbackHigh());
 		btnOp2.whenPressed(new ArmThrowbackLow());
 		btnOp3.whenPressed(new ArmSetLow());
 		btnOp4.whenPressed(new ArmSetSwitch());
-		btnOp5.whenPressed(new SpintakePushIn());
-		btnOp6.whileHeld(new SpintakeIntake());
-		btnOp7.whenPressed(new SpintakePushOut());
-		btnOp8.whileHeld(new SpintakeOuttake());
-		btnOp10.whileHeld(new SpintakeOrientRight());
-		btnOp13.whileHeld(new SpintakeOrientLeft());
+		btnOp5.whenPressed(new SpintakePushOut());
+//		btnOp6.whileHeld(new SpintakeIntake());
+		btnOp7.whenPressed(new SpintakePushIn());
+//		btnOp8.whileHeld(new SpintakeOrientLeft());
+		btnOp9.whileHeld(new SpintakeOrientLeft());
+//		btnOp10.whileHeld(new SpintakeOrientRight());
+		btnOp13.whileHeld(new SpintakeOrientRight());
 	}
 	
 	public Joystick getJoystick() {
 		return stick;
 		
+	}
+	
+	public Joystick getOpJoystick() {
+		return operator;
 	}
 }

@@ -20,10 +20,9 @@ public class AutonomousSwitchPriorityLeft extends CommandGroup {
 
     public AutonomousSwitchPriorityLeft() {
 
-    	String gameData = DriverStation.getInstance().getGameSpecificMessage();
-    	char switchSide = gameData.charAt(0); // 'L' or 'R'
-    	char scaleSide = gameData.charAt(1); // 'L' or 'R'
-
+    	char switchSide = Robot.switchSide;
+    	char scaleSide = Robot.scaleSide;
+    	
     	if(switchSide == 'L') addSequential(new AutoSwitchLtoL());
     	else if(scaleSide == 'L') addSequential(new AutoScaleLtoL());
     	else addSequential(new AutoScaleLtoR());

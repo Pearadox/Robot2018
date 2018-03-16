@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5414.robot.commands;
 
+import org.usfirst.frc.team5414.robot.Robot;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -14,10 +16,9 @@ public class AutonomousSwitchMiddle extends CommandGroup {
 
     public AutonomousSwitchMiddle() {
     	
-    	String gameData = DriverStation.getInstance().getGameSpecificMessage();
-    	char switchSide = gameData.charAt(0); // 'L' or 'R'
-    	char scaleSide = gameData.charAt(1); // 'L' or 'R'
-    	
+    	char switchSide = Robot.switchSide;
+    	char scaleSide = Robot.scaleSide;
+    	    	
     	if(switchSide == 'L')
     	{
     		addSequential(new AutoSwitchMtoL());
@@ -26,5 +27,6 @@ public class AutonomousSwitchMiddle extends CommandGroup {
     	{
     		addSequential(new AutoSwitchMtoR());
     	}
+    	else addSequential(new AutonomousSwitchMiddleBackup());
     }
 }

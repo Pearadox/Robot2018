@@ -20,7 +20,7 @@ public class RobotMap {
 	public static boolean compbot = true;
 	public static boolean hasLimelight = true;
 	public static boolean hasGyro = true;
-	public static boolean hasCompressor = false;
+	public static boolean hasCompressor = true;
 	public static boolean hasCam = false;
 	public static boolean hasArm = true;
 	public static boolean hasSpintake = true;

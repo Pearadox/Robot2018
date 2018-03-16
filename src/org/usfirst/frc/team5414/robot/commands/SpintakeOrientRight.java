@@ -17,12 +17,13 @@ public class SpintakeOrientRight extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.spintake.orientRight();
+    
 //    	rightIsTriggered = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	Robot.spintake.orientRight();
 //    	double leftPeakCurrent = 9999;
 //    	double rightPeakCurrent = 9999;
     	
