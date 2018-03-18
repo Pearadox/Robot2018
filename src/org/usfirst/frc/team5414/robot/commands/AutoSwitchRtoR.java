@@ -59,7 +59,7 @@ public class AutoSwitchRtoR extends CommandGroup {
     	addSequential(new Wait(.3));
     	addParallel(new ArmSetSwitch());
     	addSequential(new FollowEncoder(left, right));
-    	addSequential(new TurnLeft(45));
+    	addSequential(new SetAngle(-90));
     	addSequential(new DriveForward(1));
     	addSequential(new ArmPincherOpen());
     }

@@ -23,8 +23,8 @@ public class DrivewithJoystick extends Command {
    
     protected void execute() {
     	Joystick js = Robot.oi.getJoystick();
-    	boolean cheesy = true;
-    	boolean peary = false;
+    	boolean cheesy = false;
+    	boolean peary = true;
     	if(cheesy)
     	{
     		if(RobotMap.flatbot) Robot.drivetrain.cheesyDrive(js.getRawAxis(1), -js.getRawAxis(2)*.5, false);

@@ -38,6 +38,7 @@ import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityRight;
 import org.usfirst.frc.team5414.robot.commands.DriveForward;
+import org.usfirst.frc.team5414.robot.commands.DriveTimed;
 import org.usfirst.frc.team5414.robot.commands.FollowEncoder;
 import org.usfirst.frc.team5414.robot.commands.TurnRight;
 import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
@@ -51,8 +52,7 @@ import org.usfirst.frc.team5414.robot.subsystems.PDP;
 import org.usfirst.frc.team5414.robot.subsystems.Spintake;
 
 /*
- * Order of who to blame if the program doesn't work:
- * not bharath
+ * Order of who to blame if the program doesn't work:  
  * 0. electrical
  * 1. mechanical
  * 2. chairmans
@@ -67,7 +67,6 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
  * Shoutout to mechanical for getting me 4 full minutes of the 
  * competition robot for autonomous testing during build season
  * 
- * Shoutout to Bharath
  * Please love me Charles From 1477
  */
  
@@ -133,7 +132,7 @@ public class Robot extends TimedRobot {
 		chooser.addObject("RightScale", new AutonomousScalePriorityRight());
 		SmartDashboard.putData("Autonomous Mode Chooser", chooser);
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
-		SmartDashboard.putData("Drive Forward", new DriveForward(10));
+		SmartDashboard.putData("Drive Forward", new DriveForward(1));
 		SmartDashboard.putData("Arm Switch", new ArmSetSwitch());
 		SmartDashboard.putData("Arm Scale", new ArmSetScale());
 		SmartDashboard.putData("Arm Low", new ArmSetLow());
@@ -156,7 +155,7 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		if(RobotMap.compbot) updateDashboard();
-//		i2c.write(4, 5); //changed from 0 to 5 for disabled arduino pattern
+		i2c.write(4, 5); //changed from 0 to 5 for disabled arduino pattern
 	}
 
 	@Override
@@ -181,7 +180,7 @@ public class Robot extends TimedRobot {
 		else if(switchSide == 'X') autonomousCommand = new AutonomousDriveForward();
 		else if(left)
 		{
-			if(scale)
+			if(scale)				
 			{
 				autonomousCommand = new AutonomousScalePriorityLeft();
 				SmartDashboard.putString("Auto Mode", "ScaleLeft");
@@ -206,7 +205,9 @@ public class Robot extends TimedRobot {
 			}
 		}
 		
-		autonomousCommand = new AutonomousSwitchMiddle();
+//		autonomousCommand = new AutonomousSwitchMiddle();
+//		autonomousCommand = new DriveTimed(.7, .9, 3);
+//		autonomousCommand = new DriveForward(4);
 		
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
@@ -218,7 +219,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateDashboard();
-//		i2c.write(4, 1);
+		i2c.write(4, 1);
 	}
 
 	@Override
@@ -233,13 +234,13 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		SmartDashboard.putData("Test Drive Encs", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		if(RobotMap.compbot) updateDashboard();
-		/*
+//		/*
 		if(DriverStation.getInstance().getAlliance() == Alliance.Blue )
 			i2c.write(4,  2);
 		else
 			i2c.write(4, 3);
-		i2c.write(4, 1);
-		*/
+//		i2c.write(4, 1);
+//		*/
 	}
 
 	@Override

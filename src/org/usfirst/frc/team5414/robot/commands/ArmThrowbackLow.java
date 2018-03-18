@@ -20,12 +20,13 @@ public class ArmThrowbackLow extends Command {
 	
     public ArmThrowbackLow() {
         requires(Robot.arm);
-        desiredAngle = 145;
+        desiredAngle = 140;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	setTimeout(1.5);
+    	Robot.spintake.pushOut();
     	errorSum = 0;
     	lastError = (desiredAngle-Robot.arm.getAngle());
     	settleLoops = 0;
@@ -40,7 +41,7 @@ public class ArmThrowbackLow extends Command {
     	
     	double error = desiredAngle - Robot.arm.getAngle();
     	double F = Robot.arm.calculateHoldOutput(Robot.arm.getAngle());
-    	double P = error * RobotMap.armThrowkP/2;
+    	double P = error * RobotMap.armThrowkP/1.6;
     	double D = (error-lastError) * RobotMap.armThrowkD;
     	double output = P + D + F;
     	output = Math.max(-.4, output);

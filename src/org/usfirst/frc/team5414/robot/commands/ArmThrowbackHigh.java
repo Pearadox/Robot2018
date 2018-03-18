@@ -20,12 +20,13 @@ public class ArmThrowbackHigh extends Command {
 	
     public ArmThrowbackHigh() {
         requires(Robot.arm);
-        desiredAngle = 145;
+        desiredAngle = 137.5;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	setTimeout(1.5);
+    	Robot.spintake.pushOut();
     	errorSum = 0;
     	lastError = (desiredAngle-Robot.arm.getAngle());
     	settleLoops = 0;

@@ -13,11 +13,13 @@ public class AutoScaleLtoL extends CommandGroup {
     public AutoScaleLtoL() {
     	
     	addParallel(new ArmPincherClose());
-    	addSequential(new Wait(.3));
-    	addSequential(new ZeroGyro());
+    	addSequential(new Wait(.2));
+    	addParallel(new ZeroGyro());
+    	addParallel(new ArmSetHover());
     	addSequential(new DriveForward(7.15));
     	addSequential(new SetAngle(-150));
     	addSequential(new DriveForward(-.3));
     	addSequential(new ArmThrowbackHigh());
+    	addSequential(new ArmSetLow());
     }
 }

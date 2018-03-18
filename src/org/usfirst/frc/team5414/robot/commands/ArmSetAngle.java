@@ -22,6 +22,7 @@ public class ArmSetAngle extends Command {
 	public ArmSetAngle(double angle, boolean accurate) {
         requires(Robot.arm);
         desiredAngle = angle;
+        setTimeout(3);
     }
 	
 	public ArmSetAngle(double angle) {

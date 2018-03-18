@@ -8,6 +8,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class ArmSetHover extends CommandGroup {
 
     public ArmSetHover() {
-    	addSequential(new ArmSetAngle(40+10));
+    	addSequential(new ArmSetAngle(75));
     }
 }

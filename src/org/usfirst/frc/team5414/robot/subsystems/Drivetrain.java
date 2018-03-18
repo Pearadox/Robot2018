@@ -214,6 +214,12 @@ public class Drivetrain extends Subsystem {
     	throttle = Math.copySign(((throttle * throttle + Math.abs(2*throttle*f)) / (1+2*f)), throttle);
     	twist = Math.copySign(((twist * twist + Math.abs(2*twist *f)) / (1+2*f)), twist);
     	arcadeDrive(throttle, twist*.7, false);
+    	if(Robot.oi.getJoystick().getRawButtonPressed(11)) zeroEncoders();
+    	if(Robot.oi.getJoystick().getRawButton(11)) 
+    	{
+    		System.out.print(getEncoderL() + " " + getEncoderR() + " ");
+    	}
+    	if(Robot.oi.getJoystick().getRawButtonReleased(11)) System.out.println("----------------------------");
     }
     
     public void cheesyDrive(double throttle, double wheel,

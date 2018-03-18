@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class DriveForward extends CommandGroup {
 
-	double maxVelocity = 4;
+	double maxVelocity = 3;
 	double acceleration = 2;
 	
 //	Generates a trapezoidal trajectory and follows the encoders
-    public DriveForward(double meters) {
+	public DriveForward(double meters) {
         org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(meters, .02, maxVelocity, acceleration);
         org.usfirst.frc.team5414.robot.Traj[] right = TrajectoryGenerator.getTrajectory(meters, .02, maxVelocity, acceleration);
         ArrayList<Double> leftList = new ArrayList<>();

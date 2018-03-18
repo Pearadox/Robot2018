@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class TrajectoryGenerator {
 	
 	//METERS
-	static double CRUISE_VELOCITY = 4;
-	static double ACCELERATION = 4;
+	static double CRUISE_VELOCITY = 2.5;
+	static double ACCELERATION = 2;
 
 	public static Traj[] getTrajectory(double distance, double interval, double cruiseVelocity, double acceleration) //meters, seconds, m/s, m/s/s
     {

@@ -90,11 +90,11 @@ public class RobotMap {
 	public static double plybotLkF = .13;
 	public static double plybotLkD = 0.09;
 	public static double plybotLkI = 0.00000;
-	public static double plybotLkP = 0.0053;
+	public static double plybotLkP = 0.0052;
 	public static double plybotRkF = .13;
-	public static double plybotRkD = 0.09;
+	public static double plybotRkD = 0.1;
 	public static double plybotRkI = 0.00000;
-	public static double plybotRkP = 0.005;
+	public static double plybotRkP = 0.006;
 	
 	//Vision PID Loop
 	public static double turnLimekD = 0.05;

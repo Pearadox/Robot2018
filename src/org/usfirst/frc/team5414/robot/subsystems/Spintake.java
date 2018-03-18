@@ -68,15 +68,15 @@ public class Spintake extends Subsystem {
 //			return;
 //		}
 		System.out.println("left");
-		left.set(ControlMode.PercentOutput, .4);
-		right.set(ControlMode.PercentOutput, 0);
+		left.set(ControlMode.PercentOutput, .3);
+		right.set(ControlMode.PercentOutput, .15);
 //		orienting = true;
 	}
 	
 	public void orientRight() {
 		System.out.println("right");
-		left.set(ControlMode.PercentOutput, 0);
-		right.set(ControlMode.PercentOutput, -.4);
+		left.set(ControlMode.PercentOutput, .15);
+		right.set(ControlMode.PercentOutput, -.3);
 	}
 	
 	public void stop() 
