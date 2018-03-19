@@ -28,6 +28,7 @@ import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHigh;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackLow;
 import org.usfirst.frc.team5414.robot.commands.ToggleLight;
+import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
 import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -129,12 +130,12 @@ public class OI {
 		btnOp3.whenPressed(new ArmSetLow());
 		btnOp4.whenPressed(new ArmSetSwitch());
 		btnOp5.whenPressed(new SpintakePushOut());
-		btnOp6.whileHeld(new ArmPincherOpen());
+		btnOp6.whileHeld(new VisionTurnToCube());
 		btnOp7.whenPressed(new SpintakePushIn());
-		btnOp8.whileHeld(new ArmPincherClose());
-		btnOp9.whileHeld(new SpintakeOrientLeft());
+		btnOp8.whileHeld(new VisionGoToCube());
+//		btnOp9.whileHeld(new SpintakeOrientLeft());
 //		btnOp10.whileHeld(new SpintakeOrientRight());
-		btnOp13.whileHeld(new SpintakeOrientRight());
+//		btnOp13.whileHeld(new SpintakeOrientRight());
 	}
 	
 	public Joystick getJoystick() {

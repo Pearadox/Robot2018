@@ -97,15 +97,15 @@ public class RobotMap {
 	public static double plybotRkP = 0.006;
 	
 	//Vision PID Loop
-	public static double turnLimekD = 0.05;
+	public static double turnLimekD = 0.09;
 	public static double turnLimekI = 0.00;
-	public static double turnLimekP = 0.003;
+	public static double turnLimekP = 0.004;
 	public static double forwardLimekD = 0.008;
 	public static double forwardLimekI = 0.0;
-	public static double forwardLimekP = 0.018;
-	public static double forwardTurnLimekD = .3;
+	public static double forwardLimekP = 0.0195;
+	public static double forwardTurnLimekD = .09;
 	public static double forwardTurnLimekI = 0.0;
-	public static double forwardTurnLimekP = 0.007;
+	public static double forwardTurnLimekP = 0.0005;
 	
 	//Arm PID Loop
 	public static double armkP = 0.025;

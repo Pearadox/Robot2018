@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class DriveForward extends CommandGroup {
 
-	double maxVelocity = 3;
+	double maxVelocity = 4;
 	double acceleration = 2;
 	
 //	Generates a trapezoidal trajectory and follows the encoders

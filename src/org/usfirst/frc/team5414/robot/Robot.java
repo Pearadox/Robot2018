@@ -53,7 +53,7 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
 
 /*
  * Order of who to blame if the program doesn't work:  
- * 0. electrical
+ * 0. electrical/Anyssa
  * 1. mechanical
  * 2. chairmans
  * 3. imagery
@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
 		chooser.addObject("RightScale", new AutonomousScalePriorityRight());
 		SmartDashboard.putData("Autonomous Mode Chooser", chooser);
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
-		SmartDashboard.putData("Drive Forward", new DriveForward(1));
+		SmartDashboard.putData("Drive Forward", new DriveForward(5));
 		SmartDashboard.putData("Arm Switch", new ArmSetSwitch());
 		SmartDashboard.putData("Arm Scale", new ArmSetScale());
 		SmartDashboard.putData("Arm Low", new ArmSetLow());
@@ -153,6 +153,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
+		limelight.lightOff();
 		Scheduler.getInstance().run();
 		if(RobotMap.compbot) updateDashboard();
 		i2c.write(4, 5); //changed from 0 to 5 for disabled arduino pattern
@@ -205,8 +206,10 @@ public class Robot extends TimedRobot {
 			}
 		}
 		
-//		autonomousCommand = new AutonomousSwitchMiddle();
-//		autonomousCommand = new DriveTimed(.7, .9, 3);
+		/*
+		 * place auton group here instead of autonmousswitchmiddle to hard code
+		 */
+		autonomousCommand = new AutonomousSwitchMiddle();
 //		autonomousCommand = new DriveForward(4);
 		
 		if (autonomousCommand != null) {

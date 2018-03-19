@@ -38,33 +38,35 @@ public class VisionTurnToCube extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	//turn to cube
-    	if(!Robot.limelight.hasTarget()) //if robot doesn't see a cube, constantly turn left 
-    	{
-    		Robot.drivetrain.drive(.18, -.18);
-    		return;
-    	}
-    	currentTimeoutLoops = 0;
-    	double area = Robot.limelight.getArea();
-    	double error = Robot.limelight.getX();
-    	double leftOutput = 0;
-    	double rightOutput = 0;
-    	
-    	errorSum += error;
-    	if(Math.abs(error) <= 2) errorSum = 0;
-    	double F = error > 0 ? 0.1 : -0.1;
-    	double P = error * RobotMap.turnLimekP;
-    	double I = errorSum * RobotMap.turnLimekI;
-    	double D = (lastError - error) * (area > 2 ? RobotMap.turnLimekD/5. : RobotMap.turnLimekD);
-    	double output = P + I - D + F;
-    	leftOutput = output;
-    	rightOutput = -output;
-    	
-    	Robot.drivetrain.drive(leftOutput, rightOutput);
-    	lastError = error;
-    	SmartDashboard.putNumber("Vision Error", error);
-    	SmartDashboard.putNumber("Vision OutputL", leftOutput);
-    	SmartDashboard.putNumber("Vision OutputR", rightOutput);
+    	try {
+	    	//turn to cube
+	    	if(!Robot.limelight.hasTarget()) //if robot doesn't see a cube, constantly turn left 
+	    	{
+	    		Robot.drivetrain.drive(.18, -.18);
+	    		return;
+	    	}
+	    	currentTimeoutLoops = 0;
+	    	double area = Robot.limelight.getArea();
+	    	double error = Robot.limelight.getX();
+	    	double leftOutput = 0;
+	    	double rightOutput = 0;
+	    	
+	    	errorSum += error;
+	    	if(Math.abs(error) <= 2) errorSum = 0;
+	    	double F = error > 0 ? 0.05 : -0.05;
+	    	double P = error * RobotMap.turnLimekP;
+	    	double I = errorSum * RobotMap.turnLimekI;
+	    	double D = (lastError - error) * (area > 2 ? RobotMap.turnLimekD/5. : RobotMap.turnLimekD);
+	    	double output = P + I - D + F;
+	    	leftOutput = output;
+	    	rightOutput = -output;
+	    	
+	    	Robot.drivetrain.drive(leftOutput, rightOutput);
+	    	lastError = error;
+	    	SmartDashboard.putNumber("Vision Error", error);
+	    	SmartDashboard.putNumber("Vision OutputL", leftOutput);
+	    	SmartDashboard.putNumber("Vision OutputR", rightOutput);
+    	} catch(Exception e) {}
     }
 
     // Make this return true when this Command no longer needs to run execute()
