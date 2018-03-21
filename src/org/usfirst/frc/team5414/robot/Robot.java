@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------
-	Team 5414 Pearadox 2018 Build Season Code
+	Team 5414 Pearadox 2018 Post LSR Code
   ----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team5414.robot;
@@ -230,11 +230,13 @@ public class Robot extends TimedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+		limelight.lightOff();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		limelight.lightOff();
 		SmartDashboard.putData("Test Drive Encs", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
 		if(RobotMap.compbot) updateDashboard();
 //		/*

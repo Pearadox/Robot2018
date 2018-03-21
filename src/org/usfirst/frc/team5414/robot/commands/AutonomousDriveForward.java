@@ -8,6 +8,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutonomousDriveForward extends CommandGroup {
 
     public AutonomousDriveForward() {
-    	addSequential(new DriveForward(2.5));
+    	addSequential(new DriveForward(3));
     }
 }

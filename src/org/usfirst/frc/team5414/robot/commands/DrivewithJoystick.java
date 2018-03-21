@@ -31,7 +31,7 @@ public class DrivewithJoystick extends Command {
     		if(RobotMap.compbot) Robot.drivetrain.cheesyDrive(-js.getRawAxis(1), js.getRawAxis(2)*.5, false); //changed angle factor
     	}
     	else if(peary) {
-    		Robot.drivetrain.pearDrive(-js.getRawAxis(1), -js.getRawAxis(2));
+    		Robot.drivetrain.pearDrive(-js.getRawAxis(1), -js.getRawAxis(2)*.8);
     	}
     	else Robot.drivetrain.arcadeDrive(Robot.oi.getJoystick());
     	
