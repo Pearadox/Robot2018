@@ -25,6 +25,6 @@ public class AutonomousSwitchPriorityLeft extends CommandGroup {
     	
     	if(switchSide == 'L') addSequential(new AutoSwitchLtoL());
     	else if(scaleSide == 'L') addSequential(new AutoScaleLtoL());
-    	else addSequential(new AutoScaleLtoR());
+    	else addSequential(new DriveForward(3));
     }
 }

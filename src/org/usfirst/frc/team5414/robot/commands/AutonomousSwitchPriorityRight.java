@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /*
  * Prioritizes same side switch
- */
+ */ 
 
 public class AutonomousSwitchPriorityRight extends CommandGroup {
 
@@ -18,6 +18,6 @@ public class AutonomousSwitchPriorityRight extends CommandGroup {
 
     	if(switchSide == 'R') addSequential(new AutoSwitchRtoR());
     	else if(scaleSide == 'R') addSequential(new AutoScaleRtoR());
-    	else addSequential(new AutoScaleRtoL());
+    	else addSequential(new DriveForward(3));
     }
 }

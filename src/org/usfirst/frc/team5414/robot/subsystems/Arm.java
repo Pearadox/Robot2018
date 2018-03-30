@@ -24,12 +24,13 @@ public class Arm extends Subsystem {
 	AnalogInput potentiometer;
 	
 	//potentiometer parameters
-	final static double VHigh = 1.48;
-	final static double VLow = 4.06;
-	final static double angleLow = 38.7;
+
+	final static double VHigh = 1.448;
+	final static double VLow = 4.12;
+	final static double angleLow = 34.8;
 	final static double angleHigh = 180;
 	final static double maxAngleStop = 165;
-	final static double minAngleStop = 49;
+	final static double minAngleStop = 39; //49
 	
 	static boolean pinched;
 	

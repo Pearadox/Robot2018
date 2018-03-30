@@ -22,8 +22,8 @@ public class AutoScaleRtoR extends CommandGroup {
     	addParallel(new ZeroGyro());
     	addParallel(new ArmSetHover());
     	addSequential(new DriveForward(7.15));
-    	addSequential(new SetAngle(150));
-    	addSequential(new DriveForward(-.3));
+    	addSequential(new SetAngle(140));
+    	addSequential(new DriveForward(.5));
     	addSequential(new ArmThrowbackHigh());
     	addSequential(new ArmSetLow());
     }

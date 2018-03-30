@@ -26,12 +26,12 @@ public class RobotMap {
 	public static boolean hasSpintake = true;
 	
 	//Ports for random parts
-	public static int GyroPort = 0;
+	public static int GyroPort = 3;
 	
 	//CAN ports for compbot speed controllers
 	public static int CANRightSlave1 = 12; //Victor SPX
 	public static int CANRightMaster = 16; //Talon SRX
-	public static int CANRightSlave2 = 13; //Victor SPX
+	public static int CANRightSlave2 = 5; //Victor SPX
 	public static int CANLeftSlave1 = 11; //Victor SPX
 	public static int CANLeftMaster = 14; //Talon SRX
 	public static int CANLeftSlave2 = 10; //Victor SPX
@@ -88,13 +88,13 @@ public class RobotMap {
 	public static double plybotRkP = 0.008;
 	*/
 	public static double plybotLkF = .13;
-	public static double plybotLkD = 0.09;
+	public static double plybotLkD = 0.15;
 	public static double plybotLkI = 0.00000;
-	public static double plybotLkP = 0.0052;
+	public static double plybotLkP = 0.0065;
 	public static double plybotRkF = .13;
-	public static double plybotRkD = 0.1;
+	public static double plybotRkD = 0.15;
 	public static double plybotRkI = 0.00000;
-	public static double plybotRkP = 0.006;
+	public static double plybotRkP = 0.0077;
 	
 	//Vision PID Loop
 	public static double turnLimekD = 0.09;

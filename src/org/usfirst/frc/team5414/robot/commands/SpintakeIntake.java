@@ -22,7 +22,8 @@ public class SpintakeIntake extends Command {
     	Robot.spintake.intake();
     }
 
-    // Make this return true when this Command no longer needs to run execute()
+    // Make this return true when this C 
+ //   Command no longer needs to run execute();
     protected boolean isFinished() {
         return false;
     }
@@ -32,7 +33,7 @@ public class SpintakeIntake extends Command {
     	Robot.spintake.stop();
     }
 
-    // Called when another command which requires one or more of the same
+    // Called whe n another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
     	end();

@@ -23,6 +23,8 @@ public class Spintake extends Subsystem {
 	{
 		left = new VictorSPX(22);
 		right = new VictorSPX(21);
+		left.setInverted(true);
+		right.setInverted(true);
 		sols = new DoubleSolenoid(3,4);
 //		solRight = new DoubleSolenoid(1, 6);
 //		solMiddle = new DoubleSolenoid(3, 4);
@@ -49,15 +51,15 @@ public class Spintake extends Subsystem {
 	public void intake()
 	{
 		System.out.println("in");
-		left.set(ControlMode.PercentOutput, -.7);
-		right.set(ControlMode.PercentOutput, .7);
+		left.set(ControlMode.PercentOutput, -.8  );
+		right.set(ControlMode.PercentOutput, .8);
 	}
 	
 	public void outtake()
 	{
 		System.out.println("out");
-		left.set(ControlMode.PercentOutput, .6);
-		right.set(ControlMode.PercentOutput, -.6);
+		left.set(ControlMode.PercentOutput, .7);
+		right.set(ControlMode.PercentOutput, -.7);
 	}
 	
 	public void orientLeft() {
@@ -67,16 +69,14 @@ public class Spintake extends Subsystem {
 //			orienting = false;
 //			return;
 //		}
-		System.out.println("left");
-		left.set(ControlMode.PercentOutput, .3);
-		right.set(ControlMode.PercentOutput, .15);
+		left.set(ControlMode.PercentOutput, -.7);
+		right.set(ControlMode.PercentOutput, 0);
 //		orienting = true;
 	}
 	
 	public void orientRight() {
-		System.out.println("right");
-		left.set(ControlMode.PercentOutput, .15);
-		right.set(ControlMode.PercentOutput, -.3);
+		left.set(ControlMode.PercentOutput, 0);
+		right.set(ControlMode.PercentOutput, .7);
 	}
 	
 	public void stop() 

@@ -1,4 +1,5 @@
 /*----------------------------------------------------------------------------*/
+
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
@@ -26,7 +27,9 @@ import org.usfirst.frc.team5414.robot.commands.ArmSetLow;
 import org.usfirst.frc.team5414.robot.commands.ArmSetScale;
 import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHigh;
+import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHighGroup;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackLow;
+import org.usfirst.frc.team5414.robot.commands.ArmThrowbackLowGroup;
 import org.usfirst.frc.team5414.robot.commands.ToggleLight;
 import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
 import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
@@ -98,7 +101,7 @@ public class OI {
 //		/* Bharath's mapping
 		btn1.whenPressed(new ArmPincherToggle());
 		btn2.whileHeld(new VisionTurnToCube());
-		btn3.whenPressed(new ArmThrowbackLow());
+		btn3.whenPressed(new ArmThrowbackLowGroup());
 		btn4.whenPressed(new ArmSetLow());
 		btn5.whenPressed(new ArmSetSwitch());
 		btn6.whenPressed(new ArmSetScale());
@@ -125,8 +128,8 @@ public class OI {
 		JoystickButton btnOp13 = new JoystickButton(operator, 13);
 		
 		
-		btnOp1.whenPressed(new ArmThrowbackHigh());
-		btnOp2.whenPressed(new ArmThrowbackLow());
+		btnOp1.whenPressed(new ArmThrowbackHighGroup());
+		btnOp2.whenPressed(new ArmThrowbackLowGroup());
 		btnOp3.whenPressed(new ArmSetLow());
 		btnOp4.whenPressed(new ArmSetSwitch());
 		btnOp5.whenPressed(new SpintakePushOut());
