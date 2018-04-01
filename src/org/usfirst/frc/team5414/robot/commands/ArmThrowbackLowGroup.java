@@ -9,7 +9,7 @@ public class ArmThrowbackLowGroup extends CommandGroup {
 
     public ArmThrowbackLowGroup() {
         addSequential(new SpintakePushOut());
-        addSequential(new Wait(.4)); //change this to whatever, it's in seconds
+        addSequential(new Wait(.2)); //change this to whatever, it's in seconds
         addSequential(new ArmThrowbackLow());
     }
 }

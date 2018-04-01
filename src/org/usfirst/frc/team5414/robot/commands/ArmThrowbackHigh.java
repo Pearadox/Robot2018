@@ -30,8 +30,8 @@ public class ArmThrowbackHigh extends Command {
     	errorSum = 0;
     	lastError = (desiredAngle-Robot.arm.getAngle());
     	settleLoops = 0;
-    	RobotMap.armkP = Robot.prefs.getDouble("Arm Throw kP", RobotMap.armThrowkP);
-		RobotMap.armkD = Robot.prefs.getDouble("Arm Throw kD", RobotMap.armThrowkD);
+    	RobotMap.armThrowHighkP = Robot.prefs.getDouble("Arm Throw High kP", RobotMap.armThrowHighkP);
+		RobotMap.armThrowHighkD = Robot.prefs.getDouble("Arm Throw High kD", RobotMap.armThrowHighkD);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -42,8 +42,8 @@ public class ArmThrowbackHigh extends Command {
     	
     	double error = desiredAngle - Robot.arm.getAngle();
     	double F = Robot.arm.calculateHoldOutput(Robot.arm.getAngle());
-    	double P = error * RobotMap.armThrowkP;
-    	double D = (error-lastError) * RobotMap.armThrowkD;
+    	double P = error * RobotMap.armThrowHighkP;
+    	double D = (error-lastError) * RobotMap.armThrowHighkD;
     	double output = P + D + F;
     	output = Math.max(-.4, output);
     	Robot.arm.set(output);

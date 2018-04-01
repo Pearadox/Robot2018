@@ -53,7 +53,7 @@ public class AutoSwitchMtoL extends CommandGroup {
     		DriverStation.reportWarning("NOOOO", true);
     	}
     	
-    	/*
+//    	/*
     	addParallel(new ZeroGyro());
     	addParallel(new ArmPincherClose());
     	addSequential(new Wait(.2));
@@ -64,9 +64,9 @@ public class AutoSwitchMtoL extends CommandGroup {
     	addSequential(new ArmPincherOpen());
     	addSequential(new Wait(.5));
     	addSequential(new DriveForward(-1));
-    	addSequential(new SetAngle(-90));
+//    	addSequential(new SetAngle(-90));
     	addSequential(new DriveForward(.7));
-		*/
+//		*/
     	addSequential(new FollowEncoder(left, right));
     }
 }

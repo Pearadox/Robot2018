@@ -25,7 +25,6 @@ public class FollowEncoder extends Command{
 	int recordedLoops = 0;
 	double lastLeftError = 0;
 	double lastRightError = 0;
-	int settleLoops;
 	int lastLeft;
 	int lastRight;
     
@@ -65,7 +64,6 @@ public class FollowEncoder extends Command{
     	Robot.drivetrain.zeroEncoders();
     	lastLeft = 0;
     	lastRight = 0;
-    	settleLoops = 3;
     }
 
     protected void execute() {
@@ -102,13 +100,6 @@ public class FollowEncoder extends Command{
     }
 
     protected boolean isFinished() {
-    	if(settleLoops == 0)
-        {
-        	recordedLoops++;
-        	settleLoops = 0;
-        	if(recordedLoops >= leftEnc.size()) return true;
-        	return false;
-        }
     	if(leftEnc.size() == 1 || recordedLoops == leftEnc.size()-1)
     	{
     		if(Math.abs(lastLeftError) < 10 && Math.abs(lastRightError) < 10)
@@ -119,9 +110,8 @@ public class FollowEncoder extends Command{
 		}
 		else if(Math.abs(lastLeftError) < 10 && Math.abs(lastRightError) < 10)
 		{
-			settleLoops--;
-//			recordedLoops++;
-//			if(recordedLoops >= leftEnc.size()) return true;
+			recordedLoops++;
+			if(recordedLoops >= leftEnc.size()) return true;
 		}
 		return false;
     }

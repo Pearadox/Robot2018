@@ -209,6 +209,7 @@ public class Robot extends TimedRobot {
 		/*
 		 * place auton group here instead of autonmousswitchmiddle to hard code
 		 */
+		autonomousCommand = new AutoScaleLtoL();
 		autonomousCommand = new AutonomousSwitchMiddle();
 //		autonomousCommand = new DriveForward(4);
 		
@@ -297,6 +298,8 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Arm kD", RobotMap.armkD);
 		prefs.putDouble("Arm Throw kP", RobotMap.armThrowkP);
 		prefs.putDouble("Arm Throw kD", RobotMap.armThrowkD);
+		prefs.putDouble("Arm Throw High kP", RobotMap.armThrowHighkP);
+		prefs.putDouble("Arm Throw High kD", RobotMap.armThrowHighkD);
 		prefs.putDouble("Motion Profile kP", RobotMap.MPkP);
 		prefs.putDouble("Motion Profile kI", RobotMap.MPkI);
 		prefs.putDouble("Motion Profile kD", RobotMap.MPkD);

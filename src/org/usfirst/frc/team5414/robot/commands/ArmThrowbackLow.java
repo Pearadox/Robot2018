@@ -20,7 +20,7 @@ public class ArmThrowbackLow extends Command {
 	
     public ArmThrowbackLow() {
         requires(Robot.arm);
-        desiredAngle = 140;
+        desiredAngle = 180;
     }
 
     // Called just before this Command runs the first time
@@ -30,14 +30,14 @@ public class ArmThrowbackLow extends Command {
     	errorSum = 0;
     	lastError = (desiredAngle-Robot.arm.getAngle());
     	settleLoops = 0;
-    	RobotMap.armkP = Robot.prefs.getDouble("Arm Throw kP", RobotMap.armThrowkP);
-		RobotMap.armkD = Robot.prefs.getDouble("Arm Throw kD", RobotMap.armThrowkD);
+    	RobotMap.armThrowkP = Robot.prefs.getDouble("Arm Throw kP", RobotMap.armThrowkP);
+		RobotMap.armThrowkD = Robot.prefs.getDouble("Arm Throw kD", RobotMap.armThrowkD);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	
-    	if(Robot.arm.getAngle() >= desiredAngle-10) Robot.arm.openPincher();
+    	if(Robot.arm.getAngle() >= desiredAngle-15) Robot.arm.openPincher();
     	
     	double error = desiredAngle - Robot.arm.getAngle();
     	double F = Robot.arm.calculateHoldOutput(Robot.arm.getAngle());

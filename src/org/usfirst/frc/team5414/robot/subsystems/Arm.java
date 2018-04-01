@@ -25,8 +25,8 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 
-	final static double VHigh = 1.448;
-	final static double VLow = 4.12;
+	final static double VHigh = 1.725;
+	final static double VLow = 4.24;
 	final static double angleLow = 34.8;
 	final static double angleHigh = 180;
 	final static double maxAngleStop = 165;
@@ -68,7 +68,8 @@ public class Arm extends Subsystem {
 	
 	public double calculateHoldOutput(double angle)
 	{
-		double amplitude = pinched ? 0.15 : 0.143; //if there's a cube, the magnitude must be higher due to more TORQUE
+		SmartDashboard.putBoolean("Pinched", pinched);
+		double amplitude = pinched ? .138 : 0.13;
 		double equation = amplitude * Math.sin(angle*Math.PI/180);
 		SmartDashboard.putNumber("calculate", equation);
 		return equation;

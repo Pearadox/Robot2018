@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoScaleLtoL extends CommandGroup {
 
     public AutoScaleLtoL() {
-    	
     	addParallel(new ArmPincherClose());
     	addSequential(new Wait(.2));
     	addParallel(new ZeroGyro());

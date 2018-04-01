@@ -78,26 +78,6 @@ public class OI {
 		JoystickButton btn11 = new JoystickButton(stick, 11);
 		JoystickButton btn12 = new JoystickButton(stick, 12);
 		
-		/* Allen's mapping
-		if(RobotMap.hasArm)
-		{
-			btn1.whenPressed(new ArmPincherToggle());
-			btn2.whenPressed(new ArmThrowback());
-			btn7.whileHeld(new ArmDownManual());
-			btn8.whileHeld(new ArmUpManual());
-		}
-		if(RobotMap.hasSpintake)
-		{
-			btn3.whenPressed(new SpintakeToggleMiddle());
-			btn4.whileHeld(new SpintakeOrient());
-			btn5.whenPressed(new SpintakePushIn());
-			btn6.whenPressed(new SpintakePushOut());
-			btn9.whileHeld(new SpintakeIntake());
-			btn10.whileHeld(new Outtake());
-		}
-		btn11.whenPressed(new ToggleLight());
-		*/
-		
 //		/* Bharath's mapping
 		btn1.whenPressed(new ArmPincherToggle());
 		btn2.whileHeld(new VisionTurnToCube());
@@ -128,8 +108,8 @@ public class OI {
 		JoystickButton btnOp13 = new JoystickButton(operator, 13);
 		
 		
-		btnOp1.whenPressed(new ArmThrowbackHighGroup());
-		btnOp2.whenPressed(new ArmThrowbackLowGroup());
+		btnOp1.whenPressed(new ArmThrowbackHigh());
+		btnOp2.whileHeld(new SpintakeIntake());
 		btnOp3.whenPressed(new ArmSetLow());
 		btnOp4.whenPressed(new ArmSetSwitch());
 		btnOp5.whenPressed(new SpintakePushOut());

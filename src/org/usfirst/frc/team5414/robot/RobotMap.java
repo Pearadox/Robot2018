@@ -31,7 +31,7 @@ public class RobotMap {
 	//CAN ports for compbot speed controllers
 	public static int CANRightSlave1 = 12; //Victor SPX
 	public static int CANRightMaster = 16; //Talon SRX
-	public static int CANRightSlave2 = 5; //Victor SPX
+	public static int CANRightSlave2 = 13; //Victor SPX //5 on comp bot, need to change to 13
 	public static int CANLeftSlave1 = 11; //Victor SPX
 	public static int CANLeftMaster = 14; //Talon SRX
 	public static int CANLeftSlave2 = 10; //Victor SPX
@@ -88,13 +88,13 @@ public class RobotMap {
 	public static double plybotRkP = 0.008;
 	*/
 	public static double plybotLkF = .13;
-	public static double plybotLkD = 0.15;
+	public static double plybotLkD = 0.01;
 	public static double plybotLkI = 0.00000;
-	public static double plybotLkP = 0.0065;
+	public static double plybotLkP = 0.0062;
 	public static double plybotRkF = .13;
-	public static double plybotRkD = 0.15;
+	public static double plybotRkD = 0.01;
 	public static double plybotRkI = 0.00000;
-	public static double plybotRkP = 0.0077;
+	public static double plybotRkP = 0.0058;
 	
 	//Vision PID Loop
 	public static double turnLimekD = 0.09;
@@ -108,11 +108,16 @@ public class RobotMap {
 	public static double forwardTurnLimekP = 0.0005;
 	
 	//Arm PID Loop
-	public static double armkP = 0.025;
-	public static double armkI = 0.00001;
-	public static double armkD = 0.22;
-	public static double armThrowkP = 0.24;
-	public static double armThrowkD = 0.2;
+	public static double armkP = 0.01;
+	public static double armkI = 0;
+	public static double armkD = 0;
+//	public static double armkP = 0.025;
+//	public static double armkI = 0.00001;
+//	public static double armkD = 0.22;
+	public static double armThrowHighkP = 0.04;
+	public static double armThrowHighkD = 0.2;
+	public static double armThrowkP = 0.02;
+	public static double armThrowkD = 0.05;
 
 	//Motion Profile PID Loop (Jaci's Pathfinder)
 	public static double MPkD = 0.0;

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class SpintakeOuttake extends Command {
 
     public SpintakeOuttake() {
-    	requires(Robot.spintake);
+//    	requires(Robot.spintake);
     }
 
     // Called just before this Command runs the first time
