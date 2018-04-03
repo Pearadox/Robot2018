@@ -27,6 +27,7 @@ public class FollowEncoder extends Command{
 	double lastRightError = 0;
 	int lastLeft;
 	int lastRight;
+	double timeout;
     
     public FollowEncoder(double left, double right)
     {
@@ -41,6 +42,14 @@ public class FollowEncoder extends Command{
     {
     	leftEnc = left;
     	rightEnc = right;
+    	timeout = 999;
+    }
+    
+    public FollowEncoder(ArrayList<Double> left, ArrayList<Double> right, double timeout)
+    {
+    	leftEnc = left;
+    	rightEnc = right;
+    	this.timeout = timeout;
     }
 
 	protected void initialize() {
@@ -62,6 +71,8 @@ public class FollowEncoder extends Command{
 			RobotMap.plybotRkF = Robot.prefs.getDouble("PlyEnc R kF", RobotMap.plybotRkF);
 		}
     	Robot.drivetrain.zeroEncoders();
+//    	Robot.drivetrain.setCoast();
+    	Robot.drivetrain.setBrake();
     	lastLeft = 0;
     	lastRight = 0;
     }
@@ -124,6 +135,7 @@ public class FollowEncoder extends Command{
     	lastLeftError = 0;
     	lastRightError = 0;
     	Robot.turnIsDone = true;
+    	Robot.drivetrain.setBrake();
     }
 
     protected void interrupted() {

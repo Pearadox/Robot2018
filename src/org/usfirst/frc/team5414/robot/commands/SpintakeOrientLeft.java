@@ -23,13 +23,7 @@ public class SpintakeOrientLeft extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-		if(Robot.pdp.getCurrent(3) > 20 || rightIsTriggered)
-    	{
-    		rightIsTriggered = true;
-    		Robot.spintake.intake();// this isnt right because we need
-    		//make it so that it doesnt continuously run this in the executve f
-    	}
-    	else Robot.spintake.orientLeft();    	
+    	Robot.spintake.orientLeft();    	
     }
 
     // Make this return true when this Command no longer needs to run execute()

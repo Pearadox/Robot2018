@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
 		if(RobotMap.hasSpintake) 
 		{
 			spintake = new Spintake();
-			pdp = new PDP();
+//			pdp = new PDP();
 		}
 		if(RobotMap.hasCompressor)
 		{
@@ -232,6 +232,7 @@ public class Robot extends TimedRobot {
 			autonomousCommand.cancel();
 		}
 		limelight.lightOff();
+		drivetrain.setBrake();
 	}
 
 	@Override

@@ -1,9 +1,11 @@
 package org.usfirst.frc.team5414.robot.subsystems;
 
+import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.commands.ArmHold;
 import org.usfirst.frc.team5414.robot.commands.SpintakePOVControl;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -50,15 +52,17 @@ public class Spintake extends Subsystem {
 	
 	public void intake()
 	{
+		setCoast();
 		if(!orienting)
 		{
-			left.set(ControlMode.PercentOutput, -.5  );
-			right.set(ControlMode.PercentOutput, .5);
+			left.set(ControlMode.PercentOutput, -.7  );
+			right.set(ControlMode.PercentOutput, .7);
 		}
 	}
 	
 	public void outtake()
 	{
+		setCoast();
 		left.set(ControlMode.PercentOutput, .7);
 		right.set(ControlMode.PercentOutput, -.7);
 	}
@@ -70,12 +74,14 @@ public class Spintake extends Subsystem {
 //			orienting = false;
 //			return;
 //		}
+		setCoast();
 		left.set(ControlMode.PercentOutput, -.4);
 		right.set(ControlMode.PercentOutput, -.4);
 //		orienting = true;
 	}
 	
 	public void orientRight() {
+		setCoast();
 		left.set(ControlMode.PercentOutput, .4);
 		right.set(ControlMode.PercentOutput, .4);
 	}
@@ -87,6 +93,12 @@ public class Spintake extends Subsystem {
 	
 	public void stop() 
 	{
+		setBrake();
+		left.set(ControlMode.PercentOutput, 0);
+		right.set(ControlMode.PercentOutput, 0);
+	}
+	
+	public void stopNoBrake() {
 		left.set(ControlMode.PercentOutput, 0);
 		right.set(ControlMode.PercentOutput, 0);
 	}
@@ -99,6 +111,18 @@ public class Spintake extends Subsystem {
 	public void setRight(double percentOutput)
 	{
 		right.set(ControlMode.PercentOutput, percentOutput);
+	}
+	
+	public void setCoast()
+	{
+		left.setNeutralMode(NeutralMode.Coast);
+		right.setNeutralMode(NeutralMode.Coast);
+	}
+	
+	public void setBrake()
+	{
+		left.setNeutralMode(NeutralMode.Brake);
+		right.setNeutralMode(NeutralMode.Brake);
 	}
 
     public void initDefaultCommand() {

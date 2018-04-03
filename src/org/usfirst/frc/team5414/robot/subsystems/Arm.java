@@ -25,9 +25,9 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 
-	final static double VHigh = 1.725;
-	final static double VLow = 4.24;
-	final static double angleLow = 34.8;
+	final static double VHigh = 1.525;
+	final static double VLow = 4.1;
+	final static double angleLow = 39;
 	final static double angleHigh = 180;
 	final static double maxAngleStop = 165;
 	final static double minAngleStop = 39; //49
@@ -69,9 +69,8 @@ public class Arm extends Subsystem {
 	public double calculateHoldOutput(double angle)
 	{
 		SmartDashboard.putBoolean("Pinched", pinched);
-		double amplitude = pinched ? .138 : 0.13;
+		double amplitude = pinched ? .156 : 0.132;
 		double equation = amplitude * Math.sin(angle*Math.PI/180);
-		SmartDashboard.putNumber("calculate", equation);
 		return equation;
 	}
 	

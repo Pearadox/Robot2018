@@ -10,6 +10,7 @@ import org.usfirst.frc.team5414.robot.commands.DrivewithJoystick;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -447,6 +448,24 @@ public class Drivetrain extends Subsystem {
 	public void stop(){
     	drive(0,0);
     }
+	
+	public void setBrake() {
+		rightMaster.setNeutralMode(NeutralMode.Brake);
+		rightSlave1.setNeutralMode(NeutralMode.Brake);
+		rightSlave2.setNeutralMode(NeutralMode.Brake);
+		leftMaster.setNeutralMode(NeutralMode.Brake);
+		leftSlave1.setNeutralMode(NeutralMode.Brake);
+		leftSlave2.setNeutralMode(NeutralMode.Brake);
+	}
+	
+	public void setCoast() {
+		rightMaster.setNeutralMode(NeutralMode.Coast);
+		rightSlave1.setNeutralMode(NeutralMode.Coast);
+		rightSlave2.setNeutralMode(NeutralMode.Coast);
+		leftMaster.setNeutralMode(NeutralMode.Coast);
+		leftSlave1.setNeutralMode(NeutralMode.Coast);
+		leftSlave2.setNeutralMode(NeutralMode.Coast);
+	}
     
     public void initDefaultCommand() {
     	setDefaultCommand(new DrivewithJoystick());

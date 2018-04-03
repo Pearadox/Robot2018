@@ -87,14 +87,14 @@ public class RobotMap {
 	public static double plybotRkI = 0.00011;
 	public static double plybotRkP = 0.008;
 	*/
-	public static double plybotLkF = .13;
-	public static double plybotLkD = 0.01;
+	public static double plybotLkF = .15;
+	public static double plybotLkD = 0.0;
 	public static double plybotLkI = 0.00000;
-	public static double plybotLkP = 0.0062;
-	public static double plybotRkF = .13;
-	public static double plybotRkD = 0.01;
+	public static double plybotLkP = 0.01;
+	public static double plybotRkF = .15;
+	public static double plybotRkD = 0.0;
 	public static double plybotRkI = 0.00000;
-	public static double plybotRkP = 0.0058;
+	public static double plybotRkP = 0.01;
 	
 	//Vision PID Loop
 	public static double turnLimekD = 0.09;
@@ -114,9 +114,10 @@ public class RobotMap {
 //	public static double armkP = 0.025;
 //	public static double armkI = 0.00001;
 //	public static double armkD = 0.22;
-	public static double armThrowHighkP = 0.04;
-	public static double armThrowHighkD = 0.2;
-	public static double armThrowkP = 0.02;
+	
+	public static double armThrowHighkP = 0.3;
+	public static double armThrowHighkD = 0.12;
+	public static double armThrowkP = 0.025;
 	public static double armThrowkD = 0.05;
 
 	//Motion Profile PID Loop (Jaci's Pathfinder)
