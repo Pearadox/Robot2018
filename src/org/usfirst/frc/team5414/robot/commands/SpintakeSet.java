@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SpintakeOrientRight extends Command {
+public class SpintakeSet extends Command {
 
-	boolean leftIsTriggered = false;
+	double left, right;
 	
-    public SpintakeOrientRight() {
+    public SpintakeSet(double outL, double outR) {
         requires(Robot.spintake);
+        left = outL;
+        right = outR;
     }
 
     // Called just before this Command runs the first time
@@ -21,7 +23,8 @@ public class SpintakeOrientRight extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.spintake.orientRight();
+    	Robot.spintake.setLeft(left);
+    	Robot.spintake.setRight(right);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -31,12 +34,10 @@ public class SpintakeOrientRight extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.spintake.stop();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
     }
 }

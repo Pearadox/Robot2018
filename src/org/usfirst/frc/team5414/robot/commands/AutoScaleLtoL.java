@@ -15,9 +15,8 @@ public class AutoScaleLtoL extends CommandGroup {
     	addSequential(new Wait(.2));
     	addParallel(new ZeroGyro());
     	addParallel(new ArmSetHover());
-    	addSequential(new DriveForward(7.15));
-    	addSequential(new SetAngle(-140));
-    	addSequential(new DriveForward(.5));
+    	addSequential(new DriveForward(6.4));
+    	addSequential(new TurnLeft(130));
     	addSequential(new ArmThrowbackHigh());
     	addSequential(new ArmSetLow());
     }

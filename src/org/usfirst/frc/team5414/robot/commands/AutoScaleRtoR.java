@@ -1,3 +1,4 @@
+
 package org.usfirst.frc.team5414.robot.commands;
 
 import java.util.ArrayList;
@@ -21,9 +22,8 @@ public class AutoScaleRtoR extends CommandGroup {
     	addSequential(new Wait(.2));
     	addParallel(new ZeroGyro());
     	addParallel(new ArmSetHover());
-    	addSequential(new DriveForward(7.15));
-    	addSequential(new SetAngle(140));
-    	addSequential(new DriveForward(.5));
+    	addSequential(new DriveForward(6.7));
+    	addSequential(new TurnRight(140));
     	addSequential(new ArmThrowbackHigh());
     	addSequential(new ArmSetLow());
     }

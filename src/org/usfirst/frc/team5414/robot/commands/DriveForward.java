@@ -13,12 +13,17 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class DriveForward extends CommandGroup {
 
-	double maxVelocity = 4;
-	double acceleration = 1.75;
+	double maxVelocity = 5;
+	double acceleration = 2;
 	
 //	Generates a trapezoidal trajectory and follows the encoders
 	public DriveForward(double meters) {
-        org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(meters, .02, maxVelocity, acceleration);
+        this(meters, 9999);
+    }
+	
+	public DriveForward(double meters, double timeout)
+	{
+		org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(meters, .02, maxVelocity, acceleration);
         org.usfirst.frc.team5414.robot.Traj[] right = TrajectoryGenerator.getTrajectory(meters, .02, maxVelocity, acceleration);
         ArrayList<Double> leftList = new ArrayList<>();
         ArrayList<Double> rightList = new ArrayList<>();
@@ -28,6 +33,6 @@ public class DriveForward extends CommandGroup {
         	leftList.add(left[i].distance / RobotMap.MetersPerTick);
         	rightList.add(right[i].distance / RobotMap.MetersPerTick);
        	}
-        addSequential(new FollowEncoder(leftList, rightList));
-    }
+        addSequential(new FollowEncoder(leftList, rightList, timeout));
+	}
 }

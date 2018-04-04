@@ -49,10 +49,6 @@ public class RobotMap {
 	public static int DIOencoderLaComp = 7;
 	public static int DIOencoderLbComp = 6;
 	
-	
-	//Solenoid Ports
-	
-	
 	//Wheel stuffs
 			//flatbot
 			public static double wheelDiameterFeetFlat = 6. / 12; //IN FEET
@@ -87,14 +83,14 @@ public class RobotMap {
 	public static double plybotRkI = 0.00011;
 	public static double plybotRkP = 0.008;
 	*/
-	public static double plybotLkF = .15;
-	public static double plybotLkD = 0.0;
+	public static double plybotLkF = .04;
+	public static double plybotLkD = 0.000;
 	public static double plybotLkI = 0.00000;
-	public static double plybotLkP = 0.01;
-	public static double plybotRkF = .15;
-	public static double plybotRkD = 0.0;
+	public static double plybotLkP = 0.045;
+	public static double plybotRkF = .04;
+	public static double plybotRkD = 0.000;
 	public static double plybotRkI = 0.00000;
-	public static double plybotRkP = 0.01;
+	public static double plybotRkP = 0.045;
 	
 	//Vision PID Loop
 	public static double turnLimekD = 0.09;
@@ -117,7 +113,7 @@ public class RobotMap {
 	
 	public static double armThrowHighkP = 0.3;
 	public static double armThrowHighkD = 0.12;
-	public static double armThrowkP = 0.025;
+	public static double armThrowkP = 0.021;
 	public static double armThrowkD = 0.05;
 
 	//Motion Profile PID Loop (Jaci's Pathfinder)

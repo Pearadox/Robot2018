@@ -124,15 +124,8 @@ public class Robot extends TimedRobot {
 		}
 		oi = new OI();
 		addPreferences();
-		chooser.addDefault("Cross", new AutonomousDriveForward());
-		chooser.addObject("Middle", new AutonomousSwitchMiddle());
-		chooser.addObject("LeftSwitch", new AutonomousSwitchPriorityLeft());
-		chooser.addObject("RightSwitch", new AutonomousSwitchPriorityRight());
-		chooser.addObject("LeftScale", new AutonomousScalePriorityLeft());
-		chooser.addObject("RightScale", new AutonomousScalePriorityRight());
-		SmartDashboard.putData("Autonomous Mode Chooser", chooser);
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
-		SmartDashboard.putData("Drive Forward", new DriveForward(5));
+		SmartDashboard.putData("DriveForward", new DriveForward(5));
 		SmartDashboard.putData("Arm Switch", new ArmSetSwitch());
 		SmartDashboard.putData("Arm Scale", new ArmSetScale());
 		SmartDashboard.putData("Arm Low", new ArmSetLow());
@@ -209,7 +202,7 @@ public class Robot extends TimedRobot {
 		/*
 		 * place auton group here instead of autonmousswitchmiddle to hard code
 		 */
-		autonomousCommand = new AutoScaleLtoL();
+//		autonomousCommand = new AutoScaleLtoL();
 		autonomousCommand = new AutonomousSwitchMiddle();
 //		autonomousCommand = new DriveForward(4);
 		
@@ -217,7 +210,7 @@ public class Robot extends TimedRobot {
 			autonomousCommand.start();
 		}
 	}
-	
+
 
 	@Override
 	public void autonomousPeriodic() {

@@ -40,9 +40,7 @@ public class FollowEncoder extends Command{
     
     public FollowEncoder(ArrayList<Double> left, ArrayList<Double> right)
     {
-    	leftEnc = left;
-    	rightEnc = right;
-    	timeout = 999;
+    	this(left, right, 999);
     }
     
     public FollowEncoder(ArrayList<Double> left, ArrayList<Double> right, double timeout)
@@ -75,6 +73,7 @@ public class FollowEncoder extends Command{
     	Robot.drivetrain.setBrake();
     	lastLeft = 0;
     	lastRight = 0;
+    	setTimeout(timeout);
     }
 
     protected void execute() {
@@ -111,6 +110,7 @@ public class FollowEncoder extends Command{
     }
 
     protected boolean isFinished() {
+    	if(isTimedOut()) return true;
     	if(leftEnc.size() == 1 || recordedLoops == leftEnc.size()-1)
     	{
     		if(Math.abs(lastLeftError) < 10 && Math.abs(lastRightError) < 10)
