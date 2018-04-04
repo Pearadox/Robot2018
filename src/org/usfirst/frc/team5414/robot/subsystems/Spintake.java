@@ -53,8 +53,8 @@ public class Spintake extends Subsystem {
 		setCoast();
 		if(!orienting)
 		{
-			left.set(ControlMode.PercentOutput, .95  );
-			right.set(ControlMode.PercentOutput, .95);
+			left.set(ControlMode.PercentOutput, .7);
+			right.set(ControlMode.PercentOutput, .7);
 		}
 	}
 	
@@ -66,22 +66,15 @@ public class Spintake extends Subsystem {
 	}
 	
 	public void orientLeft() {
-//		if(orienting)
-//		{
-//			stop();
-//			orienting = false;
-//			return;
-//		}
 		setCoast();
 		left.set(ControlMode.PercentOutput, .7);
 		right.set(ControlMode.PercentOutput, 0);
-//		orienting = true;
 	}
 	
 	public void orientRight() {
 		setCoast();
-		left.set(ControlMode.PercentOutput, -.5);
-		right.set(ControlMode.PercentOutput, .5);
+		left.set(ControlMode.PercentOutput, 0);
+		right.set(ControlMode.PercentOutput, .7);
 	}
 	
 	public void setOrienting(boolean b)
