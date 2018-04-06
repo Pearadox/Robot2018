@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class TurnLeft extends CommandGroup {
 
 	double halfturn = 256;
-	final static double maxVelocity_default = 3;
-	final static double acceleration_default = 1.5;
+	final static double maxVelocity_default = 2;
+	final static double acceleration_default = 1;
 	
     public TurnLeft(double degrees, double maxVelocity, double acceleration) {
         double desired = degrees / 180. * halfturn;

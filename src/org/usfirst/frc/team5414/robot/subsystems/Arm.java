@@ -25,8 +25,8 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 
-	final static double VHigh = 1.289;
-	final static double VLow = 3.95;
+	final static double VHigh = 1.651;
+	final static double VLow = 4.24;
 	final static double angleLow = 39;
 	final static double angleHigh = 180;
 	final static double maxAngleStop = 165;
@@ -51,7 +51,7 @@ public class Arm extends Subsystem {
 //		talon.config_kD(0, kD, 10);
 //		talon.configAllowableClosedloopError(0, 0, 10);
 		
-		solPincher = new DoubleSolenoid(2, 5);
+		solPincher = new DoubleSolenoid(5, 2); //2, 5 on practice
 		potentiometer = new AnalogInput(0);
 		
 		pinched = solPincher.get() == DoubleSolenoid.Value.kForward; 
@@ -110,7 +110,6 @@ public class Arm extends Subsystem {
 	public void togglePincher() {
 		if(pinched) openPincher();
 		else closePincher();
-		System.out.println(pinched);
 	}
 	
 	public void closePincher() {

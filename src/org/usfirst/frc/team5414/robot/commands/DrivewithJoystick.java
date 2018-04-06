@@ -37,10 +37,10 @@ public class DrivewithJoystick extends Command {
     	
     	
     	int pov = js.getPOV();
-//    	if(pov != -1)
-//    	{
-//    		Scheduler.getInstance().add(new SetAngle(pov));
-//    	}
+    	if(pov != -1)
+    	{
+    		Scheduler.getInstance().add(new SetAngle(pov));
+    	}
     }
 
    

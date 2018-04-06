@@ -54,18 +54,37 @@ public class AutoSwitchMtoR extends CommandGroup {
     	}
     	
 //    	/*
-//    	addParallel(new ZeroGyro());
+    	addParallel(new ZeroGyro());
     	addParallel(new ArmPincherClose());
-    	addSequential(new Wait(.2));
+    	addSequential(new Wait(.1));
     	addParallel(new ArmSetSwitch());
     	addSequential(new FollowEncoder(left, right));
-    	addParallel(new DriveForward(.2, 1));
-    	addSequential(new Wait(1));
+    	addSequential(new DriveForward(.5, 1));
     	addSequential(new ArmPincherOpen());
-    	addSequential(new Wait(.5));
-    	addSequential(new DriveForward(-1));
-    	addSequential(new TurnRight(50));
-    	addSequential(new DriveForward(.7));
+    	addParallel(new SpintakeSet(.4,.4));
+    	addSequential(new Wait(.2));
+    	addParallel(new SpintakeStop());
+    	addSequential(new DriveForward(-.3));
+    	addParallel(new ArmSetLow());
+    	addSequential(new TurnLeft(62));
+    	addParallel(new SpintakeSet(1,1));
+    	addParallel(new SpintakePushIn());
+    	addSequential(new DriveForward(.95, 1.3));
+    	addSequential(new DriveForward(-.95-.2, 1.5));
+    	addParallel(new SpintakeSet(-.5,.5));
+    	addSequential(new Wait(.25));
+    	addSequential(new SpintakePushOut());
+    	addParallel(new SpintakeSet(1,1));
+    	addParallel(new SpintakePushIn());
+    	addSequential(new DriveForward(.2));
+    	addSequential(new TurnRight(62));
+    	addParallel(new SpintakeStop());
+    	addParallel(new SpintakePushOut());
+    	addParallel(new ArmPincherClose());
+    	addSequential(new Wait(.2));
+    	addParallel(new ArmSetAngle(105));
+    	addSequential(new DriveForward(.5, 1.3));
+    	addSequential(new ArmPincherOpen());
 //		*/
 //    	addSequential(new FollowEncoder(left, right));
     }

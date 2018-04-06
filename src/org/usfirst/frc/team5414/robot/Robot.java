@@ -25,15 +25,18 @@ import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHigh;
 import org.usfirst.frc.team5414.robot.commands.AutoScaleLtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoScaleLtoR;
+import org.usfirst.frc.team5414.robot.commands.AutoScaleRtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoScaleRtoR;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchLtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchMtoR;
 import org.usfirst.frc.team5414.robot.commands.AutoSwitchRtoR;
 import org.usfirst.frc.team5414.robot.commands.AutonomousDriveForward;
+import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityRight;
+import org.usfirst.frc.team5414.robot.commands.AutonomousScaleRight;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityRight;
@@ -125,7 +128,6 @@ public class Robot extends TimedRobot {
 		oi = new OI();
 		addPreferences();
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
-		SmartDashboard.putData("DriveForward", new DriveForward(5));
 		SmartDashboard.putData("Arm Switch", new ArmSetSwitch());
 		SmartDashboard.putData("Arm Scale", new ArmSetScale());
 		SmartDashboard.putData("Arm Low", new ArmSetLow());
@@ -141,7 +143,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-		
+		limelight.lightOff();
 	}
 
 	@Override
@@ -155,8 +157,15 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 //		autonomousCommand = (Command) chooser.getSelected();
-		String gameData = "";
-		for(int i = 0; i < 20; i++)
+		limelight.lightOff();
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String gameData = null;
+		while(gameData == null)
 			gameData = DriverStation.getInstance().getGameSpecificMessage();
 		try {
 	    	switchSide = gameData.charAt(0); // 'L' or 'R'
@@ -176,7 +185,8 @@ public class Robot extends TimedRobot {
 		{
 			if(scale)				
 			{
-				autonomousCommand = new AutonomousScalePriorityLeft();
+//				autonomousCommand = new AutonomousScalePriorityLeft();
+				autonomousCommand = new AutonomousScaleLeft();
 				SmartDashboard.putString("Auto Mode", "ScaleLeft");
 			}
 			else 
@@ -189,7 +199,9 @@ public class Robot extends TimedRobot {
 		{
 			if(scale)
 			{
-				autonomousCommand = new AutonomousScalePriorityRight();
+//				autonomousCommand = new AutonomousScalePriorityRight();
+				 
+				autonomousCommand = new AutonomousScaleRight();
 				SmartDashboard.putString("Auto Mode", "ScaleRight");
 			}
 			else 
@@ -203,7 +215,14 @@ public class Robot extends TimedRobot {
 		 * place auton group here instead of autonmousswitchmiddle to hard code
 		 */
 //		autonomousCommand = new AutoScaleLtoL();
-		autonomousCommand = new AutonomousSwitchMiddle();
+//		autonomousCommand = new AutoScaleRtoR();
+		
+//		autonomousCommand = new AutonomousSwitchMiddle();
+//		autonomousCommand = new AutonomousScaleLeft();
+//		autonomousCommand = new AutonomousScaleRight();
+		
+//		autonomousCommand = new AutoScaleLtoR(); 
+//		autonomousCommand = new AutoScaleRtoL(); 
 //		autonomousCommand = new DriveForward(4);
 		
 		if (autonomousCommand != null) {
@@ -216,6 +235,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateDashboard();
+		limelight.lightOff();
 		i2c.write(4, 1);
 	}
 
@@ -233,6 +253,7 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		limelight.lightOff();
 		SmartDashboard.putData("Test Drive Encs", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
+		SmartDashboard.putData("DriveForward", new DriveForward(prefs.getDouble("Forward Distance", 5)));
 		if(RobotMap.compbot) updateDashboard();
 //		/*
 		if(DriverStation.getInstance().getAlliance() == Alliance.Blue )
@@ -297,5 +318,6 @@ public class Robot extends TimedRobot {
 		prefs.putDouble("Motion Profile kP", RobotMap.MPkP);
 		prefs.putDouble("Motion Profile kI", RobotMap.MPkI);
 		prefs.putDouble("Motion Profile kD", RobotMap.MPkD);
+		prefs.putDouble("Forward Distance", 5);
 	}
 }

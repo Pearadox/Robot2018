@@ -31,7 +31,7 @@ public class SpintakePOVControl extends Command {
     	case 315: Robot.spintake.orientLeft();  break;
     	case 0: Robot.spintake.outtake(); break;
     	case 45: Robot.spintake.orientRight(); break;
-    	case 90: Robot.spintake.orientRight(); System.out.println(System.currentTimeMillis()); break;
+    	case 90: Robot.spintake.orientRight(); break;
     	case 135: Robot.spintake.orientRight(); break;
     	case 180: Robot.spintake.intake(); break;
     	case 225: Robot.spintake.orientLeft(); break;

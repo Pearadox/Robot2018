@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -25,16 +26,18 @@ public class Spintake extends Subsystem {
 	{
 		left = new VictorSPX(22);
 		right = new VictorSPX(21);
-		left.setInverted(false);
-		right.setInverted(true);
-		sols = new DoubleSolenoid(3,4);
+		left.setInverted(true); //false on practice
+		right.setInverted(false); //true on practice
+		sols = new DoubleSolenoid(4,3); //3, 4 on practice
 	}
 	
 	public void pushIn() {
+		SmartDashboard.putBoolean("Pushed In", true);
 		sols.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	public void pushOut() {
+		SmartDashboard.putBoolean("Pushed In", false);
 		sols.set(DoubleSolenoid.Value.kForward);
 	}
 	
