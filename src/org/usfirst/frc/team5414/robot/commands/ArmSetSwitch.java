@@ -13,6 +13,6 @@ public class ArmSetSwitch extends CommandGroup {
 	
 	public ArmSetSwitch(double delay) {
 		if(delay != 0) addSequential(new Wait(delay));
-    	addSequential(new ArmSetAngle(96));
+    	addSequential(new ArmSetAngle(105));
     }
 }

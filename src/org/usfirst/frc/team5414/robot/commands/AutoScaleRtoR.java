@@ -25,7 +25,7 @@ public class AutoScaleRtoR extends CommandGroup {
     	addSequential(new DriveForward(3));
     	addSequential(new SetAngle(0));
     	addSequential(new DriveForward(3.1));
-    	addSequential(new TurnRight(130));
+    	addSequential(new TurnRight(133));
     	addSequential(new DriveForward(-.5));
     	addSequential(new ArmThrowbackHigh());
     	addSequential(new ArmSetLow());

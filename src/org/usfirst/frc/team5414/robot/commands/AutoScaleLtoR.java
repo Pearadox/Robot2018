@@ -65,7 +65,7 @@ public class AutoScaleLtoR extends CommandGroup {
 		addSequential(new DriveForward(5.3));
 //		addSequential(new TurnRight(65));
 		addSequential(new SetAngle(165));
-		addSequential(new DriveForward(-.775));
+		addSequential(new DriveForward(-.77));
     	addSequential(new ArmThrowbackLow());
     	addParallel(new ArmSetLow());
     }

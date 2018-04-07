@@ -25,8 +25,8 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 
-	final static double VHigh = 1.651;
-	final static double VLow = 4.24;
+	final static double VHigh = 1.555;
+	final static double VLow = 4.252;
 	final static double angleLow = 39;
 	final static double angleHigh = 180;
 	final static double maxAngleStop = 165;
