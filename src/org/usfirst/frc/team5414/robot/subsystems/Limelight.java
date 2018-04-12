@@ -75,12 +75,14 @@ public class Limelight extends Subsystem {
     
     public double getX() {
     	update();
-    	return x;
+//    	return x;
+    	return -y;
     }
     
     public double getY() {
     	update();
-    	return y;
+//    	return y;
+    	return x;
     }
     
     public double getArea() {
@@ -98,4 +100,3 @@ public class Limelight extends Subsystem {
     	return latency;
     }
 }
-

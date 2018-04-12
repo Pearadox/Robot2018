@@ -407,7 +407,7 @@ public class Drivetrain extends Subsystem {
     {
     	try {
     		int get = encoderR.get();
-//    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
+    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
     		return get;
     	} catch(Exception e) {}
     	return 0;
@@ -417,7 +417,7 @@ public class Drivetrain extends Subsystem {
     {
     	try {
     		int get = encoderL.get();
-//    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
+    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
     		return get;
     	} catch(Exception e) {}
     	return 0;

@@ -218,7 +218,7 @@ public class Robot extends TimedRobot {
 //		autonomousCommand = new AutoScaleRtoR();
 		
 //		autonomousCommand = new AutonomousSwitchMiddle();
-//		autonomousCommand = new AutonomousScaleLeft();
+		autonomousCommand = new AutonomousScaleLeft();
 //		autonomousCommand = new AutonomousScaleRight();
 		
 //		autonomousCommand = new AutoScaleLtoR(); 

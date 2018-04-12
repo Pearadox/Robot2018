@@ -16,7 +16,7 @@ public class VisionGoToCube extends Command {
 	final int settleLoopsGoal = 0;
 	int settleLoops = 0;
 	int currentTimeoutLoops = 0;
-	double targetArea = 30;
+	double targetArea = 25;
 	double errorSum;
 	double lastError;
 	double lastAreaError;

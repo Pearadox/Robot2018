@@ -10,6 +10,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class ArmSetScale extends CommandGroup {
 
     public ArmSetScale() {
-    	addSequential(new ArmSetAngle(170));
+    	addSequential(new ArmSetAngle(180));
     }
 }

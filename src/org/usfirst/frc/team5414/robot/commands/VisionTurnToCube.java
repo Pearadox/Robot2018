@@ -16,7 +16,6 @@ public class VisionTurnToCube extends Command {
 	final int settleLoopsGoal = 2;
 	int settleLoops = 0;
 	int currentTimeoutLoops = 0;
-	double targetArea = 12;
 	double errorSum;
 	double lastError;
 	double lastAreaError;
@@ -42,7 +41,7 @@ public class VisionTurnToCube extends Command {
 	    	//turn to cube
 	    	if(!Robot.limelight.hasTarget()) //if robot doesn't see a cube, constantly turn left 
 	    	{
-	    		Robot.drivetrain.drive(.18, -.18);
+	    		Robot.drivetrain.drive(.25, -.25);
 	    		return;
 	    	}
 	    	currentTimeoutLoops = 0;

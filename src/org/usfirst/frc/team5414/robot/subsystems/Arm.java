@@ -25,17 +25,17 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 
-	final static double VHigh = 1.555;
-	final static double VLow = 4.252;
-	final static double angleLow = 39;
+	final static double VHigh = 1.3;
+	final static double VLow = 3.88;
+	final static double angleLow = 45.1;
 	final static double angleHigh = 180;
-	final static double maxAngleStop = 165;
+	final static double maxAngleStop = 180;
 	final static double minAngleStop = 39; //49
 	
 	static boolean pinched;
 	
 	/*
-	 * postive motor output will raise arm, negative will lower arm
+	 * postive motor output will raise arm, negative will lower arm 
 	 */
 	public Arm() {
 		talon = new TalonSRX(RobotMap.CANArmTalon);
@@ -69,7 +69,7 @@ public class Arm extends Subsystem {
 	public double calculateHoldOutput(double angle)
 	{
 		SmartDashboard.putBoolean("Pinched", pinched);
-		double amplitude = pinched ? .156 : 0.132;
+		double amplitude = pinched ? .22 : 0.138;
 		double equation = amplitude * Math.sin(angle*Math.PI/180);
 		return equation;
 	}
@@ -90,9 +90,7 @@ public class Arm extends Subsystem {
 	public void armDown() {
 		try {
 		double currentAngle = getAngle();
-		if(currentAngle <= minAngleStop)
-			set(calculateHoldOutput(currentAngle));
-		set(calculateHoldOutput(currentAngle) - .6);
+		set(calculateHoldOutput(currentAngle) - .3);
 		} catch(Exception e) {set(-.4);}
 	}
 	

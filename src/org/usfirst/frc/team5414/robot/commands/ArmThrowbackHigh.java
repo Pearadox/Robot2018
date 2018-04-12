@@ -20,7 +20,7 @@ public class ArmThrowbackHigh extends Command {
 	
     public ArmThrowbackHigh() {
         requires(Robot.arm);
-        desiredAngle = 137.5;
+        desiredAngle = 139;
     }
 
     // Called just before this Command runs the first time

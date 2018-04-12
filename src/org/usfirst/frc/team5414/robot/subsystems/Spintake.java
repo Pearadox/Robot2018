@@ -26,9 +26,9 @@ public class Spintake extends Subsystem {
 	{
 		left = new VictorSPX(22);
 		right = new VictorSPX(21);
-		left.setInverted(true); //false on practice
-		right.setInverted(false); //true on practice
-		sols = new DoubleSolenoid(4,3); //3, 4 on practice
+		left.setInverted(false); //false on practice
+		right.setInverted(true); //true on practice
+		sols = new DoubleSolenoid(4,3);
 	}
 	
 	public void pushIn() {

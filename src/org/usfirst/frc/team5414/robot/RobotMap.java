@@ -83,7 +83,7 @@ public class RobotMap {
 	public static double plybotRkI = 0.00011;
 	public static double plybotRkP = 0.008;
 	*/
-//	/*
+	/*
 	//practice bot
 	public static double plybotLkF = .04;
 	public static double plybotLkD = 0.000;
@@ -93,26 +93,23 @@ public class RobotMap {
 	public static double plybotRkD = 0.000;
 	public static double plybotRkI = 0.00000;
 	public static double plybotRkP = 0.045;
-//	*/
-	/*
-	//comp bot
-	public static double plybotLkF = .13;
-	public static double plybotLkD = 0.09;
-	public static double plybotLkI = 0.00000;
-	public static double plybotLkP = 0.0052;
-	public static double plybotRkF = .13;
-	public static double plybotRkD = 0.1;
-	public static double plybotRkI = 0.00000;
-	public static double plybotRkP = 0.006;
 	*/
+	public static double plybotLkF = .04;
+	public static double plybotLkD = 0.000;
+	public static double plybotLkI = 0.00000;
+	public static double plybotLkP = 0.045;
+	public static double plybotRkF = .04;
+	public static double plybotRkD = 0.000;
+	public static double plybotRkI = 0.00000;
+	public static double plybotRkP = 0.045;
 	
 	//Vision PID Loop
 	public static double turnLimekD = 0.09;
 	public static double turnLimekI = 0.00;
 	public static double turnLimekP = 0.004;
-	public static double forwardLimekD = 0.008;
+	public static double forwardLimekD = 0.01;
 	public static double forwardLimekI = 0.0;
-	public static double forwardLimekP = 0.0195;
+	public static double forwardLimekP = 0.016;
 	public static double forwardTurnLimekD = .09;
 	public static double forwardTurnLimekI = 0.0;
 	public static double forwardTurnLimekP = 0.0005;
@@ -127,7 +124,7 @@ public class RobotMap {
 	
 	public static double armThrowHighkP = 0.3;
 	public static double armThrowHighkD = 0.12;
-	public static double armThrowkP = 0.021;
+	public static double armThrowkP = 0.02;
 	public static double armThrowkD = 0.05;
 
 	//Motion Profile PID Loop (Jaci's Pathfinder)
