@@ -25,17 +25,19 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 
-	final static double VHigh = 1.3;
-	final static double VLow = 3.88;
+	final static double VHigh = 1.583;
+	final static double VLow = 3.992;
 	final static double angleLow = 45.1;
 	final static double angleHigh = 180;
 	final static double maxAngleStop = 180;
+	
 	final static double minAngleStop = 39; //49
 	
 	static boolean pinched;
 	
 	/*
-	 * postive motor output will raise arm, negative will lower arm 
+	 * postive
+	 * x` motor output will raise arm, negative will lower arm 
 	 */
 	public Arm() {
 		talon = new TalonSRX(RobotMap.CANArmTalon);

@@ -3,6 +3,7 @@ package org.usfirst.frc.team5414.robot.commands;
 import org.usfirst.frc.team5414.robot.Robot;
 import org.usfirst.frc.team5414.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +22,7 @@ public class ArmThrowbackLow extends Command {
 	
     public ArmThrowbackLow() {
         requires(Robot.arm);
-        desiredAngle = 180;
+        desiredAngle = 182;
     }
 
     // Called just before this Command runs the first time

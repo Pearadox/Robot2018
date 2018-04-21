@@ -19,7 +19,7 @@ public class AutonomousScalePriorityLeft extends CommandGroup {
     	char switchSide = Robot.switchSide;
     	char scaleSide = Robot.scaleSide;
     	
-    	if(scaleSide == 'L') addSequential(new AutoScaleLtoL());
+    	if(scaleSide == 'L') addSequential(new AutoScaleSwitchLtoL());
     	else if(switchSide == 'L') addSequential(new AutoSwitchLtoL());
     	else addSequential(new AutoScaleLtoR());
     }

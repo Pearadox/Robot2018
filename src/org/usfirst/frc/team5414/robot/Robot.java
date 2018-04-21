@@ -23,7 +23,8 @@ import org.usfirst.frc.team5414.robot.commands.ArmSetLow;
 import org.usfirst.frc.team5414.robot.commands.ArmSetScale;
 import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHigh;
-import org.usfirst.frc.team5414.robot.commands.AutoScaleLtoL;
+import org.usfirst.frc.team5414.robot.commands.AutoScaleSwitchLtoL;
+import org.usfirst.frc.team5414.robot.commands.AutoScaleSwitchRtoR;
 import org.usfirst.frc.team5414.robot.commands.AutoScaleLtoR;
 import org.usfirst.frc.team5414.robot.commands.AutoScaleRtoL;
 import org.usfirst.frc.team5414.robot.commands.AutoScaleRtoR;
@@ -34,9 +35,12 @@ import org.usfirst.frc.team5414.robot.commands.AutoSwitchRtoR;
 import org.usfirst.frc.team5414.robot.commands.AutonomousDriveForward;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
+import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchOnlyLeft;
+import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchOnlyRight;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityRight;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleRight;
+import org.usfirst.frc.team5414.robot.commands.AutonomousScaleSwitchLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityRight;
@@ -56,10 +60,10 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
 
 /*
  * Order of who to blame if the program doesn't work:  
- * 0. electrical/Anyssa
+ * 0. electrical/Anyssa/angad
  * 1. mechanical
- * 2. chairmans
- * 3. imagery
+ * 2 ~.imagery~ 
+ * 3. chairmans
  * 4. scouting
  * 5. OpenMesh
  * 6. 118
@@ -186,12 +190,13 @@ public class Robot extends TimedRobot {
 			if(scale)				
 			{
 //				autonomousCommand = new AutonomousScalePriorityLeft();
-				autonomousCommand = new AutonomousScaleLeft();
+				autonomousCommand = new AutonomousScaleSwitchLeft();
 				SmartDashboard.putString("Auto Mode", "ScaleLeft");
 			}
 			else 
 			{
-				autonomousCommand = new AutonomousSwitchPriorityLeft();
+//				autonomousCommand = new AutonomousSwitchPriorityLeft();
+				autonomousCommand = new AutonomousSwitchOnlyLeft();
 				SmartDashboard.putString("Auto Mode", "SwitchLeft");
 			}
 		}
@@ -200,13 +205,13 @@ public class Robot extends TimedRobot {
 			if(scale)
 			{
 //				autonomousCommand = new AutonomousScalePriorityRight();
-				 
 				autonomousCommand = new AutonomousScaleRight();
 				SmartDashboard.putString("Auto Mode", "ScaleRight");
 			}
 			else 
 			{
-				autonomousCommand = new AutonomousSwitchPriorityRight();
+//				autonomousCommand = new AutonomousSwitchPriorityRight();
+				autonomousCommand = new AutonomousSwitchOnlyRight();
 				SmartDashboard.putString("Auto Mode", "SwitchRight");
 			}
 		}
@@ -218,9 +223,11 @@ public class Robot extends TimedRobot {
 //		autonomousCommand = new AutoScaleRtoR();
 		
 //		autonomousCommand = new AutonomousSwitchMiddle();
-		autonomousCommand = new AutonomousScaleLeft();
+//		autonomousCommand = new AutonomousScaleLeft();
 //		autonomousCommand = new AutonomousScaleRight();
+//		autonomousCommand = new AutonomousScaleSwitchLeft();
 		
+//		autonomousCommand = new AutoScaleSwitchRtoR();
 //		autonomousCommand = new AutoScaleLtoR(); 
 //		autonomousCommand = new AutoScaleRtoL(); 
 //		autonomousCommand = new DriveForward(4);
@@ -253,7 +260,7 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		limelight.lightOff();
 		SmartDashboard.putData("Test Drive Encs", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
-		SmartDashboard.putData("DriveForward", new DriveForward(prefs.getDouble("Forward Distance", 5)));
+		SmartDashboard.putData("DriveForwardd", new DriveForward(prefs.getDouble("Forward Distance", 5)));
 		if(RobotMap.compbot) updateDashboard();
 //		/*
 		if(DriverStation.getInstance().getAlliance() == Alliance.Blue )
@@ -274,8 +281,10 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putNumber("ty", Robot.limelight.getY());
 			SmartDashboard.putNumber("ta", Robot.limelight.getArea());
 		}
-		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw Raw", gyro.getYaw());
-		if(RobotMap.hasGyro) SmartDashboard.putNumber("Current Yaw", gyro.getYaw()%360);
+		if(RobotMap.hasGyro)
+		{
+			SmartDashboard.putNumber("Current Yaw", gyro.getYaw()%360);
+		}
 		if(RobotMap.hasArm)
 		{
 			SmartDashboard.putNumber("Arm Angle", arm.getAngle());

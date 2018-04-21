@@ -26,8 +26,8 @@ public class Spintake extends Subsystem {
 	{
 		left = new VictorSPX(22);
 		right = new VictorSPX(21);
-		left.setInverted(false); //false on practice
-		right.setInverted(true); //true on practice
+		left.setInverted(true); //false on practice
+		right.setInverted(false); //true on practice
 		sols = new DoubleSolenoid(4,3);
 	}
 	
@@ -70,14 +70,14 @@ public class Spintake extends Subsystem {
 	
 	public void orientLeft() {
 		setCoast();
-		left.set(ControlMode.PercentOutput, .7);
+		left.set(ControlMode.PercentOutput, .9);
 		right.set(ControlMode.PercentOutput, 0);
 	}
 	
 	public void orientRight() {
 		setCoast();
 		left.set(ControlMode.PercentOutput, 0);
-		right.set(ControlMode.PercentOutput, .7);
+		right.set(ControlMode.PercentOutput, .9);
 	}
 	
 	public void setOrienting(boolean b)

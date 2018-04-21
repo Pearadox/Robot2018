@@ -120,18 +120,6 @@ public class Drivetrain extends Subsystem {
 			rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 			rightMaster.configNeutralDeadband(.01, 0);
 			
-			Thread updateEncodersOnTalons = new Thread() {
-				public void run() {
-					try {
-						while(true) {
-							leftMaster.setSelectedSensorPosition(getEncoderL(), 0, 0);
-							rightMaster.setSelectedSensorPosition(getEncoderR(), 0, 0);
-							Thread.sleep(2);
-						}
-					} catch(Exception e) {e.printStackTrace();}
-				}
-			};
-			updateEncodersOnTalons.start();
 			
     	}
     }
@@ -407,7 +395,7 @@ public class Drivetrain extends Subsystem {
     {
     	try {
     		int get = encoderR.get();
-    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
+//    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
     		return get;
     	} catch(Exception e) {}
     	return 0;
@@ -417,7 +405,7 @@ public class Drivetrain extends Subsystem {
     {
     	try {
     		int get = encoderL.get();
-    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
+//    		get /= 2;  //only for practice bot (it has 256 tick encoders compared to 128 ticks on the comp bot)
     		return get;
     	} catch(Exception e) {}
     	return 0;
@@ -459,10 +447,10 @@ public class Drivetrain extends Subsystem {
 	}
 	
 	public void setCoast() {
-		rightMaster.setNeutralMode(NeutralMode.Coast);
+		rightMaster.setNeutralMode(NeutralMode.Brake);
 		rightSlave1.setNeutralMode(NeutralMode.Coast);
 		rightSlave2.setNeutralMode(NeutralMode.Coast);
-		leftMaster.setNeutralMode(NeutralMode.Coast);
+		leftMaster.setNeutralMode(NeutralMode.Brake);
 		leftSlave1.setNeutralMode(NeutralMode.Coast);
 		leftSlave2.setNeutralMode(NeutralMode.Coast);
 	}

@@ -69,8 +69,7 @@ public class FollowEncoder extends Command{
 			RobotMap.plybotRkF = Robot.prefs.getDouble("PlyEnc R kF", RobotMap.plybotRkF);
 		}
     	Robot.drivetrain.zeroEncoders();
-//    	Robot.drivetrain.setCoast();
-    	Robot.drivetrain.setBrake();
+    	Robot.drivetrain.setCoast();
     	lastLeft = 0;
     	lastRight = 0;
     	setTimeout(timeout);
@@ -113,7 +112,7 @@ public class FollowEncoder extends Command{
     	if(isTimedOut()) return true;
     	if(leftEnc.size() == 1 || recordedLoops == leftEnc.size()-1)
     	{
-    		if(Math.abs(lastLeftError) < 10 && Math.abs(lastRightError) < 10)
+    		if(Math.abs(lastLeftError) < 20 && Math.abs(lastRightError) < 20)
     		{
 				return true;
 			}

@@ -44,6 +44,7 @@ public class IMU extends Subsystem{
     public double getTrueYaw()
     {
     	return ahrs.getAngle();
+//    	return ahrs.getYaw();
 //    	return gy.getAngle();
     }
     
@@ -54,6 +55,7 @@ public class IMU extends Subsystem{
     
     public void zeroYaw()
     {
+    	ahrs.zeroYaw();
     	yawOffset = getTrueYaw();
     }
     

@@ -8,6 +8,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class ArmSetLow extends CommandGroup {
 
     public ArmSetLow() {
-    	addSequential(new ArmSetAngle(62-4));
+    	addSequential(new ArmSetAngle(56-4));
     }
 }

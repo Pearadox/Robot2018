@@ -16,15 +16,25 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *	- maybe if there's time, try to place it in the switch if it's on same side of scale
  *		-if it's not on same side of scale, put it on the scale
  */
-public class AutonomousSwitchPriorityLeft extends CommandGroup {
+public class AutonomousScaleSwitchLeft extends CommandGroup {
 
-    public AutonomousSwitchPriorityLeft() {
+    public AutonomousScaleSwitchLeft() {
 
     	char switchSide = Robot.switchSide;
     	char scaleSide = Robot.scaleSide;
+    	    	
+    	if(scaleSide == 'L' && switchSide == 'L')
+    	{
+    		addSequential(new AutoScaleSwitchLtoL());
+    	}
+    	else if(scaleSide == 'L')
+    	{
+    		addSequential(new AutoScaleLtoL());
+    	}
+    	else if(scaleSide == 'R')
+    	{
+    		addSequential(new AutoScaleLtoR());
+    	}
     	
-    	if(switchSide == 'L') addSequential(new AutoSwitchLtoL());
-    	else if(scaleSide == 'L') addSequential(new AutoScaleSwitchLtoL());
-    	else addSequential(new DriveForward(3));
     }
 }

@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class DriveForward extends CommandGroup {
 
-	double maxVelocity = 5;
-	double acceleration = 2.5;
+	static double maxVelocity = 4.5;
+	static double acceleration = 2.8;
 	
 //	Generates a trapezoidal trajectory and follows the encoders
 	public DriveForward(double meters) {
@@ -22,6 +22,11 @@ public class DriveForward extends CommandGroup {
     }
 	
 	public DriveForward(double meters, double timeout)
+	{
+		this(meters, timeout, maxVelocity, acceleration);
+	}
+	
+	public DriveForward(double meters, double timeout, double maxVelocity, double acceleration)
 	{
 		org.usfirst.frc.team5414.robot.Traj[] left = TrajectoryGenerator.getTrajectory(meters, .02, maxVelocity, acceleration);
         org.usfirst.frc.team5414.robot.Traj[] right = TrajectoryGenerator.getTrajectory(meters, .02, maxVelocity, acceleration);
