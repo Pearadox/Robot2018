@@ -38,16 +38,9 @@ public class RobotMap {
 	
 	//CAN ports for manipulators
 	public static int CANArmTalon = 20;
-	
-	//Encoder DIO ports Flatbot
-	public static int DIOencoderRaFlat = 0;
-	public static int DIOencoderRbFlat = 1;
-	public static int DIOencoderLaFlat = 2;
-	public static int DIOencoderLbFlat = 3;
-	public static int DIOencoderRaComp = 9;
-	public static int DIOencoderRbComp = 8;
-	public static int DIOencoderLaComp = 7;
-	public static int DIOencoderLbComp = 6;
+	public static int CANSpintakeRight = 21;
+	public static int CANSpintakeLeft = 22;
+	public static int CANClimberVictorSPX = 23;
 	
 	//Wheel stuffs
 			//flatbot
@@ -67,13 +60,8 @@ public class RobotMap {
 			public static double FeetPerTick = CircumferenceFeet / EncoderTicksPerRev;
 			public static double MetersPerTick = CircumferenceMeters / EncoderTicksPerRev;
 			public static double wheelBaseWidth = 5;
-		
-	//Motion Profiling/Encoder Following PID Loop
-	public static double flatbotkP = .004;
-	public static double flatbotkI = 0.00007;
-	public static double flatbotkD = 0.007;
 	
-	/* PROGRAMMING BOT 
+	/* WEIRD BOT 
 	public static double plybotLkF = .11;
 	public static double plybotLkD = 0.0055;
 	public static double plybotLkI = 0.00013;
@@ -86,13 +74,13 @@ public class RobotMap {
 //	/*
 	//practice bot
 	public static double plybotLkF = .0;
-	public static double plybotLkD = 0.000;
+	public static double plybotLkD = 0.01;
 	public static double plybotLkI = 0.00000;
-	public static double plybotLkP = 0.038;
+	public static double plybotLkP = 0.048;
 	public static double plybotRkF = .0;
-	public static double plybotRkD = 0.000;
+	public static double plybotRkD = 0.01;
 	public static double plybotRkI = 0.00000;
-	public static double plybotRkP = 0.038;
+	public static double plybotRkP = 0.048;
 //	*/
 	
 	//Vision PID Loop
@@ -110,9 +98,6 @@ public class RobotMap {
 	public static double armkP = 0.01;
 	public static double armkI = 0;
 	public static double armkD = 0;
-//	public static double armkP = 0.025;
-//	public static double armkI = 0.00001;
-//	public static double armkD = 0.22;
 	
 	public static double armThrowHighkP = 0.54;
 	public static double armThrowHighkD = 0.12;
@@ -124,4 +109,19 @@ public class RobotMap {
 	public static double MPkI = 0.0;
 	public static double MPkP = 0.0;
 
+	//Encoder DIO ports Flatbot
+	public static int DIOencoderRaFlat = 0;
+	public static int DIOencoderRbFlat = 1;
+	public static int DIOencoderLaFlat = 2;
+	public static int DIOencoderLbFlat = 3;
+	public static int DIOencoderRaComp = 9;
+	public static int DIOencoderRbComp = 8;
+	public static int DIOencoderLaComp = 7;
+	public static int DIOencoderLbComp = 6;
+
+	//Encoder Follower PID Loop Flatbot
+	public static double flatbotkP = 0;
+	public static double flatbotkI = 0;
+	public static double flatbotkD = 0;
+	public static double flatbotkF = 0;
 }

@@ -8,56 +8,30 @@
 
 package org.usfirst.frc.team5414.robot;
 
-import java.io.IOException;
-
+import org.usfirst.frc.team5414.robot.commands.ArmDownBreakaway;
 import org.usfirst.frc.team5414.robot.commands.ArmDownManual;
-import org.usfirst.frc.team5414.robot.commands.ArmPincherClose;
-import org.usfirst.frc.team5414.robot.commands.ArmPincherOpen;
 import org.usfirst.frc.team5414.robot.commands.ArmUpManual;
-import org.usfirst.frc.team5414.robot.commands.DriveForward;
+import org.usfirst.frc.team5414.robot.commands.ClimberDown;
+import org.usfirst.frc.team5414.robot.commands.ClimberExtend;
+import org.usfirst.frc.team5414.robot.commands.ClimberUp;
+import org.usfirst.frc.team5414.robot.commands.ClimberRetract;
+import org.usfirst.frc.team5414.robot.commands.ClimberStop;
+import org.usfirst.frc.team5414.robot.commands.ClimberToggleHook;
 import org.usfirst.frc.team5414.robot.commands.SpintakeIntake;
 import org.usfirst.frc.team5414.robot.commands.SpintakeOuttake;
-import org.usfirst.frc.team5414.robot.commands.SpintakeOrientLeft;
-import org.usfirst.frc.team5414.robot.commands.SpintakeOrientRight;
 import org.usfirst.frc.team5414.robot.commands.SpintakePushIn;
-import org.usfirst.frc.team5414.robot.commands.SpintakePushOff;
 import org.usfirst.frc.team5414.robot.commands.SpintakePushOut;
-import org.usfirst.frc.team5414.robot.commands.SpintakeToggleMiddle;
 import org.usfirst.frc.team5414.robot.commands.ArmPincherToggle;
+import org.usfirst.frc.team5414.robot.commands.ArmSetClimb;
 import org.usfirst.frc.team5414.robot.commands.ArmSetLow;
 import org.usfirst.frc.team5414.robot.commands.ArmSetScale;
 import org.usfirst.frc.team5414.robot.commands.ArmSetSwitch;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHigh;
-import org.usfirst.frc.team5414.robot.commands.ArmThrowbackHighGroup;
-import org.usfirst.frc.team5414.robot.commands.ArmThrowbackLow;
 import org.usfirst.frc.team5414.robot.commands.ArmThrowbackLowGroup;
-import org.usfirst.frc.team5414.robot.commands.ToggleLight;
-import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
-import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-/**
-Commands/Functions we will probably need:
-	arm manual up
-	arm manual down
-	set arm to down position
-	set arm to switch position
-	set arm to scale position
-	toggle pincher on arm
-	
-	spintake orient
-	spintake intake
-	spintake outtake
-	spintake push in (pneumatics)
-	spintake push out (pneumatics)
-	vision turn/go to cube (driver assitance, might use, might not)
-	hold to go straight (driver assistance, might use, probably not)
-	throw scale (maybe one for throwing upwards from the front and one for throwing from the back?)
-	throw switch
-Current Total: 15/16
- */
 public class OI {
 	
 	
@@ -91,7 +65,7 @@ public class OI {
 		btn9.whileHeld(new SpintakeIntake());
 		btn10.whileHeld(new SpintakeOuttake());
 		btn11.whenPressed(new SpintakePushIn());
-		btn12.whenPressed(new SpintakePushOut());
+		btn12.whenPressed(new ArmDownBreakaway());
 		
 		//------OPERATOR-------------------------
 		JoystickButton btnOp1 = new JoystickButton(operator, 1);
@@ -106,30 +80,17 @@ public class OI {
 		JoystickButton btnOp10 = new JoystickButton(operator, 10);
 		JoystickButton btnOp13 = new JoystickButton(operator, 13);
 		
-//		/*
-//		Lucas's trash
 		btnOp1.whenPressed(new ArmThrowbackHigh());
 		btnOp2.whileHeld(new SpintakeIntake());
 		btnOp3.whenPressed(new ArmSetLow());
 		btnOp4.whenPressed(new ArmSetSwitch());
 		btnOp5.whenPressed(new SpintakePushOut());
-		btnOp6.whileHeld(new VisionTurnToCube());
+		btnOp6.whenPressed(new ArmSetClimb());
 		btnOp7.whenPressed(new SpintakePushIn());
-		btnOp8.whileHeld(new VisionGoToCube());
-		btnOp9.whileHeld(new DriveForward(5));
-//		btnOp10.whileHeld(new SpintakeOrientRight());
-//		btnOp13.whileHeld(new SpintakeOrientRight());
-//		*/
-		
-		/*
-		//Angad's trash
-		btnOp1.whenPressed(new ArmSetLow());
-		btnOp2.whileHeld(new SpintakeIntake());
-		btnOp4.whenPressed(new ArmSetSwitch());
-		btnOp5.whenPressed(new ArmThrowbackHigh());
-		btnOp7.whenPressed(new SpintakePushOut());
-		btnOp9.whenPressed(new SpintakePushIn());
-		*/
+		btnOp8.whenPressed(new ClimberStop());
+		btnOp9.whileHeld(new ClimberDown());
+		btnOp10.whileHeld(new ClimberUp());
+		btnOp13.whenPressed(new ClimberToggleHook());
 	}
 	
 	public Joystick getJoystick() {

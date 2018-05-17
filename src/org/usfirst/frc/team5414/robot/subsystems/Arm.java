@@ -25,12 +25,11 @@ public class Arm extends Subsystem {
 	
 	//potentiometer parameters
 
-	final static double VHigh = 1.583;
-	final static double VLow = 3.992;
+	final static double VHigh = 1.64;
+	final static double VLow = 3.985414;
 	final static double angleLow = 45.1;
 	final static double angleHigh = 180;
 	final static double maxAngleStop = 180;
-	
 	final static double minAngleStop = 39; //49
 	
 	static boolean pinched;
@@ -41,17 +40,12 @@ public class Arm extends Subsystem {
 	 */
 	public Arm() {
 		talon = new TalonSRX(RobotMap.CANArmTalon);
-//		talon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
 		talon.setSensorPhase(true);
 		talon.setInverted(false);
 		talon.configNominalOutputForward(0, 10);
 		talon.configNominalOutputReverse(0, 10);
 		talon.configPeakOutputForward(1, 10);
 		talon.configPeakOutputReverse(-1, 10);
-//		talon.config_kP(0, kP, 10);
-//		talon.config_kI(0, kI, 10);
-//		talon.config_kD(0, kD, 10);
-//		talon.configAllowableClosedloopError(0, 0, 10);
 		
 		solPincher = new DoubleSolenoid(5, 2); //2, 5 on practice
 		potentiometer = new AnalogInput(0);
@@ -95,6 +89,12 @@ public class Arm extends Subsystem {
 		set(calculateHoldOutput(currentAngle) - .3);
 		} catch(Exception e) {set(-.4);}
 	}
+	
+	public void armBreakaway() {
+		set(-1.0);
+	}
+	
+	
 	
 	public void set(double percentOutput)
 	{

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Spintake extends Subsystem {
 
 	VictorSPX left, right;
-	DoubleSolenoid sols, solMiddle;
+	DoubleSolenoid sol;
 	static boolean orienting = false;
 	
 	public Spintake()
@@ -28,27 +28,21 @@ public class Spintake extends Subsystem {
 		right = new VictorSPX(21);
 		left.setInverted(true); //false on practice
 		right.setInverted(false); //true on practice
-		sols = new DoubleSolenoid(4,3);
+		sol = new DoubleSolenoid(4,3);
 	}
 	
 	public void pushIn() {
 		SmartDashboard.putBoolean("Pushed In", true);
-		sols.set(DoubleSolenoid.Value.kReverse);
+		sol.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	public void pushOut() {
 		SmartDashboard.putBoolean("Pushed In", false);
-		sols.set(DoubleSolenoid.Value.kForward);
+		sol.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	public void pushOff() {
-		sols.set(DoubleSolenoid.Value.kOff);
-	}
-	
-	public void toggleMiddle() {
-		if(solMiddle.get() == DoubleSolenoid.Value.kReverse) 
-			solMiddle.set(DoubleSolenoid.Value.kForward);
-    	else solMiddle.set(DoubleSolenoid.Value.kReverse);
+		sol.set(DoubleSolenoid.Value.kOff);
 	}
 	
 	public void intake()

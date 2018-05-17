@@ -70,7 +70,7 @@ public class AutoSwitchMtoL extends CommandGroup {
     	addParallel(new SpintakeSet(1,1));
     	addParallel(new SpintakePushIn());
     	addSequential(new DriveForward(.95, 1.3));
-    	addSequential(new DriveForward(-1.1-.2, 1.5));
+    	addSequential(new DriveForward(-.8-.2, 1.5));
     	addParallel(new SpintakeSet(-.5,.5));
     	addSequential(new Wait(.45));
     	addSequential(new SpintakePushOut());

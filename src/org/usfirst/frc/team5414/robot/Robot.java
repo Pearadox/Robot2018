@@ -52,6 +52,7 @@ import org.usfirst.frc.team5414.robot.commands.VisionGoToCube;
 import org.usfirst.frc.team5414.robot.commands.VisionTurnToCube;
 import org.usfirst.frc.team5414.robot.commands.ZeroGyro;
 import org.usfirst.frc.team5414.robot.subsystems.Arm;
+import org.usfirst.frc.team5414.robot.subsystems.Climber;
 import org.usfirst.frc.team5414.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5414.robot.subsystems.IMU;
 import org.usfirst.frc.team5414.robot.subsystems.Limelight;
@@ -62,10 +63,10 @@ import org.usfirst.frc.team5414.robot.subsystems.Spintake;
  * Order of who to blame if the program doesn't work:  
  * 0. electrical/Anyssa/angad
  * 1. mechanical
- * 2 ~.imagery~ 
+ * 2  OpenMesh
  * 3. chairmans
  * 4. scouting
- * 5. OpenMesh
+ * 5. imagery
  * 6. 118
  * 7. the butler
  * 8. Hayden Christensen's terrible acting in the prequels
@@ -89,7 +90,8 @@ public class Robot extends TimedRobot {
 	public static Spintake spintake;
 	public static I2C i2c = new I2C(Port.kOnboard, 4);
 	public static PDP pdp;
-	public static SendableChooser chooser;
+	public static Climber climber;
+	
 	
 	public static boolean turnIsDone = true;
 	DigitalInput Mid = new DigitalInput(0);
@@ -104,7 +106,6 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void robotInit() {
-		chooser = new SendableChooser();
 		drivetrain = new Drivetrain();
 		prefs = Preferences.getInstance();
 		limelight = new Limelight();
@@ -129,6 +130,7 @@ public class Robot extends TimedRobot {
 			
 			SmartDashboard.putData("Zero Gyro", new ZeroGyro());
 		}
+		climber = new Climber();
 		oi = new OI();
 		addPreferences();
 		SmartDashboard.putData("Turn Right", new TurnRight(90));
@@ -148,6 +150,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		limelight.lightOff();
+		climber.stop();
 	}
 
 	@Override
@@ -165,7 +168,6 @@ public class Robot extends TimedRobot {
 		try {
 			Thread.sleep(50);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		String gameData = null;
@@ -216,16 +218,9 @@ public class Robot extends TimedRobot {
 			}
 		}
 		
-		/*
-		 * place auton group here instead of autonmousswitchmiddle to hard code
-		 */
-//		autonomousCommand = new AutoScaleLtoL();
-//		autonomousCommand = new AutoScaleRtoR();
-		
 //		autonomousCommand = new AutonomousSwitchMiddle();
-//		autonomousCommand = new AutonomousScaleLeft();
-//		autonomousCommand = new AutonomousScaleRight();
-//		autonomousCommand = new AutonomousScaleSwitchLeft();
+		autonomousCommand = new AutonomousScaleSwitchLeft();
+//		autonomousCommand = new AutonomousScaleSwitchRight();
 		
 //		autonomousCommand = new AutoScaleSwitchRtoR();
 //		autonomousCommand = new AutoScaleLtoR(); 
@@ -260,15 +255,12 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		limelight.lightOff();
 		SmartDashboard.putData("Test Drive Encs", new FollowEncoder(prefs.getInt("Desired Left Enc", 0), prefs.getInt("Desired Right Enc", 0)));
-		SmartDashboard.putData("DriveForwardd", new DriveForward(prefs.getDouble("Forward Distance", 5)));
+		SmartDashboard.putData("DriveForwarddd", new DriveForward(prefs.getDouble("Forward Distance", 5)));
 		if(RobotMap.compbot) updateDashboard();
-//		/*
 		if(DriverStation.getInstance().getAlliance() == Alliance.Blue )
 			i2c.write(4,  2);
 		else
 			i2c.write(4, 3);
-//		i2c.write(4, 1);
-//		*/
 	}
 
 	@Override

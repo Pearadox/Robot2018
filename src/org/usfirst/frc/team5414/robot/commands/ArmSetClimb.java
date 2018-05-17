@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class ArmSetScale extends CommandGroup {
+public class ArmSetClimb extends CommandGroup {
 
 	 	
-    public ArmSetScale() {
+    public ArmSetClimb() {
     	addParallel(new SpintakePushOut());
-    	addSequential(new ArmSetAngle(175));
+    	addSequential(new ArmSetAngle(162));
     }
 }
