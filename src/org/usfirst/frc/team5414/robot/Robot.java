@@ -224,6 +224,7 @@ public class Robot extends TimedRobot {
 //		autonomousCommand = new AutonomousScaleSwitchLeft();
 //		autonomousCommand = new AutonomousScaleSwitchRight();
 		 //test line of code 8/18/2018
+		//test line 3 - from Chris
 //		autonomousCommand = new DriveForward(4);
 		
 		if (autonomousCommand != null) {
