@@ -56,9 +56,9 @@ public class AutoSwitchLtoL extends CommandGroup {
     	addParallel(new ZeroGyro());
     	addSequential(new ArmPincherClose());
     	addParallel(new ArmSetSwitch());
-    	addSequential(new FollowEncoder(left, right));
+    	addSequential(new FollowEncoder(left, right,7));
     	addSequential(new SetAngle(90));
     	addSequential(new DriveForward(1.5,1.2));
-    	addSequential(new ArmPincherOpen());
+//    	addSequential(new ArmPincherOpen());
     }
 }

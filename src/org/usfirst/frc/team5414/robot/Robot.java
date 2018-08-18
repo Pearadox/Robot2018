@@ -41,6 +41,7 @@ import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScalePriorityRight;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleRight;
 import org.usfirst.frc.team5414.robot.commands.AutonomousScaleSwitchLeft;
+import org.usfirst.frc.team5414.robot.commands.AutonomousScaleSwitchRight;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchMiddle;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityLeft;
 import org.usfirst.frc.team5414.robot.commands.AutonomousSwitchPriorityRight;
@@ -191,14 +192,14 @@ public class Robot extends TimedRobot {
 		{
 			if(scale)				
 			{
-//				autonomousCommand = new AutonomousScalePriorityLeft();
-				autonomousCommand = new AutonomousScaleSwitchLeft();
+//				autonomousCommand = new AutonomousScaleSwitchLeft();
+				autonomousCommand = new AutonomousScaleLeft();
 				SmartDashboard.putString("Auto Mode", "ScaleLeft");
 			}
 			else 
 			{
-//				autonomousCommand = new AutonomousSwitchPriorityLeft();
-				autonomousCommand = new AutonomousSwitchOnlyLeft();
+//				autonomousCommand = new AutonomousSwitchOnlyLeft();
+				autonomousCommand = new AutonomousScalePriorityLeft();
 				SmartDashboard.putString("Auto Mode", "SwitchLeft");
 			}
 		}
@@ -206,25 +207,21 @@ public class Robot extends TimedRobot {
 		{
 			if(scale)
 			{
-//				autonomousCommand = new AutonomousScalePriorityRight();
-				autonomousCommand = new AutonomousScaleRight();
+				autonomousCommand = new AutonomousScaleSwitchRight();
 				SmartDashboard.putString("Auto Mode", "ScaleRight");
 			}
 			else 
 			{
-//				autonomousCommand = new AutonomousSwitchPriorityRight();
-				autonomousCommand = new AutonomousSwitchOnlyRight();
+//				autonomousCommand = new AutonomousSwitchOnlyRight();
+				autonomousCommand = new AutonomousScalePriorityRight();
 				SmartDashboard.putString("Auto Mode", "SwitchRight");
 			}
 		}
 		
 //		autonomousCommand = new AutonomousSwitchMiddle();
-		autonomousCommand = new AutonomousScaleSwitchLeft();
+//		autonomousCommand = new AutonomousScaleSwitchLeft();
 //		autonomousCommand = new AutonomousScaleSwitchRight();
-		
-//		autonomousCommand = new AutoScaleSwitchRtoR();
-//		autonomousCommand = new AutoScaleLtoR(); 
-//		autonomousCommand = new AutoScaleRtoL(); 
+		 
 //		autonomousCommand = new DriveForward(4);
 		
 		if (autonomousCommand != null) {
